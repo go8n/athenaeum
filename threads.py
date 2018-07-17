@@ -6,9 +6,8 @@ from time import sleep
 class InstallThread(QThread):
     outputChanged = pyqtSignal('QString')
 
-    def __init__(self, game_id, game_ref):
+    def __init__(self, game_ref):
         QThread.__init__(self)
-        self._game_id = game_id
         self._game_ref = game_ref
 
     def __del__(self):
@@ -23,9 +22,8 @@ class InstallThread(QThread):
         sleep(1)
 
 class PlayThread(QThread):
-    def __init__(self, game_id, game_ref):
+    def __init__(self, game_ref):
         QThread.__init__(self)
-        self._game_id = game_id
         self._game_ref = game_ref
 
     def __del__(self):

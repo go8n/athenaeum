@@ -106,6 +106,10 @@ class Game(QObject):
         self._installing = installing
         self.installingChanged.emit()
 
+    def stopGame(self):
+        self.playing = False
+        print('stop game')
+
 class Library(QObject):
 
     libraryChanged = pyqtSignal()
@@ -141,9 +145,9 @@ class Library(QObject):
             return '/var/lib/flatpak/appstream/flathub/x86_64/active/icons/64x64/' + cached_icon['value']
 
     def findById(self, game_id):
-        for game in self.games:
+        for index, game in enumerate(self.games):
             if game.id == game_id:
-                return game
+                return index
         return None
 
     @pyqtProperty(Game, notify=currentGameChanged)
@@ -203,13 +207,16 @@ class Library(QObject):
         self.logChanged.emit()
 
     def playGame(self, game_id):
-        self._currentGame.playing = True
-        playThread = PlayThread(self._currentGame.ref)
-        playThread.finished.connect(self.stopGame)
-        playThread.start()
+        idx = self.findById(game_id)
+        if idx is not None:
+            self._currentGame.playing = True
+            playThread = PlayThread(self._currentGame.ref)
 
-        self._threads.append(playThread)
-        print('run game')
+            playThread.finished.connect(self._games[idx].stopGame)
+            playThread.start()
+
+            self._threads.append(playThread)
+            print('run game')
 
     def stopGame(self):
         self._currentGame.playing = False
