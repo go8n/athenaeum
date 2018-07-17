@@ -1,0 +1,7 @@
+*.qmlc
+*.pyc
+designs/
+libs/
+/__pycache__
+*.db
+s.py
