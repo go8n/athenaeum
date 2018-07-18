@@ -2,7 +2,7 @@ import QtQuick 2.6
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import QtQuick.Layouts 1.11
-import Example 1.0
+import Athenaeum 1.0
 
 // signal messageReceived(string person, string notice)
 
@@ -14,6 +14,8 @@ Page {
     property color hl: '#314661'
     property color fg: '#2d3139'
     property color tc: '#caccd1'
+    property color dg: '#e0e0e0'
+
     background: Rectangle {
         anchors.fill: parent
         color: bg
@@ -136,12 +138,15 @@ Page {
         }
     }
     ScrollView {
+        id: gameDetailView
         anchors.left: listView.right
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.top: parent.top
         Column {
-            // anchors.fill: parent
+            id: gameColumView
+            anchors.right: parent.right
+            anchors.left: parent.left
             Row {
                 anchors.right: parent.right
                 anchors.left: parent.left
@@ -159,6 +164,7 @@ Page {
                     source: library.currentGame.icon
                 }
                 Column {
+                    // width: parent.width
                     Text {
                         color: tc
                         // fontSizeMode: Text.HorizontalFit
@@ -201,41 +207,45 @@ Page {
                         Button {
                             text: 'Uninstall'
                             visible: library.currentGame.installed
-                            onClicked: {
-                                window.uninstallGame()
+
+                            MouseArea {
+                                id: uninstallMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    // window.uninstallGame()
+                                }
                             }
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 40
-                                MouseArea {
-                                    id: uninstallMouseArea
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                }
-                                color: uninstallMouseArea.containsMouse ? 'lightcoral' : '#e0e0e0'
+
+                                color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
                             }
                         }
                     }
+
                 }
             }
+            ScrollView {
+                id: logScroller
+                height: 400
+                width: gameDetailView.width
+                // width: 500
+                // visible: library.currentGame.log
+                TextArea {
+                    width: parent.width
+                    color: tc
+                    readOnly: true
+                    text: library.currentGame.log
 
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: fg
 
-            // ScrollView {
-            //     height: 400
-            //     width: parent.width
-            //     TextArea {
-            //         width: parent.width
-            //         color: "ghostwhite"
-            //         readOnly: true
-            //         text: library.log
-            //
-            //         background: Rectangle {
-            //             anchors.fill: parent
-            //             color: "darkslategrey"
-            //
-            //         }
-            //     }
-            // }
+                    }
+                }
+            }
         }
     }
 }

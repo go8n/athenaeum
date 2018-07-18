@@ -1,7 +1,7 @@
 import QtQuick 2.6
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.11
-import Example 1.0
+import Athenaeum 1.0
 
 // property Item item0: Library
 // property alias libview: Library
