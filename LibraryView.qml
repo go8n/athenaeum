@@ -186,6 +186,7 @@ Page {
                         Button {
                             text: 'Install'
                             visible: !library.currentGame.installed
+                            enabled: !library.currentGame.processing
                             onClicked: {
                                 window.installGame(library.currentGame.id)
                             }
@@ -193,6 +194,7 @@ Page {
                         }
                         Button {
                             text: 'Play'
+                            visible:  library.currentGame.installed
                             enabled: !library.currentGame.playing
                             onClicked: {
                                 window.playGame(library.currentGame.id)
@@ -202,24 +204,22 @@ Page {
                                 implicitHeight: 40
                                 color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
                             }
-                            visible:  library.currentGame.installed
                         }
                         Button {
                             text: 'Uninstall'
                             visible: library.currentGame.installed
-
+                            enabled: !library.currentGame.processing
                             MouseArea {
                                 id: uninstallMouseArea
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onClicked: {
-                                    // window.uninstallGame()
+                                    window.uninstallGame(library.currentGame.id)
                                 }
                             }
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 40
-
                                 color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
                             }
                         }
@@ -227,22 +227,24 @@ Page {
 
                 }
             }
-            ScrollView {
-                id: logScroller
-                height: 400
-                width: gameDetailView.width
-                // width: 500
-                // visible: library.currentGame.log
-                TextArea {
-                    width: parent.width
-                    color: tc
-                    readOnly: true
-                    text: library.currentGame.log
+            Row {
+                ScrollView {
+                    id: logScroller
+                    height: 400
+                    width: gameDetailView.width
+                    // width: 500
+                    // visible: library.currentGame.log
+                    TextArea {
+                        width: parent.width
+                        color: tc
+                        readOnly: true
+                        text: library.currentGame.log
 
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: fg
+                        background: Rectangle {
+                            anchors.fill: parent
+                            color: fg
 
+                        }
                     }
                 }
             }

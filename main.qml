@@ -10,6 +10,7 @@ ApplicationWindow {
     id: window
     signal indexUpdated(int index)
     signal installGame(string id)
+    signal uninstallGame(string id)
     signal playGame(string id)
 
     width: 1000

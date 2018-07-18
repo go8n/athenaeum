@@ -13,7 +13,7 @@ class Game(QObject):
     refChanged = pyqtSignal()
     playingChanged = pyqtSignal()
     installedChanged = pyqtSignal()
-    installingChanged = pyqtSignal()
+    processingChanged = pyqtSignal()
 
     logChanged = pyqtSignal()
 
@@ -28,7 +28,7 @@ class Game(QObject):
 
         # Dynamic values
         self._playing = False
-        self._installing = False
+        self._processing = False
         self._log = ''
 
     @pyqtProperty('QString', notify=idChanged)
@@ -89,14 +89,14 @@ class Game(QObject):
         self._installed = installed
         self.installedChanged.emit()
 
-    @pyqtProperty(bool, notify=installingChanged)
-    def installing(self):
-        return self._installing
+    @pyqtProperty(bool, notify=processingChanged)
+    def processing(self):
+        return self._processing
 
-    @installing.setter
-    def installing(self, installing):
-        self._installing = installing
-        self.installingChanged.emit()
+    @processing.setter
+    def processing(self, processing):
+        self._processing = processing
+        self.processingChanged.emit()
 
     @pyqtProperty('QString', notify=logChanged)
     def log(self):
@@ -117,11 +117,25 @@ class Game(QObject):
         print('stop game')
 
     def startInstall(self):
-        self.installing = True
+        self.processing = True
 
     def finishInstall(self, process):
-        self.installing = False
+        self.processing = False
         self.installed = True
+        (GameRecord.replace(
+            id=self.id,
+            installed=self.installed,
+            modified_date=datetime.now()
+        ).execute())
+
+        self.appendLog(process, finished=True)
+
+    def startUninstall(self):
+        self.processing = True
+
+    def finishUninstall(self, process):
+        self.processing = False
+        self.installed = False
         (GameRecord.replace(
             id=self.id,
             installed=self.installed,

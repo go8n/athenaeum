@@ -99,6 +99,18 @@ class Library(QObject):
             installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y'])
             self._processes.append(installProcess)
 
+    def uninstallGame(self, game_id):
+        print('uninstall')
+        idx = self.findById(game_id)
+        if idx is not None:
+            print('uninstall')
+            uninstallProcess = QProcess()
+            uninstallProcess.started.connect(self._games[idx].startUninstall)
+            uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
+            uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
+            uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y'])
+            self._processes.append(uninstallProcess)
+
     def playGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
