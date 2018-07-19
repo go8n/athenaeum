@@ -11,7 +11,9 @@ ApplicationWindow {
     signal indexUpdated(int index)
     signal installGame(string id)
     signal uninstallGame(string id)
+    signal updateGame(string id)
     signal playGame(string id)
+    signal search(string query)
 
     width: 1000
     height: 700

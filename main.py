@@ -33,7 +33,9 @@ def main():
     engine.rootObjects()[0].indexUpdated.connect(library.indexUpdated)
     engine.rootObjects()[0].installGame.connect(library.installGame)
     engine.rootObjects()[0].uninstallGame.connect(library.uninstallGame)
+    engine.rootObjects()[0].updateGame.connect(library.updateGame)
     engine.rootObjects()[0].playGame.connect(library.playGame)
+    engine.rootObjects()[0].search.connect(library.search)
 
     exit(app.exec_())
 
