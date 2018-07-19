@@ -26,15 +26,23 @@ Page {
             spacing: 0
             anchors.fill: parent
             TextField {
+                id: searchField
                 placeholderText: 'Search...'
                 // background: Rectangle {
                 //     anchors.fill: parent
-                //     color: 'red'
                 //     implicitWidth: 200
                 // }
                 Layout.fillHeight: true
+                onTextChanged: {
+                    window.search(text)
+                }
+                onAccepted: {
+                    window.indexUpdated(0)
+                }
+                Keys.onEscapePressed: {
+                    text = ''
+                }
             }
-
             Label {
                 background: Rectangle {
                     anchors.fill: parent
@@ -64,7 +72,22 @@ Page {
                 }
                 // Layout.fillWidth: true
                 Layout.fillHeight: true
-                // onClicked: menu.open()
+                onClicked: menu.open()
+                Menu {
+                    id: menu
+                    // y: fileButton.height
+
+                    MenuItem {
+                        text: "Settings"
+                    }
+                    MenuItem {
+                        text: "Update All"
+                    }
+                    MenuItem {
+                        text: "Exit"
+                        onTriggered: Qt.quit()
+                    }
+                }
             }
             // ToolButton {
             //     text: qsTr("‹")
@@ -77,7 +100,7 @@ Page {
         id: listView
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        model: library.games
+        model: library.filter
         width: 200
         ScrollBar.vertical: ScrollBar { }
         boundsBehavior: Flickable.StopAtBounds

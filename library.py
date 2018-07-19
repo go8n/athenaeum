@@ -12,7 +12,8 @@ import appstream
 
 
 class Library(QObject):
-    libraryChanged = pyqtSignal()
+    gamesChanged = pyqtSignal()
+    filterChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
     logChanged = pyqtSignal()
 
@@ -20,6 +21,7 @@ class Library(QObject):
         super().__init__(*args, **kwargs)
 
         self._games = []
+        self._filter = []
         self._currentGame = Game()
         self._log = ''
         self._threads = []
@@ -38,6 +40,7 @@ class Library(QObject):
                     self.appendGame(Game(component.id, component.name, self.getIcon(component.icons), component.bundle['value'], gr.installed if gr else False))
 
         self._currentGame = self._games[0]
+        self.filter = self.games
 
     def getIcon(self, icons):
         cached_icon = icons['cached'][0]
@@ -72,22 +75,40 @@ class Library(QObject):
             self._log += data
             self.logChanged.emit()
 
-    @pyqtProperty(QQmlListProperty, notify=libraryChanged)
+    @pyqtProperty(list, notify=gamesChanged)
     def games(self):
-        return QQmlListProperty(Game, self, self._games)
+        return self._games
 
     @games.setter
     def games(self, games):
         if games != self._games:
             self._games = games
-            self.libraryChanged.emit()
+            self.gamesChanged.emit()
+
+    @pyqtProperty(QQmlListProperty, notify=filterChanged)
+    def filter(self):
+        return QQmlListProperty(Game, self, self._filter)
+
+    @filter.setter
+    def filter(self, filter):
+        if filter != self._filter:
+            self._filter = filter
+            self.filterChanged.emit()
 
     def appendGame(self, game):
         self._games.append(game)
-        self.libraryChanged.emit()
+        self.gamesChanged.emit()
+
+    def appendFilter(self, game):
+        self._filter.append(game)
+        self.filterChanged.emit()
 
     def indexUpdated(self, index):
-        self.currentGame = self._games[index]
+        try:
+            self.currentGame = self._filter[index]
+        except IndexError:
+            print('Index does not exist.')    
+
 
     def installGame(self, game_id):
         idx = self.findById(game_id)
@@ -111,6 +132,17 @@ class Library(QObject):
             uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y'])
             self._processes.append(uninstallProcess)
 
+    def updateGame(self, game_id):
+        idx = self.findById(game_id)
+        if idx is not None:
+            print('update')
+            updateProcess = QProcess()
+            updateProcess.started.connect(self._games[idx].startUpdate)
+            updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
+            updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
+            updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y'])
+            self._processes.append(updateProcess)
+
     def playGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
@@ -119,3 +151,16 @@ class Library(QObject):
             playProcess.finished.connect(self._games[idx].stopGame)
             playProcess.start('flatpak', ['run', self._games[idx].ref])
             self._processes.append(playProcess)
+
+    def search(self, query):
+        if query:
+            self.filter = []
+            query = query.lower()
+            for game in self._games:
+                if query in game.name.lower():
+                    self.appendFilter(game)
+        else:
+            self.filter = self.games
+
+    def updateLibrary(self):
+        pass
