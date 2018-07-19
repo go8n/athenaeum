@@ -79,6 +79,7 @@ Page {
 
                     MenuItem {
                         text: "Settings"
+                        onTriggered: stackView.push(settingsView)
                     }
                     MenuItem {
                         text: "Update All"

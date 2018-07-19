@@ -8,14 +8,14 @@ from peewee import SqliteDatabase
 
 from game import Game
 from library import Library
-from models import GameRecord, db
+from models import GameRecord, SettingsRecord, db
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
 
     db.connect()
-    db.create_tables([GameRecord], safe=True)
+    db.create_tables([GameRecord, SettingsRecord], safe=True)
 
     app = QGuiApplication(argv)
     app.setApplicationDisplayName('Athenaeum')

@@ -12,3 +12,7 @@ class GameRecord(BaseModel):
     installed = BooleanField(default=False)
     created_date = DateTimeField(default=datetime.datetime.now)
     modified_date = DateTimeField()
+
+class SettingsRecord(BaseModel):
+    key = CharField(unique=True)
+    value = TextField()

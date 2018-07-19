@@ -21,6 +21,7 @@ ApplicationWindow {
 
     // property Component gameView: GameView{}
     property Component libraryView: LibraryView{}
+    property Component settingsView: SettingsView{}
 
     StackView {
         id: stackView
