@@ -127,7 +127,6 @@ class Game(QObject):
             installed=self.installed,
             modified_date=datetime.now()
         ).execute())
-
         self.appendLog(process, finished=True)
 
     def startUninstall(self):
@@ -141,8 +140,13 @@ class Game(QObject):
             installed=self.installed,
             modified_date=datetime.now()
         ).execute())
-
         self.appendLog(process, finished=True)
+
+    def startUpdate(self):
+        self.processing = True
+
+    def finishUpdate(self):
+        self.processing = False
 
     def appendLog(self, process, finished=False):
         log_data = str(process.readAllStandardOutput(), 'utf-8')
