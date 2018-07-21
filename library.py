@@ -27,27 +27,39 @@ class Library(QObject):
         self._threads = []
         self._processes = []
 
+    def load(self):
+        print('load')
         stream = appstream.Store()
         stream.from_file('/var/lib/flatpak/appstream/flathub/x86_64/active/appstream.xml.gz')
 
         for component in stream.get_components():
-            if component.project_license and not 'LicenseRef-proprietary' in component.project_license:
+            if component.project_license and not 'LicenseRef-proprietary' in component.project_license and not 'CC-BY-NC-SA' in component.project_license:
                 if 'Game' in component.categories:
                     try:
                         gr = GameRecord.get(GameRecord.id == component.id)
                     except DoesNotExist:
                         gr = None
-                    self.appendGame(Game(component.id, component.name, self.getIcon(component.icons), component.bundle['value'], gr.installed if gr else False))
+                    self.appendGame(Game(component.id, component.name, self.getIconSmall(component.icons), self.getIconLarge(component.icons), component.bundle['value'], gr.installed if gr else False))
 
-        self._currentGame = self._games[0]
         self.filter = self.games
+        self.indexUpdated(0)
 
-    def getIcon(self, icons):
+    def getIconSmall(self, icons):
+        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
+        if icons['cached'][0]['height'] == '64':
+            return path + '/64x64/' + icons['cached'][0]['value']
+        elif icons['cached'][1]['height'] == '64':
+            return path + '/64x64/' + icons['cached'][0]['value']
+        else:
+            return path + '/128x128/' + icons['cached'][0]['height']['value']
+
+    def getIconLarge(self, icons):
+        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
         cached_icon = icons['cached'][0]
         if cached_icon['height'] == '128':
-            return '/var/lib/flatpak/appstream/flathub/x86_64/active/icons/128x128/' + cached_icon['value']
+            return path + '/128x128/' + cached_icon['value']
         elif cached_icon['height'] == '64':
-            return '/var/lib/flatpak/appstream/flathub/x86_64/active/icons/64x64/' + cached_icon['value']
+            return path + '/64x64/' + cached_icon['value']
 
     def findById(self, game_id):
         for index, game in enumerate(self.games):
@@ -107,7 +119,7 @@ class Library(QObject):
         try:
             self.currentGame = self._filter[index]
         except IndexError:
-            print('Index does not exist.')    
+            print('Index does not exist.')
 
 
     def installGame(self, game_id):

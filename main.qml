@@ -19,6 +19,13 @@ ApplicationWindow {
     height: 700
     visible: true
 
+    property color bg : '#202228'
+    property color sel: '#4d84c7'
+    property color hl: '#314661'
+    property color fg: '#2d3139'
+    property color tc: '#caccd1'
+    property color dg: '#e0e0e0'
+
     // property Component gameView: GameView{}
     property Component libraryView: LibraryView{}
     property Component settingsView: SettingsView{}
@@ -26,6 +33,27 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
+        visible: !loader.loading
         initialItem:  libraryView
     }
+    Rectangle {
+        anchors.fill: parent
+        color: bg
+        visible: loader.loading
+        BusyIndicator {
+            id: loadingIndicator
+            anchors.centerIn: parent
+            running: loader.loading && !loader.error
+        }
+        Text {
+            id: loadingMessage
+            anchors.top: loadingIndicator.bottom
+            text: loader.message
+            color: tc
+            width: parent.width
+            topPadding: 10
+            horizontalAlignment: Text.AlignHCenter
+        }
+    }
+
 }

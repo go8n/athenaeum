@@ -8,24 +8,32 @@ from peewee import SqliteDatabase
 
 from game import Game
 from library import Library
-from models import GameRecord, SettingsRecord, db
+from loader import Loader
+from models import GameRecord, MetaRecord, SettingsRecord, db
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
 
     db.connect()
-    db.create_tables([GameRecord, SettingsRecord], safe=True)
+    db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
 
     app = QGuiApplication(argv)
     app.setApplicationDisplayName('Athenaeum')
 
     qmlRegisterType(Game, 'Athenaeum', 1, 0, 'Game')
     qmlRegisterType(Library, 'Athenaeum', 1, 0, 'Library')
+    qmlRegisterType(Loader, 'Athenaeum', 1, 0, 'Loader')
 
+    loader = Loader()
     library = Library()
 
+    loader.finished.connect(library.load)
+
+    loader.load()
+
     engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
 
     engine.load('main.qml')
