@@ -1,6 +1,8 @@
 from peewee import *
 import datetime
 
+from peewee import DoesNotExist
+
 db = SqliteDatabase('store.db')
 
 class BaseModel(Model):
@@ -13,6 +15,19 @@ class GameRecord(BaseModel):
     created_date = DateTimeField(default=datetime.datetime.now)
     modified_date = DateTimeField()
 
+class MetaRecord(BaseModel):
+    key = CharField(unique=True)
+    value = TextField()
+
 class SettingsRecord(BaseModel):
     key = CharField(unique=True)
     value = TextField()
+
+def getMeta(key):
+    try:
+        return (MetaRecord.get(MetaRecord.key == 'flathub_added')).value
+    except DoesNotExist:
+        return None
+
+def setMeta(key, value):
+    MetaRecord.replace(key=key, value=value).execute()
