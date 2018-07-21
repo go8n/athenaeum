@@ -8,7 +8,8 @@ from models import GameRecord
 class Game(QObject):
     idChanged = pyqtSignal()
     nameChanged = pyqtSignal()
-    iconChanged = pyqtSignal()
+    iconSmallChanged = pyqtSignal()
+    iconLargeChanged = pyqtSignal()
 
     refChanged = pyqtSignal()
     playingChanged = pyqtSignal()
@@ -17,12 +18,13 @@ class Game(QObject):
 
     logChanged = pyqtSignal()
 
-    def __init__(self, id='', name='', icon='', ref='', installed=False, *args, **kwargs):
+    def __init__(self, id='', name='', iconSmall='', iconLarge='', ref='', installed=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Persisted values
         self._id = id
         self._name = name
-        self._icon = icon
+        self._iconSmall = iconSmall
+        self._iconLarge = iconLarge
         self._ref = ref
         self._installed = installed
 
@@ -51,15 +53,25 @@ class Game(QObject):
             self._name = name
             self.nameChanged.emit()
 
-    @pyqtProperty('QString', notify=iconChanged)
-    def icon(self):
-        return self._icon
+    @pyqtProperty('QString', notify=iconSmallChanged)
+    def iconSmall(self):
+        return self._iconSmall
 
-    @icon.setter
-    def icon(self, icon):
-        if icon != self._icon:
-            self._icon = icon
-            self.iconChanged.emit()
+    @iconSmall.setter
+    def iconSmall(self, iconSmall):
+        if iconSmall != self._iconSmall:
+            self._iconSmall = iconSmall
+            self.iconSmallChanged.emit()
+
+    @pyqtProperty('QString', notify=iconLargeChanged)
+    def iconLarge(self):
+        return self._iconLarge
+
+    @iconLarge.setter
+    def iconLarge(self, iconLarge):
+        if iconLarge != self._iconLarge:
+            self._iconLarge = iconLarge
+            self.iconLargeChanged.emit()
 
     @pyqtProperty('QString', notify=refChanged)
     def ref(self):
@@ -98,7 +110,7 @@ class Game(QObject):
         self._processing = processing
         self.processingChanged.emit()
 
-    @pyqtProperty('QString', notify=logChanged)
+    @pyqtProperty(str, notify=logChanged)
     def log(self):
         return self._log
 
@@ -150,9 +162,15 @@ class Game(QObject):
 
     def appendLog(self, process, finished=False):
         log_data = str(process.readAllStandardOutput(), 'utf-8')
-        print(log_data)
         if finished:
-            self._log = ''
+            pass
         else:
-            self._log = self._log + log_data
+            if log_data[:1] == '\r':
+                rs = self._log.rsplit('\r', 1)
+                if len(rs) > 1:
+                    self._log = rs[0] + log_data
+                else:
+                    self._log = self._log.rsplit('\n', 1)[0] + log_data
+            else:
+                self._log = self._log + log_data
         self.logChanged.emit()

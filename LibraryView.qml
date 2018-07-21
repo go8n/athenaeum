@@ -90,10 +90,6 @@ Page {
                     }
                 }
             }
-            // ToolButton {
-            //     text: qsTr("‹")
-            //     onClicked: stack.pop()
-            // }
         }
     }
 
@@ -123,12 +119,6 @@ Page {
                         // stackView.push(gameView)
                         // currentItem.color = '#4d84c7';
                         // listView.currentItem.color = '#4d84c7';
-                        // console.log(listView.currentItem)
-                        // console.log(rect.GridView.isCurrentItem)
-                        // console.log(ListView.isCurrentItem)
-                        // console.log(listView.isCurrentItem)
-                        // console.log(delegateComponent.GridView.isCurrentItem)
-                        // console.log(delegateComponent.isCurrentItem)
                     }
                     id: itemMouseArea
                     hoverEnabled: true
@@ -144,7 +134,7 @@ Page {
                     anchors.bottom: parent.bottom
                     fillMode: Image.PreserveAspectFit
 
-                    source: icon
+                    source: iconSmall
                 }
                 Text {
                     // anchors.horizontalCenter: parent.horizontalCenter
@@ -185,7 +175,7 @@ Page {
                     // anchors.bottom: parent.bottom
                     fillMode: Image.PreserveAspectFit
 
-                    source: library.currentGame.icon
+                    source: library.currentGame.iconLarge
                 }
                 Column {
                     // width: parent.width
@@ -252,6 +242,7 @@ Page {
                 }
             }
             Row {
+                visible: library.currentGame.processing
                 ScrollView {
                     id: logScroller
                     height: 400
@@ -263,7 +254,6 @@ Page {
                         color: tc
                         readOnly: true
                         text: library.currentGame.log
-
                         background: Rectangle {
                             anchors.fill: parent
                             color: fg
