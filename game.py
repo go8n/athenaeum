@@ -18,7 +18,19 @@ class Game(QObject):
 
     logChanged = pyqtSignal()
 
-    def __init__(self, id='', name='', iconSmall='', iconLarge='', ref='', installed=False, *args, **kwargs):
+    def __init__(self,
+            id='',
+            name='',
+            iconSmall='',
+            iconLarge='',
+            ref='',
+            license='',
+            developer_name='',
+            summary='',
+            description='',
+            installed=False,
+            *args,
+            **kwargs):
         super().__init__(*args, **kwargs)
         # Persisted values
         self._id = id
@@ -26,6 +38,13 @@ class Game(QObject):
         self._iconSmall = iconSmall
         self._iconLarge = iconLarge
         self._ref = ref
+
+        self._license = license
+        self._developer_name = developer_name
+        self._summary = summary
+        self._description = description
+
+
         self._installed = installed
 
         # Dynamic values
