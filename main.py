@@ -26,6 +26,7 @@ def main():
     loader = Loader()
     library = Library()
 
+    loader.started.connect(library.reset)
     loader.finished.connect(library.load)
     loader.gameLoaded.connect(library.appendGame)
 

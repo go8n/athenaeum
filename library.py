@@ -15,7 +15,6 @@ class Library(QObject):
     gamesChanged = pyqtSignal()
     filterChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
-    logChanged = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,13 +22,19 @@ class Library(QObject):
         self._games = []
         self._filter = []
         self._currentGame = Game()
-        self._log = ''
         self._threads = []
         self._processes = []
 
     def load(self):
         self.filter = self.games
         self.indexUpdated(0)
+
+    def reset(self):
+        self._games = []
+        self._filter = []
+        self._currentGame = Game()
+        self._threads = []
+        self._processes = []
 
     def findById(self, game_id):
         for index, game in enumerate(self.games):
@@ -46,17 +51,7 @@ class Library(QObject):
         if game != self._currentGame:
             self._currentGame = game
             self.currentGameChanged.emit()
-
-    @pyqtProperty(str, notify=logChanged)
-    def log(self):
-        return self._log
-
-    @log.setter
-    def log(self, data):
-        if data:
-            self._log += data
-            self.logChanged.emit()
-
+    
     @pyqtProperty(list, notify=gamesChanged)
     def games(self):
         return self._games

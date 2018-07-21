@@ -9,6 +9,7 @@ from game import Game, Screenshot, Release
 
 class Loader(QObject):
     finished = pyqtSignal()
+    started = pyqtSignal()
     stateChanged = pyqtSignal()
     messageChanged = pyqtSignal()
     errorChanged = pyqtSignal()
@@ -184,6 +185,7 @@ class Loader(QObject):
     def startLoading(self):
         self.loading = True
         self._timer.start(3000)
+        self.started.emit()
 
     def finishLoading(self):
         setMeta(self.metaKey, 'y')

@@ -330,6 +330,13 @@ Page {
                         text: 'Description'
                         wrapMode: Text.WrapAnywhere
                     }
+                    // Rectangle {
+                    //     color: tc
+                    //     height: 1
+                    //     width: col.width
+                    //     anchors.leftMargin: 20
+                    //     // rightPadding: 20
+                    // }
                     Text {
                         padding: 20
                         width: col.width
