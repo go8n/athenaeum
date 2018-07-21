@@ -1,8 +1,6 @@
 from peewee import *
 import datetime
 
-from peewee import DoesNotExist
-
 db = SqliteDatabase('store.db')
 
 class BaseModel(Model):
@@ -31,3 +29,16 @@ def getMeta(key):
 
 def setMeta(key, value):
     MetaRecord.replace(key=key, value=value).execute()
+
+def getGame(id):
+    try:
+        return GameRecord.get(GameRecord.id == id)
+    except DoesNotExist:
+        return None
+
+def setGame(id, installed):
+    GameRecord.replace(
+        id=id,
+        installed=installed,
+        modified_date=datetime.datetime.now()
+    ).execute()

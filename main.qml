@@ -14,6 +14,7 @@ ApplicationWindow {
     signal updateGame(string id)
     signal playGame(string id)
     signal search(string query)
+    signal updateAll()
 
     width: 1000
     height: 700

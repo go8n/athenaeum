@@ -83,6 +83,7 @@ Page {
                     }
                     MenuItem {
                         text: "Update All"
+                        onTriggered: window.updateAll()
                     }
                     MenuItem {
                         text: "Exit"

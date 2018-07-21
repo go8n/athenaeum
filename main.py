@@ -4,8 +4,6 @@ from sys import argv
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 
-from peewee import SqliteDatabase
-
 from game import Game
 from library import Library
 from loader import Loader
@@ -29,6 +27,7 @@ def main():
     library = Library()
 
     loader.finished.connect(library.load)
+    loader.gameLoaded.connect(library.appendGame)
 
     loader.load()
 
@@ -44,6 +43,7 @@ def main():
     engine.rootObjects()[0].updateGame.connect(library.updateGame)
     engine.rootObjects()[0].playGame.connect(library.playGame)
     engine.rootObjects()[0].search.connect(library.search)
+    engine.rootObjects()[0].updateAll.connect(loader.runCommands)
 
     exit(app.exec_())
 

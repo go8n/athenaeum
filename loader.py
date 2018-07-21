@@ -3,15 +3,24 @@ from functools import partial
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer
 
-from models import getMeta, setMeta
+import appstream
+from models import getMeta, setMeta, getGame, setGame, DoesNotExist
+from game import Game
 
 class Loader(QObject):
     finished = pyqtSignal()
     stateChanged = pyqtSignal()
     messageChanged = pyqtSignal()
     errorChanged = pyqtSignal()
+    gameLoaded = pyqtSignal(Game)
+
+    arch = 'x86_64'
 
     metaKey = 'flathub_added'
+
+    flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo'}
+
+    appsteamPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/appstream.xml.gz'
 
     messages = [
         'Mining Mese blocks...',
@@ -33,7 +42,7 @@ class Loader(QObject):
 
     def load(self):
         if getMeta(self.metaKey):
-            self.finishLoading()
+            self.loadAppstream()
         else:
             self.runCommands()
 
@@ -43,14 +52,67 @@ class Loader(QObject):
         if proc_number == 0:
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runCommands, 1))
-            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', 'flathub', 'https://flathub.org/repo/flathub.flatpakrepo'])
+            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', self.flatHub['name'], self.flatHub['url']])
         elif proc_number == 1:
             commandProcess.finished.connect(partial(self.runCommands, 2))
             commandProcess.start('flatpak', ['remote-ls', '--updates'])
         elif proc_number == 2:
-            commandProcess.finished.connect(self.finishLoading)
+            commandProcess.finished.connect(partial(self.runCommands, 3))
             commandProcess.start('flatpak', ['update', '--appstream'])
+        elif proc_number == 3:
+            commandProcess.finished.connect(partial(self.loadAppstream, commandProcess))
+            commandProcess.start('flatpak', ['list'])
         self._processes.append(commandProcess)
+
+    def loadAppstream(self, process=None):
+        if process:
+            installed_list = str(process.readAllStandardOutput(), 'utf-8')
+        stream = appstream.Store()
+        stream.from_file(self.appsteamPath.format(repo=self.flatHub['name'], arch=self.arch))
+
+        for component in stream.get_components():
+            if component.project_license:
+                if not 'LicenseRef-proprietary' in component.project_license:
+                    if not 'CC-BY-NC-SA' in component.project_license:
+                        if 'Game' in component.categories:
+                            if process:
+                                installed = component.bundle['value'][4:] in installed_list
+                                setGame(component.id, installed)
+                            else:
+                                try:
+                                    gr = getGame(component.id)
+                                    installed = gr.installed
+                                except DoesNotExist:
+                                    installed = False
+
+                            self.gameLoaded.emit(
+                                Game(
+                                    id=component.id,
+                                    name=component.name,
+                                    iconSmall=self.getIconSmall(component.icons),
+                                    iconLarge=self.getIconLarge(component.icons),
+                                    ref=component.bundle['value'],
+                                    installed=installed
+                                )
+                            )
+        self.finishLoading()
+
+    def getIconSmall(self, icons):
+        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
+        if icons['cached'][0]['height'] == '64':
+            return path + '/64x64/' + icons['cached'][0]['value']
+        elif icons['cached'][1]['height'] == '64':
+            return path + '/64x64/' + icons['cached'][0]['value']
+        else:
+            return path + '/128x128/' + icons['cached'][0]['height']['value']
+
+    def getIconLarge(self, icons):
+        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
+        cached_icon = icons['cached'][0]
+        if cached_icon['height'] == '128':
+            return path + '/128x128/' + cached_icon['value']
+        elif cached_icon['height'] == '64':
+            return path + '/64x64/' + cached_icon['value']
 
     @pyqtProperty(bool, notify=stateChanged)
     def loading(self):
