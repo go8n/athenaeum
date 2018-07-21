@@ -5,15 +5,95 @@ from PyQt5.QtQml import QQmlListProperty
 
 from models import GameRecord
 
+class Release(QObject):
+    versionChanged = pyqtSignal()
+    timestampChanged = pyqtSignal()
+    descriptionChanged = pyqtSignal()
+
+    def __init__(self, version='', timestamp=0, description='', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._version = version
+        self._timestamp = timestamp
+        self._description = description
+
+    @pyqtProperty('QString', notify=versionChanged)
+    def version(self):
+        return self._version
+
+    @version.setter
+    def version(self, version):
+        if version != self._version:
+            self._version = version
+            self.versionChanged.emit()
+
+    @pyqtProperty(int, notify=timestampChanged)
+    def timestamp(self):
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, timestamp):
+        if timestamp != self._timestamp:
+            self._timestamp = timestamp
+            self.timestampChanged.emit()
+
+    @pyqtProperty('QString', notify=descriptionChanged)
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        if description != self._description:
+            self._description = description
+            self.descriptionChanged.emit()
+
+class Screenshot(QObject):
+    thumbUrlChanged = pyqtSignal()
+    sourceUrlChanged = pyqtSignal()
+
+    def __init__(self, thumbUrl='', sourceUrl='', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._thumbUrl = thumbUrl
+        self._sourceUrl = sourceUrl
+
+    @pyqtProperty('QString', notify=thumbUrlChanged)
+    def thumbUrl(self):
+        return self._thumbUrl
+
+    @thumbUrl.setter
+    def thumbUrl(self, thumbUrl):
+        if thumbUrl != self._thumbUrl:
+            self._thumbUrl = thumbUrl
+            self.thumbUrlChanged.emit()
+
+    @pyqtProperty('QString', notify=sourceUrlChanged)
+    def sourceUrl(self):
+        return self._sourceUrl
+
+    @sourceUrl.setter
+    def sourceUrl(self, sourceUrl):
+        if sourceUrl != self._sourceUrl:
+            self._sourceUrl = sourceUrl
+            self.sourceUrlChanged.emit()
+
+
 class Game(QObject):
     idChanged = pyqtSignal()
     nameChanged = pyqtSignal()
     iconSmallChanged = pyqtSignal()
     iconLargeChanged = pyqtSignal()
 
+    licenseChanged = pyqtSignal()
+    developerNameChanged = pyqtSignal()
+    summaryChanged = pyqtSignal()
+    descriptionChanged = pyqtSignal()
+    screenshotsChanged = pyqtSignal()
+    releasesChanged = pyqtSignal()
+
     refChanged = pyqtSignal()
-    playingChanged = pyqtSignal()
+
     installedChanged = pyqtSignal()
+
+    playingChanged = pyqtSignal()
     processingChanged = pyqtSignal()
 
     logChanged = pyqtSignal()
@@ -23,11 +103,13 @@ class Game(QObject):
             name='',
             iconSmall='',
             iconLarge='',
-            ref='',
             license='',
             developer_name='',
             summary='',
             description='',
+            screenshots=[],
+            releases=[],
+            ref='',
             installed=False,
             *args,
             **kwargs):
@@ -37,13 +119,16 @@ class Game(QObject):
         self._name = name
         self._iconSmall = iconSmall
         self._iconLarge = iconLarge
-        self._ref = ref
+
 
         self._license = license
-        self._developer_name = developer_name
+        self._developerName = developer_name
         self._summary = summary
         self._description = description
+        self._screenshots = screenshots
+        self._releases = releases
 
+        self._ref = ref
 
         self._installed = installed
 
@@ -91,6 +176,66 @@ class Game(QObject):
         if iconLarge != self._iconLarge:
             self._iconLarge = iconLarge
             self.iconLargeChanged.emit()
+
+    @pyqtProperty('QString', notify=licenseChanged)
+    def license(self):
+        return self._license
+
+    @license.setter
+    def license(self, license):
+        if license != self._license:
+            self._license = license
+            self.licenseChanged.emit()
+
+    @pyqtProperty('QString', notify=developerNameChanged)
+    def developerName(self):
+        return self._developerName
+
+    @developerName.setter
+    def developerName(self, developerName):
+        if developerName != self._developerName:
+            self._developerName = developerName
+            self.developerNameChanged.emit()
+
+    @pyqtProperty('QString', notify=summaryChanged)
+    def summary(self):
+        return self._summary
+
+    @summary.setter
+    def summary(self, summary):
+        if summary != self._summary:
+            self._summary = summary
+            self.summaryChanged.emit()
+
+    @pyqtProperty('QString', notify=descriptionChanged)
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        if description != self._description:
+            self._description = description
+            self.descriptionChanged.emit()
+
+    @pyqtProperty(QQmlListProperty, notify=screenshotsChanged)
+    def screenshots(self):
+        return QQmlListProperty(Screenshot, self, self._screenshots)
+
+    @screenshots.setter
+    def screenshots(self, description):
+        if screenshots != self._screenshots:
+            self.screenshots = screenshots
+            selfscreenshotsChanged.emit()
+
+    @pyqtProperty(QQmlListProperty, notify=releasesChanged)
+    def releases(self):
+        return QQmlListProperty(Release, self, self._releases)
+
+    @releases.setter
+    def releases(self, description):
+        if releases != self._releases:
+            self.releases = releases
+            selfreleasesChanged.emit()
 
     @pyqtProperty('QString', notify=refChanged)
     def ref(self):

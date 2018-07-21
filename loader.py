@@ -5,7 +5,7 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer
 
 import appstream
 from models import getMeta, setMeta, getGame, setGame, DoesNotExist
-from game import Game
+from game import Game, Screenshot, Release
 
 class Loader(QObject):
     finished = pyqtSignal()
@@ -21,6 +21,7 @@ class Loader(QObject):
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo'}
 
     appsteamPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/appstream.xml.gz'
+    iconsPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/icons'
 
     messages = [
         'Mining Mese blocks...',
@@ -91,6 +92,12 @@ class Loader(QObject):
                                     name=component.name,
                                     iconSmall=self.getIconSmall(component.icons),
                                     iconLarge=self.getIconLarge(component.icons),
+                                    license=component.project_license,
+                                    developer_name=component.developer_name,
+                                    summary=component.summary,
+                                    description=component.description,
+                                    screenshots=self.getScreenshots(component.screenshots),
+                                    releases=self.getReleases(component.releases),
                                     ref=component.bundle['value'],
                                     installed=installed
                                 )
@@ -98,7 +105,7 @@ class Loader(QObject):
         self.finishLoading()
 
     def getIconSmall(self, icons):
-        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
+        path = self.iconsPath.format(repo=self.flatHub['name'], arch=self.arch)
         if icons['cached'][0]['height'] == '64':
             return path + '/64x64/' + icons['cached'][0]['value']
         elif icons['cached'][1]['height'] == '64':
@@ -107,12 +114,39 @@ class Loader(QObject):
             return path + '/128x128/' + icons['cached'][0]['height']['value']
 
     def getIconLarge(self, icons):
-        path = '/var/lib/flatpak/appstream/flathub/x86_64/active/icons'
+        path = self.iconsPath.format(repo=self.flatHub['name'], arch=self.arch)
         cached_icon = icons['cached'][0]
         if cached_icon['height'] == '128':
             return path + '/128x128/' + cached_icon['value']
         elif cached_icon['height'] == '64':
             return path + '/64x64/' + cached_icon['value']
+
+    def getScreenshots(self, screenshots):
+        transfer = []
+        for screenshot in screenshots:
+            single = {'source': None, 'thumbnail': None}
+            lowest = 0
+            for image in screenshot.images:
+                if image.kind == 'source':
+                    single['source'] = image.url
+                elif image.kind == 'thumbnail':
+                    if lowest:
+                        if image.width < lowest:
+                            lowest = image.width
+                            single['thumbnail'] = image.url
+                    else:
+                        lowest = image.width
+                        single['thumbnail'] = image.url
+
+            transfer.append(Screenshot(thumbUrl=single['thumbnail'], sourceUrl=single['source']))
+        return transfer
+
+    def getReleases(self, releases):
+        transfer = []
+        for release in releases:
+            transfer.append(Release(version=release.version, timestamp=release.timestamp, description=release.description))
+        return transfer
+
 
     @pyqtProperty(bool, notify=stateChanged)
     def loading(self):

@@ -50,7 +50,7 @@ Page {
                 }
                 color: tc
                 text: "Library"
-                elide: Label.ElideRight
+                // elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
@@ -104,165 +104,480 @@ Page {
         boundsBehavior: Flickable.StopAtBounds
         delegate: Component {
             id: delegateComponent
-                Rectangle {
+            Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 40
                 id: rect
                 border.color: bg
                 border.width: 1
-                // color: Qt.rgba(Math.random(),Math.random(),Math.random(),1)
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         window.indexUpdated(index)
                         listView.currentIndex = index
-                        // stackView.push(gameView)
-                        // currentItem.color = '#4d84c7';
-                        // listView.currentItem.color = '#4d84c7';
                     }
                     id: itemMouseArea
                     hoverEnabled: true
                 }
-                // color:
                 color: ListView.isCurrentItem ? sel : itemMouseArea.containsMouse ? hl : fg
 
                 Image {
                     id: gameIcon
-                    // anchors.horizontalCenter: parent.horizontalCenter
-                    // anchors.verticalCenter: parent.verticalCenter
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
+                    anchors.margins: 5
                     fillMode: Image.PreserveAspectFit
-
+                    horizontalAlignment: Image.AlignHCenter
                     source: iconSmall
                 }
                 Text {
-                    // anchors.horizontalCenter: parent.horizontalCenter
                     color: tc
                     clip: true
                     width: parent.width
                     anchors.bottom: parent.bottom
-                    // wrapMode: Text.WordWrap
                     text: name
-                    // horizontalAlignment: Text.AlignHCenter
                     leftPadding: gameIcon.width + 2
                     bottomPadding: 2
                 }
             }
         }
     }
-    ScrollView {
-        id: gameDetailView
+
+    Rectangle {
         anchors.left: listView.right
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
         anchors.top: parent.top
-        Column {
-            id: gameColumView
-            anchors.right: parent.right
-            anchors.left: parent.left
-            Row {
-                anchors.right: parent.right
-                anchors.left: parent.left
-                padding: 40
-                spacing: 40
-                Image {
-                    width: 128
-                    height: 128
-                    // anchors.horizontalCenter: parent.horizontalCenter
-                    // anchors.verticalCenter: parent.verticalCenter
-                    // anchors.left: parent.right
-                    // anchors.bottom: parent.bottom
-                    fillMode: Image.PreserveAspectFit
+        anchors.bottom: parent.bottom
+        color: bg
+        ScrollView {
+            // width: parent.width
+            // height: parent.height
+            anchors.fill: parent
+            // ScrollBar.vertical: ScrollBar { }
+            contentHeight: col.height
+            contentWidth: parent.width
+            Column {
+                id: col
+                width: parent.width
 
-                    source: library.currentGame.iconLarge
-                }
-                Column {
-                    // width: parent.width
-                    Text {
-                        color: tc
-                        // fontSizeMode: Text.HorizontalFit
-                        text: library.currentGame.name
-                        font.pixelSize: 56
-                        horizontalAlignment: Text.AlignLeft
-                    }
-                    Text {
-                        color: tc
-                        text: library.currentGame.id
-                        font.pixelSize: 16
-                        // leftPadding: 4
-                        horizontalAlignment: Text.AlignLeft
+                spacing: 20
+                Row {
+                    padding: 40
+                    spacing: 40
+                    Rectangle {
+                        width: 128
+                        height: 128
+                        Image {
+                            anchors.fill: parent
+                            fillMode: Image.PreserveAspectFit
 
+                            source: library.currentGame.iconLarge
+                        }
+                        color: fg
+                        // border.color: "black"
+                        // border.width: 5
+                        radius: 10
                     }
-                    Row {
+                    Column {
                         spacing: 5
-                        topPadding: 4
-                        Button {
-                            text: 'Install'
-                            visible: !library.currentGame.installed
-                            enabled: !library.currentGame.processing
-                            onClicked: {
-                                window.installGame(library.currentGame.id)
-                            }
-
-                        }
-                        Button {
-                            text: 'Play'
-                            visible:  library.currentGame.installed
-                            enabled: !library.currentGame.playing
-                            onClicked: {
-                                window.playGame(library.currentGame.id)
-                            }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
+                        Row {
+                            Text {
+                                width: col.width
+                                color: tc
+                                text: library.currentGame.name
+                                font.pixelSize: 48
+                                horizontalAlignment: Text.AlignLeft
+                                wrapMode: Text.WordWrap
                             }
                         }
-                        Button {
-                            text: 'Uninstall'
-                            visible: library.currentGame.installed
-                            enabled: !library.currentGame.processing
-                            MouseArea {
-                                id: uninstallMouseArea
-                                anchors.fill: parent
-                                hoverEnabled: true
+                        Row {
+                            // spacing: 10
+                            Text {
+                                color: tc
+                                text: library.currentGame.developerName ? 'Created by ' + library.currentGame.developerName : ' '
+                                font.pixelSize: 16
+                                horizontalAlignment: Text.AlignLeft
+                            }
+                            // Text {
+                            //     color: tc
+                            //     text: library.currentGame.license
+                            //     font.pixelSize: 16
+                            //     horizontalAlignment: Text.AlignLeft
+                            // }
+                        }
+                        Row {
+                            spacing: 5
+                            Button {
+                                text: 'Install'
+                                visible: !library.currentGame.installed
+                                enabled: !library.currentGame.processing
                                 onClicked: {
-                                    window.uninstallGame(library.currentGame.id)
+                                    window.installGame(library.currentGame.id)
+                                }
+
+                            }
+                            Button {
+                                text: 'Play'
+                                visible:  library.currentGame.installed
+                                enabled: !library.currentGame.playing
+                                onClicked: {
+                                    window.playGame(library.currentGame.id)
+                                }
+                                background: Rectangle {
+                                    implicitWidth: 100
+                                    implicitHeight: 40
+                                    color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
                                 }
                             }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
+                            Button {
+                                text: 'Uninstall'
+                                visible: library.currentGame.installed
+                                enabled: !library.currentGame.processing
+                                MouseArea {
+                                    id: uninstallMouseArea
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: {
+                                        window.uninstallGame(library.currentGame.id)
+                                    }
+                                }
+                                background: Rectangle {
+                                    implicitWidth: 100
+                                    implicitHeight: 40
+                                    color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
-            }
-            Row {
-                visible: library.currentGame.processing
                 ScrollView {
-                    id: logScroller
-                    height: 400
-                    width: gameDetailView.width
-                    // width: 500
-                    // visible: library.currentGame.log
+                    width: parent.width
+                    height: 150
+                    visible: library.currentGame.processing
                     TextArea {
-                        width: parent.width
+                        anchors.fill: parent
                         color: tc
                         readOnly: true
                         text: library.currentGame.log
                         background: Rectangle {
                             anchors.fill: parent
                             color: fg
-
                         }
+                    }
+                }
+
+
+                Column {
+                    width: parent.width
+                    clip: true
+                    Rectangle {
+                        visible: library.currentGame.screenshots.length
+                        width: parent.width
+                        height: 300
+                        color: fg
+                        Image {
+                            fillMode: Image.PreserveAspectFit
+                            anchors.fill: parent
+                            source: visible ? library.currentGame.screenshots[carousel.currentIndex].sourceUrl : ''
+                        }
+                    }
+                    ListView {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        id: carousel
+                        clip: true
+                        width: contentWidth
+                        height: 50
+                        visible: library.currentGame.screenshots.length
+                        model: library.currentGame.screenshots
+                        orientation: ListView.Horizontal
+                        spacing: 5
+                        boundsBehavior: Flickable.StopAtBounds
+                        ScrollBar.horizontal: ScrollBar { }
+                        delegate: Rectangle {
+                            height: parent.height
+                            width: 100
+                            color: fg
+                            Image {
+                                anchors.fill: parent
+                                anchors.margins: 1
+                                // height: parent.height
+                                // width: parent.width
+                                fillMode: Image.PreserveAspectFit
+                                source: thumbUrl
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    carousel.currentIndex = index
+                                }
+                                hoverEnabled: true
+                                id: thumbMouseArea
+                            }
+                            border.color: ListView.isCurrentItem ? sel : thumbMouseArea.containsMouse ? hl : fg
+                        }
+                    }
+                }
+                Column {
+
+                    // width: parent.width
+                    Text {
+                        padding: 20
+                        width: col.width
+                        color: tc
+                        font.pixelSize: 24
+                        text: 'Description'
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    Text {
+                        padding: 20
+                        width: col.width
+                        color: tc
+                        font.pixelSize: 16
+                        text: library.currentGame.description
+                        wrapMode: Text.WordWrap
+                    }
+                }
+                // Rectangle {
+                //
+                //     color: 'red'
+                //
+                // }
+                // Rectangle {
+                //     width: parent.width
+                //     height:50
+                //     Text{
+                //         anchors.fill: parent
+                //         font.pixelSize: 48
+                //         text: 'ylloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooongggjhssssssssss'
+                //         wrapMode: Text.WrapAnywhere
+                //     }
+                //     color: 'lightblue'
+                // }
+
+                ListView {
+                    // clip: true
+                    // visible: library.currentGame.releases.length
+                    model: library.currentGame.releases
+                    width: parent.width
+                    height: contentHeight
+                    spacing: 10
+                    // anchors.centerIn: parent
+
+                    // boundsBehavior: Flickable.StopAtBounds
+                    delegate: Column {
+                        width: parent.width
+                        // height: contentHeight
+                        function formatTimestamp(ts) {
+                            var t = new Date( 0 );
+                            t.setSeconds(ts)
+                            return  t.toDateString()
+                        }
+
+                        Row {
+                            width: parent.width
+                            spacing: 10
+                            Text {
+                                leftPadding: 20
+                                color: tc
+                                font.pixelSize: 20
+                                text: 'Version ' + version
+                            }
+                            Text {
+                                rightPadding: 20
+                                color: tc
+                                font.pixelSize: 20
+                                text: formatTimestamp(timestamp)
+                            }
+                        }
+                        Text {
+                            leftPadding: 20
+                            rightPadding: 20
+                            topPadding: 10
+                            bottomPadding: 10
+                            width: col.width
+                            color: tc
+                            font.pixelSize: 16
+                            text: description
+                            wrapMode: Text.WrapAnywhere
+                        }
+                    }
+                }
+
+                ListView {
+                    // clip: true
+                    model: library.currentGame.screenshots
+                    width: parent.width
+                    height: contentHeight
+                    spacing: 30
+                    // anchors.centerIn: parent
+
+                    // boundsBehavior: Flickable.StopAtBounds
+                    delegate: Rectangle {
+                        width: parent.width
+                        height: 50
+                        color: 'green'
+                        // Text {
+                        //     anchors.fill: parent
+                        //     font.pixelSize: 48
+                        //     text: 'ylloooooooooojhssssssssss'
+                        // }
                     }
                 }
             }
         }
     }
+
+
+
+    // ScrollView {
+    //     id: gameDetailView
+    //     anchors.left: listView.right
+    //     anchors.right: parent.right
+    //     anchors.bottom: parent.bottom
+    //     anchors.top: parent.top
+    //     // contentWidth:
+    //     Column {
+    //         width: libraryView - 200
+    //         id: gameColumView
+    //         // anchors.right: parent.right
+    //         // anchors.left: parent.left
+    //         Row {
+    //             padding: 40
+    //             spacing: 40
+    //             Rectangle {
+    //                 width: 128
+    //                 height: 128
+    //                 Image {
+    //                     anchors.fill: parent
+    //                     fillMode: Image.PreserveAspectFit
+    //
+    //                     source: library.currentGame.iconLarge
+    //                 }
+    //                 color: fg
+    //                 // border.color: "black"
+    //                 // border.width: 5
+    //                 radius: 10
+    //             }
+    //             Column {
+    //                 spacing: 5
+    //                 Row {
+    //                     Text {
+    //                         color: tc
+    //                         text: library.currentGame.name
+    //                         font.pixelSize: 48
+    //                         horizontalAlignment: Text.AlignLeft
+    //                     }
+    //                 }
+    //                 Row {
+    //                     // spacing: 10
+    //                     Text {
+    //                         color: tc
+    //                         text: library.currentGame.developerName ? 'Created by ' + library.currentGame.developerName : ' '
+    //                         font.pixelSize: 16
+    //                         horizontalAlignment: Text.AlignLeft
+    //                     }
+    //                     // Text {
+    //                     //     color: tc
+    //                     //     text: library.currentGame.license
+    //                     //     font.pixelSize: 16
+    //                     //     horizontalAlignment: Text.AlignLeft
+    //                     // }
+    //                 }
+    //                 Row {
+    //                     spacing: 5
+    //                     Button {
+    //                         text: 'Install'
+    //                         visible: !library.currentGame.installed
+    //                         enabled: !library.currentGame.processing
+    //                         onClicked: {
+    //                             window.installGame(library.currentGame.id)
+    //                         }
+    //
+    //                     }
+    //                     Button {
+    //                         text: 'Play'
+    //                         visible:  library.currentGame.installed
+    //                         enabled: !library.currentGame.playing
+    //                         onClicked: {
+    //                             window.playGame(library.currentGame.id)
+    //                         }
+    //                         background: Rectangle {
+    //                             implicitWidth: 100
+    //                             implicitHeight: 40
+    //                             color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
+    //                         }
+    //                     }
+    //                     Button {
+    //                         text: 'Uninstall'
+    //                         visible: library.currentGame.installed
+    //                         enabled: !library.currentGame.processing
+    //                         MouseArea {
+    //                             id: uninstallMouseArea
+    //                             anchors.fill: parent
+    //                             hoverEnabled: true
+    //                             onClicked: {
+    //                                 window.uninstallGame(library.currentGame.id)
+    //                             }
+    //                         }
+    //                         background: Rectangle {
+    //                             implicitWidth: 100
+    //                             implicitHeight: 40
+    //                             color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
+    //                         }
+    //                     }
+    //                 }
+    //
+    //             }
+    //         }
+    //         Rectangle {
+    //             // padding: 40
+    //             // visible: library.currentGame.screenshots
+    //             // Column {
+    //             //     Rectangle {
+    //             //
+    //             //     }
+    //             width: gameColumView.width
+    //                 ListView {
+    //                     clip: true
+    //                     model: library.currentGame.screenshots
+    //                     orientation: ListView.Horizontal
+    //                     height: 150
+    //
+    //                     ScrollBar.horizontal: ScrollBar { }
+    //                     boundsBehavior: Flickable.StopAtBounds
+    //                     delegate: Image {
+    //                         height: 150
+    //                         fillMode: Image.PreserveAspectFit
+    //
+    //                         source: thumbUrl
+    //                     }
+    //
+    //
+    //                 }
+    //             // }
+    //         }
+    //         Row {
+    //             padding: 40
+    //             // visible: library.currentGame.processing
+    //             ScrollView {
+    //                 id: logScroller
+    //                 height: 40
+    //                 // width: gameDetailView.width
+    //                 TextArea {
+    //                     // width: parent.width
+    //                     color: tc
+    //                     readOnly: true
+    //                     text: library.currentGame.log
+    //                     background: Rectangle {
+    //                         anchors.fill: parent
+    //                         color: fg
+    //
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
