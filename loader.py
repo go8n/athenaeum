@@ -4,8 +4,8 @@ from functools import partial
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
 import appstream
-from models import getMeta, setMeta, getGame, setGame, DoesNotExist
-from game import Game, Screenshot, Release
+from models import getMeta, setMeta, getGame, setGame
+from game import Game, Screenshot, Release, Url
 
 class Loader(QObject):
     finished = pyqtSignal()
@@ -20,9 +20,6 @@ class Loader(QObject):
     metaKey = 'flathub_added'
 
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo'}
-    #
-    # appsteamPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/appstream.xml.gz'
-    # iconsPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/icons'
 
     messages = [
         'Mining Mese blocks...',
@@ -41,7 +38,6 @@ class Loader(QObject):
         self._timer = QTimer()
         self._timer.timeout.connect(self.changeMessage)
         self._message = random.choice(self.messages)
-        # p = QStandardPaths()
         self._appsteamPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/appstream.xml.gz'
         self._iconsPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/icons'
 
@@ -84,10 +80,10 @@ class Loader(QObject):
                                 installed = component.bundle['value'][4:] in installed_list
                                 setGame(component.id, installed)
                             else:
-                                try:
-                                    gr = getGame(component.id)
+                                gr = getGame(component.id)
+                                if gr:
                                     installed = gr.installed
-                                except DoesNotExist:
+                                else:
                                     installed = False
 
                             self.gameLoaded.emit(
@@ -101,7 +97,9 @@ class Loader(QObject):
                                     summary=component.summary,
                                     description=component.description,
                                     screenshots=self.getScreenshots(component.screenshots),
+                                    categories=component.categories,
                                     releases=self.getReleases(component.releases),
+                                    urls=self.getUrls(component.urls),
                                     ref=component.bundle['value'],
                                     installed=installed
                                 )
@@ -151,6 +149,11 @@ class Loader(QObject):
             transfer.append(Release(version=release.version, timestamp=release.timestamp, description=release.description))
         return transfer
 
+    def getUrls(self, urls):
+        transfer = []
+        for key, value in urls.items():
+            transfer.append(Url(type=key, url=value))
+        return transfer
 
     @pyqtProperty(bool, notify=stateChanged)
     def loading(self):

@@ -5,6 +5,36 @@ from PyQt5.QtQml import QQmlListProperty
 
 from models import getGame, setGame
 
+class Url(QObject):
+    typeChanged = pyqtSignal()
+    urlChanged = pyqtSignal()
+
+    def __init__(self, type='', url='', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._type = type
+        self._url = url
+
+    @pyqtProperty('QString', notify=typeChanged)
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, type):
+        if type != self._type:
+            self._type = type
+            self.typeChanged.emit()
+
+    @pyqtProperty('QString', notify=urlChanged)
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, url):
+        if url != self._url:
+            self._url = url
+            self.urlChanged.emit()
+
+
 class Release(QObject):
     versionChanged = pyqtSignal()
     timestampChanged = pyqtSignal()
@@ -88,6 +118,8 @@ class Game(QObject):
     descriptionChanged = pyqtSignal()
     screenshotsChanged = pyqtSignal()
     releasesChanged = pyqtSignal()
+    categoriesChanged = pyqtSignal()
+    urlsChanged = pyqtSignal()
 
     refChanged = pyqtSignal()
 
@@ -109,6 +141,8 @@ class Game(QObject):
             description='',
             screenshots=[],
             releases=[],
+            categories=[],
+            urls=[],
             ref='',
             installed=False,
             *args,
@@ -127,6 +161,8 @@ class Game(QObject):
         self._description = description
         self._screenshots = screenshots
         self._releases = releases
+        self._categories = categories
+        self._urls = urls
 
         self._ref = ref
 
@@ -222,7 +258,7 @@ class Game(QObject):
         return QQmlListProperty(Screenshot, self, self._screenshots)
 
     @screenshots.setter
-    def screenshots(self, description):
+    def screenshots(self, screenshots):
         if screenshots != self._screenshots:
             self.screenshots = screenshots
             selfscreenshotsChanged.emit()
@@ -232,10 +268,30 @@ class Game(QObject):
         return QQmlListProperty(Release, self, self._releases)
 
     @releases.setter
-    def releases(self, description):
+    def releases(self, releases):
         if releases != self._releases:
             self.releases = releases
             selfreleasesChanged.emit()
+
+    @pyqtProperty(QQmlListProperty, notify=categoriesChanged)
+    def categories(self):
+        return QQmlListProperty(str, self, self._categories)
+
+    @categories.setter
+    def categories(self, categories):
+        if categories != self._categories:
+            self.categories = categories
+            selfcategoriesChanged.emit()
+
+    @pyqtProperty(QQmlListProperty, notify=urlsChanged)
+    def urls(self):
+        return QQmlListProperty(Url, self, self._urls)
+
+    @urls.setter
+    def urls(self, urls):
+        if urls != self._urls:
+            self.urls = urls
+            selfurlsChanged.emit()
 
     @pyqtProperty('QString', notify=refChanged)
     def ref(self):
