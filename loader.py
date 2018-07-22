@@ -1,7 +1,7 @@
 import random
 from functools import partial
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
 import appstream
 from models import getMeta, setMeta, getGame, setGame, DoesNotExist
@@ -20,9 +20,9 @@ class Loader(QObject):
     metaKey = 'flathub_added'
 
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo'}
-
-    appsteamPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/appstream.xml.gz'
-    iconsPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/icons'
+    #
+    # appsteamPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/appstream.xml.gz'
+    # iconsPath = '/var/lib/flatpak/appstream/{repo}/{arch}/active/icons'
 
     messages = [
         'Mining Mese blocks...',
@@ -41,6 +41,9 @@ class Loader(QObject):
         self._timer = QTimer()
         self._timer.timeout.connect(self.changeMessage)
         self._message = random.choice(self.messages)
+        # p = QStandardPaths()
+        self._appsteamPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/appstream.xml.gz'
+        self._iconsPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/icons'
 
     def load(self):
         if getMeta(self.metaKey):
@@ -63,14 +66,14 @@ class Loader(QObject):
             commandProcess.start('flatpak', ['update', '--appstream', '--user'])
         elif proc_number == 3:
             commandProcess.finished.connect(partial(self.loadAppstream, commandProcess))
-            commandProcess.start('flatpak', ['list'])
+            commandProcess.start('flatpak', ['list', '--user'])
         self._processes.append(commandProcess)
 
     def loadAppstream(self, process=None):
         if process:
             installed_list = str(process.readAllStandardOutput(), 'utf-8')
         stream = appstream.Store()
-        stream.from_file(self.appsteamPath.format(repo=self.flatHub['name'], arch=self.arch))
+        stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
 
         for component in stream.get_components():
             if component.project_license:
@@ -106,7 +109,7 @@ class Loader(QObject):
         self.finishLoading()
 
     def getIconSmall(self, icons):
-        path = self.iconsPath.format(repo=self.flatHub['name'], arch=self.arch)
+        path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
         if icons['cached'][0]['height'] == '64':
             return path + '/64x64/' + icons['cached'][0]['value']
         elif icons['cached'][1]['height'] == '64':
@@ -115,7 +118,7 @@ class Loader(QObject):
             return path + '/128x128/' + icons['cached'][0]['height']['value']
 
     def getIconLarge(self, icons):
-        path = self.iconsPath.format(repo=self.flatHub['name'], arch=self.arch)
+        path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
         cached_icon = icons['cached'][0]
         if cached_icon['height'] == '128':
             return path + '/128x128/' + cached_icon['value']
