@@ -3,7 +3,7 @@ from datetime import datetime
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
 
-from models import GameRecord
+from models import getGame, setGame
 
 class Release(QObject):
     versionChanged = pyqtSignal()
@@ -207,7 +207,7 @@ class Game(QObject):
             self._summary = summary
             self.summaryChanged.emit()
 
-    @pyqtProperty('QString', notify=descriptionChanged)
+    @pyqtProperty(str, notify=descriptionChanged)
     def description(self):
         return self._description
 
@@ -298,11 +298,7 @@ class Game(QObject):
     def finishInstall(self, process):
         self.processing = False
         self.installed = True
-        (GameRecord.replace(
-            id=self.id,
-            installed=self.installed,
-            modified_date=datetime.now()
-        ).execute())
+        setGame(id=self.id, installed=self.installed)
         self.appendLog(process, finished=True)
 
     def startUninstall(self):
@@ -311,11 +307,7 @@ class Game(QObject):
     def finishUninstall(self, process):
         self.processing = False
         self.installed = False
-        (GameRecord.replace(
-            id=self.id,
-            installed=self.installed,
-            modified_date=datetime.now()
-        ).execute())
+        setGame(id=self.id, installed=self.installed)
         self.appendLog(process, finished=True)
 
     def startUpdate(self):

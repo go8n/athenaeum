@@ -51,7 +51,7 @@ class Library(QObject):
         if game != self._currentGame:
             self._currentGame = game
             self.currentGameChanged.emit()
-    
+
     @pyqtProperty(list, notify=gamesChanged)
     def games(self):
         return self._games
@@ -94,7 +94,7 @@ class Library(QObject):
             installProcess.started.connect(self._games[idx].startInstall)
             installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
-            installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y'])
+            installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
             self._processes.append(installProcess)
 
     def uninstallGame(self, game_id):
@@ -106,7 +106,7 @@ class Library(QObject):
             uninstallProcess.started.connect(self._games[idx].startUninstall)
             uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
-            uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y'])
+            uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
             self._processes.append(uninstallProcess)
 
     def updateGame(self, game_id):
@@ -117,7 +117,7 @@ class Library(QObject):
             updateProcess.started.connect(self._games[idx].startUpdate)
             updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
-            updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y'])
+            updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
             self._processes.append(updateProcess)
 
     def playGame(self, game_id):

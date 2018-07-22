@@ -54,13 +54,13 @@ class Loader(QObject):
         if proc_number == 0:
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runCommands, 1))
-            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', self.flatHub['name'], self.flatHub['url']])
+            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
         elif proc_number == 1:
             commandProcess.finished.connect(partial(self.runCommands, 2))
-            commandProcess.start('flatpak', ['remote-ls', '--updates'])
+            commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
         elif proc_number == 2:
             commandProcess.finished.connect(partial(self.runCommands, 3))
-            commandProcess.start('flatpak', ['update', '--appstream'])
+            commandProcess.start('flatpak', ['update', '--appstream', '--user'])
         elif proc_number == 3:
             commandProcess.finished.connect(partial(self.loadAppstream, commandProcess))
             commandProcess.start('flatpak', ['list'])
@@ -76,7 +76,7 @@ class Loader(QObject):
             if component.project_license:
                 if not 'LicenseRef-proprietary' in component.project_license:
                     if not 'CC-BY-NC-SA' in component.project_license:
-                        if 'Game' in component.categories:
+                        if 'Game' in component.categories or 'Games' in component.categories:
                             if process:
                                 installed = component.bundle['value'][4:] in installed_list
                                 setGame(component.id, installed)

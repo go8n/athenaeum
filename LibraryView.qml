@@ -320,7 +320,7 @@ Page {
                     }
                 }
                 Column {
-
+                    visible: library.currentGame.description
                     // width: parent.width
                     Text {
                         padding: 20
@@ -328,6 +328,7 @@ Page {
                         color: tc
                         font.pixelSize: 24
                         text: 'Description'
+
                         wrapMode: Text.WrapAnywhere
                     }
                     // Rectangle {
@@ -338,9 +339,13 @@ Page {
                     //     // rightPadding: 20
                     // }
                     Text {
-                        padding: 20
+                        leftPadding: 20
+                        rightPadding: 20
+                        topPadding: 0
+                        bottomPadding: 10
                         width: col.width
                         color: tc
+                        textFormat: Text.RichText
                         font.pixelSize: 16
                         text: library.currentGame.description
                         wrapMode: Text.WordWrap
@@ -362,56 +367,67 @@ Page {
                 //     }
                 //     color: 'lightblue'
                 // }
+                Column {
+                    visible: library.currentGame.releases.length
+                    Text {
+                        padding: 20
+                        width: col.width
+                        color: tc
+                        font.pixelSize: 24
+                        text: 'Releases'
+                        textFormat: Text.RichText
+                        wrapMode: Text.WrapAnywhere
+                    }
 
-                ListView {
-                    // clip: true
-                    // visible: library.currentGame.releases.length
-                    model: library.currentGame.releases
-                    width: parent.width
-                    height: contentHeight
-                    spacing: 10
-                    // anchors.centerIn: parent
-
-                    // boundsBehavior: Flickable.StopAtBounds
-                    delegate: Column {
+                    ListView {
+                        // clip: true
+                        // visible: library.currentGame.releases.length
+                        model: library.currentGame.releases
                         width: parent.width
-                        // height: contentHeight
-                        function formatTimestamp(ts) {
-                            var t = new Date( 0 );
-                            t.setSeconds(ts)
-                            return  t.toDateString()
-                        }
+                        height: contentHeight
+                        spacing: 10
+                        // anchors.centerIn: parent
 
-                        Row {
+                        // boundsBehavior: Flickable.StopAtBounds
+                        delegate: Column {
                             width: parent.width
-                            spacing: 10
+                            // height: contentHeight
+                            function formatTimestamp(ts) {
+                                var t = new Date( 0 );
+                                t.setSeconds(ts)
+                                return  t.toDateString()
+                            }
+
+                            Row {
+                                width: parent.width
+                                spacing: 10
+                                Text {
+                                    leftPadding: 20
+                                    color: tc
+                                    font.pixelSize: 20
+                                    text: 'Version ' + version
+                                }
+                                Text {
+                                    rightPadding: 20
+                                    color: tc
+                                    font.pixelSize: 20
+                                    text: formatTimestamp(timestamp)
+                                }
+                            }
                             Text {
                                 leftPadding: 20
-                                color: tc
-                                font.pixelSize: 20
-                                text: 'Version ' + version
-                            }
-                            Text {
                                 rightPadding: 20
+                                topPadding: 10
+                                bottomPadding: 10
+                                width: col.width
                                 color: tc
-                                font.pixelSize: 20
-                                text: formatTimestamp(timestamp)
+                                font.pixelSize: 16
+                                text: description
+                                wrapMode: Text.WrapAnywhere
                             }
-                        }
-                        Text {
-                            leftPadding: 20
-                            rightPadding: 20
-                            topPadding: 10
-                            bottomPadding: 10
-                            width: col.width
-                            color: tc
-                            font.pixelSize: 16
-                            text: description
-                            wrapMode: Text.WrapAnywhere
                         }
                     }
                 }
-
                 ListView {
                     // clip: true
                     model: library.currentGame.screenshots
