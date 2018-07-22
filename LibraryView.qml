@@ -1,10 +1,8 @@
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.4
 import QtQuick.Controls.Material 2.4
 import QtQuick.Layouts 1.11
 import Athenaeum 1.0
-
-// signal messageReceived(string person, string notice)
 
 Page {
     id: libraryView
@@ -14,6 +12,7 @@ Page {
     property color hl: '#314661'
     property color fg: '#2d3139'
     property color tc: '#caccd1'
+    property color ac: '#808186'
     property color dg: '#e0e0e0'
 
     background: Rectangle {
@@ -28,10 +27,6 @@ Page {
             TextField {
                 id: searchField
                 placeholderText: 'Search...'
-                // background: Rectangle {
-                //     anchors.fill: parent
-                //     implicitWidth: 200
-                // }
                 Layout.fillHeight: true
                 onTextChanged: {
                     window.search(text)
@@ -50,7 +45,6 @@ Page {
                 }
                 color: tc
                 text: "Library"
-                // elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
@@ -70,13 +64,10 @@ Page {
                     implicitWidth: 40
                     implicitHeight: 40
                 }
-                // Layout.fillWidth: true
                 Layout.fillHeight: true
                 onClicked: menu.open()
                 Menu {
                     id: menu
-                    // y: fileButton.height
-
                     MenuItem {
                         text: "Settings"
                         onTriggered: stackView.push(settingsView)
@@ -93,7 +84,7 @@ Page {
             }
         }
     }
-
+    /* Game List */
     ListView {
         id: listView
         anchors.top: parent.top
@@ -102,12 +93,17 @@ Page {
         width: 200
         ScrollBar.vertical: ScrollBar { }
         boundsBehavior: Flickable.StopAtBounds
+        keyNavigationEnabled: true
+        focus: true
+        Keys.onDownPressed: {
+            console.log(listView.currentIndex)
+        }
         delegate: Component {
             id: delegateComponent
             Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: 40
+                height: 35
                 id: rect
                 border.color: bg
                 border.width: 1
@@ -121,29 +117,38 @@ Page {
                     hoverEnabled: true
                 }
                 color: ListView.isCurrentItem ? sel : itemMouseArea.containsMouse ? hl : fg
-
-                Image {
+                Rectangle {
                     id: gameIcon
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    anchors.margins: 5
-                    fillMode: Image.PreserveAspectFit
-                    horizontalAlignment: Image.AlignHCenter
-                    source: iconSmall
+                    anchors.margins: 1
+                    width: parent.height
+                    height: parent.height
+                    color: "transparent"
+                    Image {
+                        anchors.fill: parent
+                        anchors.margins: 5
+                        fillMode: Image.PreserveAspectFit
+                        source: iconSmall
+                    }
                 }
                 Text {
                     color: tc
                     clip: true
                     width: parent.width
+                    anchors.left: gameIcon.right
+                    anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     text: name
-                    leftPadding: gameIcon.width + 2
-                    bottomPadding: 2
+                    anchors.topMargin: 5
+                    anchors.rightMargin: 5
+                    anchors.bottomMargin: 5
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
         }
     }
-
+    /* Game Detail Pane */
     Rectangle {
         anchors.left: listView.right
         anchors.right: parent.right
@@ -151,63 +156,104 @@ Page {
         anchors.bottom: parent.bottom
         color: bg
         ScrollView {
-            // width: parent.width
-            // height: parent.height
             anchors.fill: parent
-            // ScrollBar.vertical: ScrollBar { }
             contentHeight: col.height
             contentWidth: parent.width
             Column {
                 id: col
                 width: parent.width
-
                 spacing: 20
-                Row {
-                    padding: 40
-                    spacing: 40
-                    Rectangle {
-                        width: 128
-                        height: 128
-                        Image {
-                            anchors.fill: parent
-                            fillMode: Image.PreserveAspectFit
+                /* Header */
 
-                            source: library.currentGame.iconLarge
-                        }
-                        color: fg
-                        // border.color: "black"
-                        // border.width: 5
-                        radius: 10
-                    }
-                    Column {
-                        spacing: 5
-                        Row {
-                            Text {
-                                width: col.width
-                                color: tc
-                                text: library.currentGame.name
-                                font.pixelSize: 48
-                                horizontalAlignment: Text.AlignLeft
-                                wrapMode: Text.WordWrap
+                    Rectangle {
+
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.rightMargin: 40
+                        anchors.leftMargin: 40
+
+                        color: bg
+                        height: childrenRect.height + 40
+
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: gameTitle.left
+                            // anchors.bottom: parent.bottom
+                            anchors.topMargin: 40
+
+                            width: 128
+                            height: 128
+                            id: gameLogo
+
+                            color: fg
+                            radius: 10
+                            Image {
+                                id: img
+                                anchors.fill: parent
+                                fillMode: Image.PreserveAspectFit
+                                source: library.currentGame.iconLarge
                             }
                         }
-                        Row {
-                            // spacing: 10
-                            Text {
-                                color: tc
-                                text: library.currentGame.developerName ? 'Created by ' + library.currentGame.developerName : ' '
-                                font.pixelSize: 16
-                                horizontalAlignment: Text.AlignLeft
-                            }
-                            // Text {
-                            //     color: tc
-                            //     text: library.currentGame.license
-                            //     font.pixelSize: 16
-                            //     horizontalAlignment: Text.AlignLeft
+
+                        Text {
+                            id: gameTitle
+                            anchors.top: parent.top
+                            anchors.left: gameLogo.right
+                            anchors.right: parent.right
+                            anchors.topMargin: 40
+
+                            leftPadding: 20
+
+                            color: tc
+                            text: library.currentGame.name
+
+
+                            fontSizeMode: Text.VerticalFit
+                            font.pixelSize: 48
+                            minimumPixelSize: 30;
+
+                            elide: Label.ElideRight
+
+                            horizontalAlignment: Text.AlignLeft
+                            wrapMode: Text.WordWrap
+                            // Rectangle {
+                            //     anchors.fill: parent
+                            //     color: 'green'
                             // }
                         }
+
+                        Text {
+                            id: gameSummary
+                            anchors.top: gameTitle.bottom
+                            anchors.left: gameLogo.right
+                            anchors.right: parent.right
+
+                            // Rectangle {
+                            //     anchors.fill: parent
+                            //     color: 'orange'
+                            // }
+                            leftPadding: 20
+
+                            color: tc
+                            text: library.currentGame.summary
+
+                            fontSizeMode: Text.VerticalFit
+                            font.pixelSize: 16
+                            minimumPixelSize: 10;
+                            elide: Label.ElideRight
+
+                            horizontalAlignment: Text.AlignLeft
+                            wrapMode: Text.WordWrap
+                        }
+                        // }
                         Row {
+                            anchors.top: gameSummary.bottom
+                            anchors.left: gameLogo.right
+                            anchors.right: parent.right
                             spacing: 5
+                            leftPadding: 20
+                            topPadding: 10
                             Button {
                                 text: 'Install'
                                 visible: !library.currentGame.installed
@@ -251,7 +297,8 @@ Page {
                         }
 
                     }
-                }
+                // }
+                /* Logs */
                 ScrollView {
                     width: parent.width
                     height: 150
@@ -267,8 +314,7 @@ Page {
                         }
                     }
                 }
-
-
+                /* Screenshots */
                 Column {
                     width: parent.width
                     clip: true
@@ -278,6 +324,7 @@ Page {
                         height: 300
                         color: fg
                         Image {
+                            id: largeView
                             fillMode: Image.PreserveAspectFit
                             anchors.fill: parent
                             source: visible ? library.currentGame.screenshots[carousel.currentIndex].sourceUrl : ''
@@ -294,7 +341,7 @@ Page {
                         orientation: ListView.Horizontal
                         spacing: 5
                         boundsBehavior: Flickable.StopAtBounds
-                        ScrollBar.horizontal: ScrollBar { }
+                        // ScrollBar.horizontal: ScrollBar { }
                         delegate: Rectangle {
                             height: parent.height
                             width: 100
@@ -319,28 +366,36 @@ Page {
                         }
                     }
                 }
+                /* Description */
                 Column {
                     visible: library.currentGame.description
                     // width: parent.width
                     Text {
-                        padding: 20
+                        leftPadding: 40
+                        rightPadding: 40
+                        topPadding: 20
+                        bottomPadding: 20
                         width: col.width
                         color: tc
                         font.pixelSize: 24
                         text: 'Description'
 
                         wrapMode: Text.WrapAnywhere
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 1
+                            color: ac
+                            anchors.leftMargin: 40
+                            anchors.rightMargin: 40
+                            anchors.bottomMargin: 10
+
+                        }
                     }
-                    // Rectangle {
-                    //     color: tc
-                    //     height: 1
-                    //     width: col.width
-                    //     anchors.leftMargin: 20
-                    //     // rightPadding: 20
-                    // }
                     Text {
-                        leftPadding: 20
-                        rightPadding: 20
+                        leftPadding: 40
+                        rightPadding: 40
                         topPadding: 0
                         bottomPadding: 10
                         width: col.width
@@ -349,6 +404,140 @@ Page {
                         font.pixelSize: 16
                         text: library.currentGame.description
                         wrapMode: Text.WordWrap
+                    }
+                }
+                /* Developer */
+                Column {
+                    visible: library.currentGame.developerName
+                    Text {
+                        leftPadding: 40
+                        rightPadding: 40
+                        topPadding: 20
+                        bottomPadding: 20
+                        width: col.width
+                        color: tc
+                        font.pixelSize: 24
+                        text: 'Developer'
+
+                        wrapMode: Text.WrapAnywhere
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 1
+                            color: ac
+                            anchors.leftMargin: 40
+                            anchors.rightMargin: 40
+                            anchors.bottomMargin: 10
+
+                        }
+                    }
+                    Text {
+                        leftPadding: 40
+                        rightPadding: 40
+                        topPadding: 0
+                        bottomPadding: 10
+                        width: col.width
+                        color: tc
+                        textFormat: Text.PlainText
+                        font.pixelSize: 16
+                        text: library.currentGame.developerName
+                        wrapMode: Text.WordWrap
+                    }
+                }
+
+
+                Grid {
+                    columns: 2
+                    width: parent.width
+                    bottomPadding: 10
+                    Column {
+                        width: parent.width/2
+                        Text {
+                            leftPadding: 40
+                            rightPadding: 40
+                            topPadding: 20
+                            bottomPadding: 20
+                            width: col.width/2
+                            color: tc
+                            font.pixelSize: 24
+                            text: 'Links'
+                            wrapMode: Text.WrapAnywhere
+                            Rectangle {
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 1
+                                color: ac
+                                anchors.leftMargin: 40
+                                anchors.rightMargin: 40
+                                anchors.bottomMargin: 10
+
+                            }
+                        }
+                        ListView {
+                            model: library.currentGame.urls
+                            width: parent.width
+                            height: contentHeight
+                            delegate: Column {
+                                width: parent.width
+                                Text {
+                                    leftPadding: 40
+                                    rightPadding: 40
+                                    topPadding: 5
+                                    width: col.width
+                                    color: hl
+                                    font.pixelSize: 16
+                                    text: '<html><style type="text/css">* { color:'+tc+'; text-decoration: none; }</style><a href="' + url + '">' + type + '</a></html>'
+                                    textFormat: Text.RichText
+                                    wrapMode: Text.WrapAnywhere
+                                    onLinkActivated: Qt.openUrlExternally(link)
+                                }
+                            }
+                        }
+                    }
+                    Column {
+                        width: parent.width/2
+                        Text {
+                            leftPadding: 40
+                            rightPadding: 40
+                            topPadding: 20
+                            bottomPadding: 20
+                            width: col.width/2
+                            color: tc
+                            font.pixelSize: 24
+                            text: 'Categories'
+                            wrapMode: Text.WrapAnywhere
+                            Rectangle {
+                                anchors.bottom: parent.bottom
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: 1
+                                color: ac
+                                anchors.leftMargin: 40
+                                anchors.rightMargin: 40
+                                anchors.bottomMargin: 10
+
+                            }
+                        }
+                        ListView {
+                            model: library.currentGame.categories
+                            width: parent.width
+                            height: contentHeight
+                            delegate: Column {
+                                width: parent.width
+                                Text {
+                                    leftPadding: 40
+                                    rightPadding: 40
+                                    topPadding: 5
+                                    width: col.width
+                                    color: tc
+                                    font.pixelSize: 16
+                                    text: library.currentGame.categories[index]
+                                    wrapMode: Text.WrapAnywhere
+                                }
+                            }
+                        }
                     }
                 }
                 // Rectangle {
@@ -367,18 +556,32 @@ Page {
                 //     }
                 //     color: 'lightblue'
                 // }
+                /* Releases */
                 Column {
                     visible: library.currentGame.releases.length
                     Text {
-                        padding: 20
+                        leftPadding: 40
+                        rightPadding: 40
+                        topPadding: 20
+                        bottomPadding: 20
                         width: col.width
                         color: tc
                         font.pixelSize: 24
                         text: 'Releases'
                         textFormat: Text.RichText
                         wrapMode: Text.WrapAnywhere
-                    }
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 1
+                            color: ac
+                            anchors.leftMargin: 40
+                            anchors.rightMargin: 40
+                            anchors.bottomMargin: 10
 
+                        }
+                    }
                     ListView {
                         // clip: true
                         // visible: library.currentGame.releases.length
@@ -387,7 +590,6 @@ Page {
                         height: contentHeight
                         spacing: 10
                         // anchors.centerIn: parent
-
                         // boundsBehavior: Flickable.StopAtBounds
                         delegate: Column {
                             width: parent.width
@@ -402,21 +604,21 @@ Page {
                                 width: parent.width
                                 spacing: 10
                                 Text {
-                                    leftPadding: 20
+                                    leftPadding: 40
                                     color: tc
                                     font.pixelSize: 20
                                     text: 'Version ' + version
                                 }
                                 Text {
-                                    rightPadding: 20
+                                    rightPadding: 40
                                     color: tc
                                     font.pixelSize: 20
                                     text: formatTimestamp(timestamp)
                                 }
                             }
                             Text {
-                                leftPadding: 20
-                                rightPadding: 20
+                                leftPadding: 40
+                                rightPadding: 40
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: col.width
@@ -428,179 +630,7 @@ Page {
                         }
                     }
                 }
-                ListView {
-                    // clip: true
-                    model: library.currentGame.screenshots
-                    width: parent.width
-                    height: contentHeight
-                    spacing: 30
-                    // anchors.centerIn: parent
-
-                    // boundsBehavior: Flickable.StopAtBounds
-                    delegate: Rectangle {
-                        width: parent.width
-                        height: 50
-                        color: 'green'
-                        // Text {
-                        //     anchors.fill: parent
-                        //     font.pixelSize: 48
-                        //     text: 'ylloooooooooojhssssssssss'
-                        // }
-                    }
-                }
             }
         }
     }
-
-
-
-    // ScrollView {
-    //     id: gameDetailView
-    //     anchors.left: listView.right
-    //     anchors.right: parent.right
-    //     anchors.bottom: parent.bottom
-    //     anchors.top: parent.top
-    //     // contentWidth:
-    //     Column {
-    //         width: libraryView - 200
-    //         id: gameColumView
-    //         // anchors.right: parent.right
-    //         // anchors.left: parent.left
-    //         Row {
-    //             padding: 40
-    //             spacing: 40
-    //             Rectangle {
-    //                 width: 128
-    //                 height: 128
-    //                 Image {
-    //                     anchors.fill: parent
-    //                     fillMode: Image.PreserveAspectFit
-    //
-    //                     source: library.currentGame.iconLarge
-    //                 }
-    //                 color: fg
-    //                 // border.color: "black"
-    //                 // border.width: 5
-    //                 radius: 10
-    //             }
-    //             Column {
-    //                 spacing: 5
-    //                 Row {
-    //                     Text {
-    //                         color: tc
-    //                         text: library.currentGame.name
-    //                         font.pixelSize: 48
-    //                         horizontalAlignment: Text.AlignLeft
-    //                     }
-    //                 }
-    //                 Row {
-    //                     // spacing: 10
-    //                     Text {
-    //                         color: tc
-    //                         text: library.currentGame.developerName ? 'Created by ' + library.currentGame.developerName : ' '
-    //                         font.pixelSize: 16
-    //                         horizontalAlignment: Text.AlignLeft
-    //                     }
-    //                     // Text {
-    //                     //     color: tc
-    //                     //     text: library.currentGame.license
-    //                     //     font.pixelSize: 16
-    //                     //     horizontalAlignment: Text.AlignLeft
-    //                     // }
-    //                 }
-    //                 Row {
-    //                     spacing: 5
-    //                     Button {
-    //                         text: 'Install'
-    //                         visible: !library.currentGame.installed
-    //                         enabled: !library.currentGame.processing
-    //                         onClicked: {
-    //                             window.installGame(library.currentGame.id)
-    //                         }
-    //
-    //                     }
-    //                     Button {
-    //                         text: 'Play'
-    //                         visible:  library.currentGame.installed
-    //                         enabled: !library.currentGame.playing
-    //                         onClicked: {
-    //                             window.playGame(library.currentGame.id)
-    //                         }
-    //                         background: Rectangle {
-    //                             implicitWidth: 100
-    //                             implicitHeight: 40
-    //                             color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
-    //                         }
-    //                     }
-    //                     Button {
-    //                         text: 'Uninstall'
-    //                         visible: library.currentGame.installed
-    //                         enabled: !library.currentGame.processing
-    //                         MouseArea {
-    //                             id: uninstallMouseArea
-    //                             anchors.fill: parent
-    //                             hoverEnabled: true
-    //                             onClicked: {
-    //                                 window.uninstallGame(library.currentGame.id)
-    //                             }
-    //                         }
-    //                         background: Rectangle {
-    //                             implicitWidth: 100
-    //                             implicitHeight: 40
-    //                             color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
-    //                         }
-    //                     }
-    //                 }
-    //
-    //             }
-    //         }
-    //         Rectangle {
-    //             // padding: 40
-    //             // visible: library.currentGame.screenshots
-    //             // Column {
-    //             //     Rectangle {
-    //             //
-    //             //     }
-    //             width: gameColumView.width
-    //                 ListView {
-    //                     clip: true
-    //                     model: library.currentGame.screenshots
-    //                     orientation: ListView.Horizontal
-    //                     height: 150
-    //
-    //                     ScrollBar.horizontal: ScrollBar { }
-    //                     boundsBehavior: Flickable.StopAtBounds
-    //                     delegate: Image {
-    //                         height: 150
-    //                         fillMode: Image.PreserveAspectFit
-    //
-    //                         source: thumbUrl
-    //                     }
-    //
-    //
-    //                 }
-    //             // }
-    //         }
-    //         Row {
-    //             padding: 40
-    //             // visible: library.currentGame.processing
-    //             ScrollView {
-    //                 id: logScroller
-    //                 height: 40
-    //                 // width: gameDetailView.width
-    //                 TextArea {
-    //                     // width: parent.width
-    //                     color: tc
-    //                     readOnly: true
-    //                     text: library.currentGame.log
-    //                     background: Rectangle {
-    //                         anchors.fill: parent
-    //                         color: fg
-    //
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }

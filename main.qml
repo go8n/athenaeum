@@ -1,10 +1,7 @@
-import QtQuick 2.6
+import QtQuick 2.7
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.11
 import Athenaeum 1.0
-
-// property Item item0: Library
-// property alias libview: Library
 
 ApplicationWindow {
     id: window

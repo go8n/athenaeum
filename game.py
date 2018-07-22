@@ -273,9 +273,9 @@ class Game(QObject):
             self.releases = releases
             selfreleasesChanged.emit()
 
-    @pyqtProperty(QQmlListProperty, notify=categoriesChanged)
+    @pyqtProperty(list, notify=categoriesChanged)
     def categories(self):
-        return QQmlListProperty(str, self, self._categories)
+        return self._categories
 
     @categories.setter
     def categories(self, categories):
