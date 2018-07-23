@@ -321,13 +321,51 @@ Page {
                     Rectangle {
                         visible: library.currentGame.screenshots.length
                         width: parent.width
+                        // height: childrenRect.height > 300 ? 300 : childrenRect.height
                         height: 300
                         color: fg
                         Image {
+                            anchors.leftMargin: 40
+                            anchors.rightMargin: 40
+                            // anchors.top: parent.top
+                            // anchors.bottom: parent.bottom
                             id: largeView
                             fillMode: Image.PreserveAspectFit
+                            // width: parent.width
                             anchors.fill: parent
                             source: visible ? library.currentGame.screenshots[carousel.currentIndex].sourceUrl : ''
+                            MouseArea {
+                                anchors.centerIn: parent
+                                width: parent.paintedWidth
+                                height: parent.paintedHeight
+                                onClicked: {
+                                    fullscreenPreview.open()
+                                }
+                                // hoverEnabled: true
+                                // id: thumbMouseArea
+                            }
+                        }
+                        Popup {
+                            id: fullscreenPreview
+                            parent: Overlay.overlay
+                            x: Math.round((window.width - width) / 2)
+                            y: Math.round((window.height - height) / 2)
+
+                            width: window.width
+                            height: window.height
+                            dim: true
+                            modal: true
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    fullscreenPreview.close()
+                                }
+                            }
+                            background: Image {
+                                fillMode: Image.PreserveAspectFit
+                                anchors.centerIn: parent
+                                source: largeView.source
+                            }
                         }
                     }
                     ListView {
