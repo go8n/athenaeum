@@ -195,7 +195,20 @@ Page {
                                 source: library.currentGame.iconLarge
                             }
                         }
-
+                        // Text {
+                        //     anchors.top: gameLogo.bottom
+                        //     anchors.left: parent.left
+                        //     anchors.right: gameTitle.left
+                        //     color: tc
+                        //     text: library.currentGame.developerName
+                        //     fontSizeMode: Text.VerticalFit
+                        //     wrapMode: Text.WordWrap
+                        //     font.pixelSize: 16
+                        //     topPadding: 10
+                        //     bottomPadding: 10
+                        //     horizontalAlignment: Text.AlignHCenter
+                        //     verticalAlignment: Text.AlignVCenter
+                        // }
                         Text {
                             id: gameTitle
                             anchors.top: parent.top
@@ -324,6 +337,11 @@ Page {
                         // height: childrenRect.height > 300 ? 300 : childrenRect.height
                         height: 300
                         color: fg
+                        BusyIndicator {
+                            id: previewLoadingIndicator
+                            anchors.centerIn: parent
+                            running: largeView.progress != 1.0
+                        }
                         Image {
                             anchors.leftMargin: 40
                             anchors.rightMargin: 40
@@ -364,6 +382,9 @@ Page {
                             background: Image {
                                 fillMode: Image.PreserveAspectFit
                                 anchors.centerIn: parent
+                                width: sourceSize.width > parent.width ? parent.width : sourceSize.width
+                                // width: parent.width
+                                // height: parent.height
                                 source: largeView.source
                             }
                         }
