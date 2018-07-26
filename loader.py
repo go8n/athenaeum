@@ -149,10 +149,42 @@ class Loader(QObject):
             transfer.append(Release(version=release.version, timestamp=release.timestamp, description=release.description))
         return transfer
 
+    def findUrlIcon(self, type):
+        if ('homepage' == type):
+            return 'home.svg'
+        elif ('bugtracker' == type):
+            return 'bug.svg'
+        elif ('help' == type):
+            return 'help.svg'
+        elif ('faq' == type):
+            return 'question.svg'
+        elif ('donation' == type):
+            return 'donate.svg'
+        elif ('translate' == type):
+            return 'globe.svg'
+        elif ('unknown' == type):
+            return 'cogs.svg'
+
+    def findUrlTitle(self, type):
+        if ('homepage' == type):
+            return 'Homepage'
+        elif ('bugtracker' == type):
+            return 'Bug Tracker'
+        elif ('help' == type):
+            return 'Help'
+        elif ('faq' == type):
+            return 'FAQ'
+        elif ('donation' == type):
+            return 'Donate'
+        elif ('translate' == type):
+            return 'Translation'
+        elif ('unknown' == type):
+            return 'Unknown'
+
     def getUrls(self, urls):
         transfer = []
-        for key, value in urls.items():
-            transfer.append(Url(type=key, url=value))
+        for type, url in urls.items():
+            transfer.append(Url(type=type, icon=self.findUrlIcon(type), title=self.findUrlTitle(type), url=url))
         return transfer
 
     @pyqtProperty(bool, notify=stateChanged)
