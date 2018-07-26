@@ -255,6 +255,9 @@ Page {
                             text: 'Install'
                             visible: !library.currentGame.installed
                             enabled: !library.currentGame.processing
+                            icon.source: 'icons/download.svg'
+                            icon.height: 16
+                            icon.width: 16
                             onClicked: {
                                 window.installGame(library.currentGame.id)
                             }
@@ -264,6 +267,9 @@ Page {
                             text: 'Play'
                             visible:  library.currentGame.installed
                             enabled: !library.currentGame.playing
+                            icon.source: 'icons/caret-right.svg'
+                            icon.height: 16
+                            icon.width: 16
                             onClicked: {
                                 window.playGame(library.currentGame.id)
                             }
@@ -282,7 +288,47 @@ Page {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onClicked: {
-                                    window.uninstallGame(library.currentGame.id)
+                                    uninstallPopup.open()
+                                }
+                            }
+                            Popup {
+                                id: uninstallPopup
+                                parent: Overlay.overlay
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    color: fg
+                                }
+                                x: Math.round((parent.width - width) / 2)
+                                y: Math.round((parent.height - height) / 2)
+                                modal: true
+                                dim: true
+                                focus: true
+                                contentItem: Column {
+                                    id: uninstallDialog
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        color: tc
+                                        font.pixelSize: 20
+                                        text: 'Are you sure?'
+                                    }
+                                    Row {
+                                        topPadding: 20
+                                        spacing: 20
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        Button {
+                                            text: 'Yes'
+                                            onClicked: {
+                                                window.uninstallGame(library.currentGame.id)
+                                                uninstallPopup.close()
+                                            }
+                                        }
+                                        Button {
+                                            text: 'Cancel'
+                                            onClicked: {
+                                                uninstallPopup.close()
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             background: Rectangle {
@@ -294,18 +340,32 @@ Page {
                     }
                 }
                 /* Logs */
-                ScrollView {
-                    width: parent.width
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.rightMargin: 40
+                    anchors.leftMargin: 40
+                    color: bl
                     height: 150
                     visible: library.currentGame.processing
-                    TextArea {
+
+                    Flickable {
+                        id: testFlick
                         anchors.fill: parent
-                        color: tc
-                        readOnly: true
-                        text: library.currentGame.log
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: fg
+
+                        // ScrollBar.vertical: ScrollBar {
+                        //     policy: ScrollBar.AlwaysOn }
+                        clip: true
+                        boundsBehavior: Flickable.StopAtBounds
+
+                        TextArea {
+                            id: ta
+                            onContentHeightChanged: {
+                                testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
+                            }
+                            color: tc
+                            readOnly: true
+                            text: library.currentGame.log
                         }
                     }
                 }
@@ -352,8 +412,6 @@ Page {
                                 height: parent.paintedHeight
                                 onClicked: {
                                     fullscreenPreview.open()
-                                    console.log(library.currentGame.screenshots[carousel.currentIndex].sourceUrl)
-                                    console.log(library.currentGame.screenshots[carousel.currentIndex].thumbUrl)
                                 }
                             }
                         }
@@ -664,18 +722,46 @@ Page {
                                 id: linksList
                                 delegate: Column {
                                     width: parent.width
-                                    Text {
+                                    // Text {
+                                    //     leftPadding: 10
+                                    //     rightPadding: 50
+                                    //     topPadding: 5
+                                    //     bottomPadding: index+1 < linksList.count ? 0 : 5
+                                    //     width: parent.width
+                                    //     color: hl
+                                    //     font.pixelSize: 12
+                                    //     text: '<html><style type="text/css">a { color:'+tc+'; text-decoration: none; }</style><a href="' + url + '"><img src="icons/' + icon + '">&#8239;' + title + '</a></html>'
+                                    //     textFormat: Text.RichText
+                                    //     wrapMode: Text.WrapAnywhere
+                                    //     onLinkActivated: Qt.openUrlExternally(link)
+                                    // }
+                                    Button {
                                         leftPadding: 10
                                         rightPadding: 50
                                         topPadding: 5
                                         bottomPadding: index+1 < linksList.count ? 0 : 5
-                                        width: parent.width
-                                        color: hl
-                                        font.pixelSize: 12
-                                        text: '<html><style type="text/css">* { color:'+tc+'; text-decoration: none; }</style><a href="' + url + '">' + type + '</a></html>'
-                                        textFormat: Text.RichText
-                                        wrapMode: Text.WrapAnywhere
-                                        onLinkActivated: Qt.openUrlExternally(link)
+                                        contentItem: Row {
+                                            Image {
+                                                width: 14
+                                                source: 'icons/' + icon
+                                                fillMode: Image.PreserveAspectFit
+                                            }
+                                            Text {
+                                                leftPadding: 5
+                                                font.pixelSize: 12
+                                                text: title
+                                                color: tc
+                                            }
+                                        }
+
+                                        background: Rectangle {
+                                            anchors.fill: parent
+                                            color: fg
+                                        }
+
+                                        onClicked: {
+                                            Qt.openUrlExternally(url)
+                                        }
                                     }
                                 }
                             }
