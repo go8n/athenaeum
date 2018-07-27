@@ -2,6 +2,7 @@ import signal
 from sys import argv
 
 from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 from game import Game
@@ -18,6 +19,11 @@ def main():
 
     app = QGuiApplication(argv)
     app.setApplicationDisplayName('Athenaeum')
+
+    tr = QTranslator()
+    tr.load("app_" + QLocale.system().name());
+    print(QLocale.system().name())
+    app.installTranslator(tr);
 
     qmlRegisterType(Game, 'Athenaeum', 1, 0, 'Game')
     qmlRegisterType(Library, 'Athenaeum', 1, 0, 'Library')

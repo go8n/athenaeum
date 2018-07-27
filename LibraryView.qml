@@ -15,6 +15,7 @@ Page {
     property color ac: '#808186'
     property color dg: '#e0e0e0'
     property color bl: '#0b0b0b'
+    property color tr: 'transparent'
 
     background: Rectangle {
         anchors.fill: parent
@@ -36,7 +37,7 @@ Page {
                     }
                     color: tc
                     id: searchField
-                    placeholderText: 'Search ' + library.games.length +'  Games...'
+                    placeholderText: qsTr('Search %L1 Games...').arg(library.games.length)
 
                     onTextChanged: {
                         window.search(text)
@@ -55,7 +56,7 @@ Page {
                     color: fg
                 }
                 color: tc
-                text: "Library"
+                text: qsTr('Library')
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
@@ -80,15 +81,15 @@ Page {
                 Menu {
                     id: menu
                     MenuItem {
-                        text: "Settings"
+                        text: qsTr('Settings')
                         onTriggered: stackView.push(settingsView)
                     }
                     MenuItem {
-                        text: "Update All"
+                        text: qsTr('Update All')
                         onTriggered: window.updateAll()
                     }
                     MenuItem {
-                        text: "Exit"
+                        text: qsTr('Exit')
                         onTriggered: Qt.quit()
                     }
                 }
@@ -135,7 +136,7 @@ Page {
                     anchors.margins: 1
                     width: parent.height
                     height: parent.height
-                    color: "transparent"
+                    color: tr
                     Image {
                         anchors.fill: parent
                         anchors.margins: 5
@@ -252,7 +253,7 @@ Page {
                         leftPadding: 20
                         topPadding: 10
                         Button {
-                            text: 'Install'
+                            text: qsTr('Install')
                             visible: !library.currentGame.installed
                             enabled: !library.currentGame.processing
                             icon.source: 'icons/download.svg'
@@ -264,7 +265,7 @@ Page {
 
                         }
                         Button {
-                            text: 'Play'
+                            text: qsTr('Play')
                             visible:  library.currentGame.installed
                             enabled: !library.currentGame.playing
                             icon.source: 'icons/caret-right.svg'
@@ -280,7 +281,7 @@ Page {
                             }
                         }
                         Button {
-                            text: 'Uninstall'
+                            text: qsTr('Uninstall')
                             visible: library.currentGame.installed
                             enabled: !library.currentGame.processing
                             MouseArea {
@@ -309,21 +310,21 @@ Page {
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         color: tc
                                         font.pixelSize: 20
-                                        text: 'Are you sure?'
+                                        text: qsTr('Are you sure?')
                                     }
                                     Row {
                                         topPadding: 20
                                         spacing: 20
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         Button {
-                                            text: 'Yes'
+                                            text: qsTr('Yes')
                                             onClicked: {
                                                 window.uninstallGame(library.currentGame.id)
                                                 uninstallPopup.close()
                                             }
                                         }
                                         Button {
-                                            text: 'Cancel'
+                                            text: qsTr('Cancel')
                                             onClicked: {
                                                 uninstallPopup.close()
                                             }
@@ -504,7 +505,7 @@ Page {
                             visible: library.currentGame.description
                             width: parent.width
                             height: descHeading.height
-                            color: 'transparent'
+                            color: tr
                             Rectangle {
                                 anchors.fill: parent
                                 color: fg
@@ -521,7 +522,7 @@ Page {
                                 width: parent.width
                                 color: tc
                                 font.pixelSize: 24
-                                text: 'Description'
+                                text: qsTr('Description')
                                 wrapMode: Text.WrapAnywhere
                             }
                         }
@@ -537,14 +538,13 @@ Page {
                             font.pixelSize: 16
                             text: library.currentGame.description
                             wrapMode: Text.WordWrap
-                            // onLinkActivated: Qt.openUrlExternally(link)
                         }
                         /* Releases */
                         Rectangle {
                             visible: library.currentGame.releases.length
                             width: parent.width
                             height: releaseHeading.height
-                            color: 'transparent'
+                            color: tr
                             Rectangle {
                                 anchors.fill: parent
                                 color: fg
@@ -561,7 +561,7 @@ Page {
                                 width: parent.width
                                 color: tc
                                 font.pixelSize: 24
-                                text: 'Releases'
+                                text: qsTr('Releases')
                                 wrapMode: Text.WrapAnywhere
                             }
                         }
@@ -576,7 +576,7 @@ Page {
                                 function formatTimestamp(ts) {
                                     var t = new Date( 0 );
                                     t.setSeconds(ts);
-                                    return t.toDateString();
+                                    return t.toLocaleDateString();
                                 }
                                 Flow {
                                     width: parent.width
@@ -585,7 +585,7 @@ Page {
                                     Text {
                                         color: tc
                                         font.pixelSize: 20
-                                        text: 'Version ' + version
+                                        text: qsTr('Version %1').arg(version)
                                         wrapMode: Text.WrapAnywhere
                                     }
                                     Text {
@@ -613,7 +613,7 @@ Page {
                     Rectangle {
                         width: 200
                         id: miscInfo
-                        color: 'transparent'
+                        color: tr
                         // height:  Math.max(libraryView.height - bodyGrid.y - 35 , Math.max(desc.height, lists.height))
                         height: lists.height
                         Rectangle {
@@ -638,14 +638,14 @@ Page {
                                 width: parent.width
                                 color: sel
                                 font.pixelSize: 16
-                                text: 'Developer'
+                                text: qsTr('Developer')
                                 wrapMode: Text.WrapAnywhere
                                 Rectangle {
                                     anchors.right: parent.right
                                     anchors.left: parent.left
                                     anchors.bottom: parent.bottom
-                                    height:1
-                                    color: 'transparent'
+                                    height: 1
+                                    color: tr
                                     border.color: hl
                                     anchors.rightMargin: 40
                                 }
@@ -671,14 +671,14 @@ Page {
                                 width: parent.width
                                 color: sel
                                 font.pixelSize: 16
-                                text: 'License'
+                                text: qsTr('License')
                                 wrapMode: Text.WrapAnywhere
                                 Rectangle {
                                     anchors.right: parent.right
                                     anchors.left: parent.left
                                     anchors.bottom: parent.bottom
                                     height:1
-                                    color: 'transparent'
+                                    color: tr
                                     border.color: hl
                                     anchors.rightMargin: 40
                                 }
@@ -703,14 +703,14 @@ Page {
                                 width: parent.width
                                 color: sel
                                 font.pixelSize: 16
-                                text: 'Links'
+                                text: qsTr('Links')
                                 wrapMode: Text.WrapAnywhere
                                 Rectangle {
                                     anchors.right: parent.right
                                     anchors.left: parent.left
                                     anchors.bottom: parent.bottom
                                     height:1
-                                    color: 'transparent'
+                                    color: tr
                                     border.color: hl
                                     anchors.rightMargin: 40
                                 }
@@ -739,7 +739,7 @@ Page {
                                         leftPadding: 10
                                         rightPadding: 50
                                         topPadding: 5
-                                        bottomPadding: index+1 < linksList.count ? 0 : 5
+                                        // bottomPadding: index+1 < linksList.count ? 0 : 5
                                         contentItem: Row {
                                             Image {
                                                 width: 14
@@ -773,14 +773,14 @@ Page {
                                 width: parent.width
                                 color: sel
                                 font.pixelSize: 16
-                                text: 'Categories'
+                                text: qsTr('Categories')
                                 wrapMode: Text.WrapAnywhere
                                 Rectangle {
                                     anchors.right: parent.right
                                     anchors.left: parent.left
                                     anchors.bottom: parent.bottom
                                     height:1
-                                    color: 'transparent'
+                                    color: tr
                                     border.color: hl
                                     anchors.rightMargin: 40
                                 }
