@@ -19,6 +19,7 @@ def main():
 
     app = QGuiApplication(argv)
     app.setApplicationDisplayName('Athenaeum')
+    app.setQuitOnLastWindowClosed(True)
 
     tr = QTranslator()
     tr.load("app_" + QLocale.system().name());
