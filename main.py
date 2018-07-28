@@ -2,7 +2,7 @@ import signal
 from sys import argv
 
 from PyQt5.QtGui import QGuiApplication
-from PyQt5.QtCore import QTranslator, QLocale, QLibraryInfo
+from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 
 from game import Game
@@ -22,7 +22,7 @@ def main():
 
     tr = QTranslator()
     tr.load("app_" + QLocale.system().name());
-    print(QLocale.system().name())
+
     app.installTranslator(tr);
 
     qmlRegisterType(Game, 'Athenaeum', 1, 0, 'Game')
@@ -38,7 +38,7 @@ def main():
 
     loader.load()
 
-    engine = QQmlApplicationEngine()
+    engine = QQmlApplicationEngine(parent=app)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
 
@@ -49,8 +49,15 @@ def main():
     engine.rootObjects()[0].uninstallGame.connect(library.uninstallGame)
     engine.rootObjects()[0].updateGame.connect(library.updateGame)
     engine.rootObjects()[0].playGame.connect(library.playGame)
-    engine.rootObjects()[0].search.connect(library.search)
     engine.rootObjects()[0].updateAll.connect(loader.runCommands)
+
+    engine.rootObjects()[0].search.connect(library.search)
+    engine.rootObjects()[0].filterAll.connect(library.filterAll)
+    engine.rootObjects()[0].filterInstalled.connect(library.filterInstalled)
+    # engine.rootObjects()[0].filterFavourites.connect(library.filterFavourites)
+    # engine.rootObjects()[0].filterRecent.connect(library.filterRecent)
+    engine.rootObjects()[0].sortAZ.connect(library.sortAZ)
+    engine.rootObjects()[0].sortZA.connect(library.sortZA)
 
     exit(app.exec_())
 

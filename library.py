@@ -1,5 +1,6 @@
 from time import sleep
 from functools import partial
+import operator
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
@@ -139,5 +140,19 @@ class Library(QObject):
         else:
             self.filter = self.games
 
-    def updateLibrary(self):
-        pass
+    def filterAll(self):
+        self.filter = self.games
+
+    def filterInstalled(self):
+        self.filter = []
+        for game in self._games:
+            if game.installed:
+                self.appendFilter(game)
+
+    def sortAZ(self):
+        self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
+        self.filterChanged.emit()
+
+    def sortZA(self):
+        self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
+        self.filterChanged.emit()

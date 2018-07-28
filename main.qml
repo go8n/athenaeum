@@ -12,6 +12,12 @@ ApplicationWindow {
     signal playGame(string id)
     signal search(string query)
     signal updateAll()
+    signal filterAll()
+    signal filterInstalled()
+    // signal filterFavourites()
+    // signal filterRecent()
+    signal sortAZ()
+    signal sortZA()
 
     width: 1000
     height: 700

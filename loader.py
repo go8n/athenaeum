@@ -61,6 +61,9 @@ class Loader(QObject):
             commandProcess.finished.connect(partial(self.runCommands, 3))
             commandProcess.start('flatpak', ['update', '--appstream', '--user'])
         elif proc_number == 3:
+            commandProcess.finished.connect(partial(self.runCommands, 4))
+            commandProcess.start('flatpak', ['update', '--user'])
+        elif proc_number == 4:
             commandProcess.finished.connect(partial(self.loadAppstream, commandProcess))
             commandProcess.start('flatpak', ['list', '--user'])
         self._processes.append(commandProcess)

@@ -30,7 +30,11 @@ Page {
                 width: listView.width
                 Layout.fillHeight: true
                 TextField {
-                    anchors.fill: parent
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: dropDown. left
+                    anchors.bottom: parent.bottom
+                    // anchors.fill: parent
                     background: Rectangle {
                         anchors.fill: parent
                         color: bg
@@ -49,6 +53,52 @@ Page {
                         text = ''
                     }
                 }
+                ToolButton {
+                    id: dropDown
+                    anchors.right: parent.right
+                    contentItem: Text {
+                            text: qsTr("⌄")
+                            color: tc
+                            horizontalAlignment: Text.AlignHCenter
+                    }
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: hl
+                        implicitHeight: 40
+                    }
+                    onClicked: sortMenu.open()
+                    Menu {
+                        id: sortMenu
+                        MenuItem {
+                            text: qsTr('All Games')
+                            onTriggered: {
+                                window.filterAll()
+                                searchField.text = ''
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr('Installed')
+                            onTriggered: {
+                                window.filterInstalled()
+                                searchField.text = ''
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr('Recent')
+                            // onTriggered: Qt.quit()
+                        }
+                        MenuSeparator { }
+                        MenuItem {
+                            text: qsTr('Sort A-Z')
+                            onTriggered: window.sortAZ()
+                        }
+                        MenuItem {
+                            text: qsTr('Sort Z-A')
+                            onTriggered: window.sortZA()
+                        }
+                    }
+                }
+
             }
             Label {
                 background: Rectangle {
@@ -156,6 +206,13 @@ Page {
                     anchors.rightMargin: 5
                     anchors.bottomMargin: 5
                     verticalAlignment: Text.AlignVCenter
+                }
+                BusyIndicator {
+                    height: parent.height
+                    width: parent.height
+                    id: gameProcessing
+                    anchors.right: parent.right
+                    running: processing
                 }
             }
         }
@@ -622,7 +679,6 @@ Page {
                             anchors.rightMargin: 40
                             anchors.bottomMargin: 40
                         }
-                        // anchors.bottom: parent.bottom
                         Column {
                             id: lists
                             width: parent.width
