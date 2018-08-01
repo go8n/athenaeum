@@ -2,6 +2,8 @@
 
 A libre replacement for Steam
 
+![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/rcSvHcbxTbTqmJOlMWRZGpYc)
+
 ## Getting Started
 
 clone this repo
