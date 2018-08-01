@@ -15,6 +15,7 @@ Working list, in general you need python3, flatpak, pyqt5 and python-peewee.
 Arch
 
 ```
+flatpak
 python3
 pyqt5-common
 python-pyqt5
