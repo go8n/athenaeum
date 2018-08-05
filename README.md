@@ -53,7 +53,7 @@ not supported atm
 
 Athenaeum uses flatpak as its packaging system and pulls all data from flathub currently.
 
-The best way to get your game on Athenaeum is to submit it to the flathub github repositrory.
+The best way to get your game on Athenaeum is to create a flatpak config and submit it to the flathub github repositrory.
 
 https://github.com/flathub/flathub/wiki/App-Submission
 
@@ -70,6 +70,14 @@ Make sure your game appdata.xml contains the `project_license` field with a Free
 ## Contributing
 
 As you would any other project.
+
+### Other ways
+
+Find libre games and create flatpak configs and submit them to flathub.
+
+A good place to start is LibreGameWiki.
+
+https://libregamewiki.org/List_of_games
 
 ## License
 
