@@ -49,6 +49,16 @@ python3 main.py
 
 not supported atm
 
+## Getting your game on Athenaeum
+
+Athenaeum uses flatpak as its packaging system and pulls all data from flathub currently.
+
+The best way to get your game on Athenaeum is to submit it to the flathub github repositrory.
+
+https://github.com/flathub/flathub/wiki/App-Submission
+
+Make sure your game appdata.xml contains the `project_license` field with a Free Software license and the `categories` field, with at least the category 'Game'.
+
 ## Built With
 
 * Python3
