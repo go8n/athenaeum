@@ -12,6 +12,7 @@ class GameRecord(BaseModel):
     installed = BooleanField(default=False)
     created_date = DateTimeField(default=datetime.datetime.now)
     modified_date = DateTimeField()
+    last_played_date = DateTimeField(null=True)
 
 class MetaRecord(BaseModel):
     key = CharField(unique=True)
@@ -36,9 +37,10 @@ def getGame(id):
     except DoesNotExist:
         return None
 
-def setGame(id, installed):
+def setGame(game):
     GameRecord.replace(
-        id=id,
-        installed=installed,
+        id=game.id,
+        installed=game.installed,
+        last_played_date=game.lastPlayedDate,
         modified_date=datetime.datetime.now()
     ).execute()

@@ -85,7 +85,7 @@ Page {
                         }
                         MenuItem {
                             text: qsTr('Recent')
-                            // onTriggered: Qt.quit()
+                            onTriggered: window.filterRecent()
                         }
                         MenuSeparator { }
                         MenuItem {
@@ -135,6 +135,10 @@ Page {
                         onTriggered: stackView.push(settingsView)
                     }
                     MenuItem {
+                        text: qsTr('Check For Updates')
+                        onTriggered: window.checkAll()
+                    }
+                    MenuItem {
                         text: qsTr('Update All')
                         onTriggered: window.updateAll()
                     }
@@ -157,9 +161,10 @@ Page {
         boundsBehavior: Flickable.StopAtBounds
         keyNavigationEnabled: true
         focus: true
-        Keys.onDownPressed: {
-            console.log(listView.currentIndex)
+        onCurrentItemChanged:{
+            window.indexUpdated(listView.currentIndex)
         }
+
         delegate: Component {
             id: delegateComponent
             Rectangle {
@@ -172,8 +177,8 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        window.indexUpdated(index)
                         listView.currentIndex = index
+                        listView.forceActiveFocus()
                     }
                     id: itemMouseArea
                     hoverEnabled: true
@@ -201,6 +206,7 @@ Page {
                     anchors.left: gameIcon.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
+                    anchors.right: parent.right
                     text: name
                     anchors.topMargin: 5
                     anchors.rightMargin: 5
@@ -208,11 +214,32 @@ Page {
                     verticalAlignment: Text.AlignVCenter
                 }
                 BusyIndicator {
+                    visible: false
                     height: parent.height
                     width: parent.height
                     id: gameProcessing
                     anchors.right: parent.right
                     running: processing
+                }
+                Rectangle {
+                    visible: false
+                    height: parent.height
+                    width: parent.height
+                    anchors.right: parent.right
+                    color: tr
+                    Rectangle {
+                        width: childrenRect.width
+                        height: childrenRect.height
+                        anchors.centerIn: parent
+                        color: sel
+                        radius: 3
+                        Text {
+                            text: qsTr('New')
+                            font.pixelSize: 12
+                            padding: 3
+                            color: tc
+                        }
+                    }
                 }
             }
         }
@@ -337,6 +364,22 @@ Page {
                                 color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
                             }
                         }
+                        // Button {
+                        //     text: qsTr('Update')
+                        //     visible:  library.currentGame.hasUpdates && library.currentGame.installed
+                        //     enabled: !library.currentGame.playing && !library.currentGame.processing
+                        //     icon.source: 'icons/refresh.svg'
+                        //     icon.height: 16
+                        //     icon.width: 16
+                        //     onClicked: {
+                        //         window.updateGame(library.currentGame.id)
+                        //     }
+                        //     background: Rectangle {
+                        //         implicitWidth: 40
+                        //         implicitHeight: 40
+                        //         color: dg
+                        //     }
+                        // }
                         Button {
                             text: qsTr('Uninstall')
                             visible: library.currentGame.installed

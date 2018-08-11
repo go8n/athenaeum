@@ -1,12 +1,10 @@
 from time import sleep
 from functools import partial
+from datetime import datetime, timedelta
 import operator
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
-
-from peewee import DoesNotExist
-from models import GameRecord
 
 from game import Game
 import appstream
@@ -148,6 +146,14 @@ class Library(QObject):
         for game in self._games:
             if game.installed:
                 self.appendFilter(game)
+
+    def filterRecent(self):
+            self.filter = []
+            now = datetime.now()
+            for game in self._games:
+                if game.lastPlayedDate:
+                    if (game.lastPlayedDate + timedelta(days=3)) > now:
+                        self.appendFilter(game)
 
     def sortAZ(self):
         self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())

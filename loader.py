@@ -13,6 +13,7 @@ class Loader(QObject):
     stateChanged = pyqtSignal()
     messageChanged = pyqtSignal()
     errorChanged = pyqtSignal()
+    logChanged = pyqtSignal()
     gameLoaded = pyqtSignal(Game)
 
     arch = 'x86_64'
@@ -27,7 +28,9 @@ class Loader(QObject):
         'Constructing castles...',
         'Collecting cow bells...',
         'Summoning demons...',
-        'Building power plants...'
+        'Building power plants...',
+        'Planting mines...',
+        'Evolving...'
     ]
 
     def __init__(self, *args, **kwargs):
@@ -40,37 +43,56 @@ class Loader(QObject):
         self._message = random.choice(self.messages)
         self._appsteamPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/appstream.xml.gz'
         self._iconsPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/icons'
+        self._log = ''
+
+        self._installed_list = ''
+        self._updates_list = ''
 
     def load(self):
         if getMeta(self.metaKey):
             self.loadAppstream()
         else:
-            self.runCommands()
+            self.runUpdateCommands()
 
-    def runCommands(self, proc_number=0):
+    def runUpdateCommands(self, proc_number=0):
         commandProcess = QProcess()
+        commandProcess.finished.connect(partial(self._processes.remove, commandProcess))
+        commandProcess.errorOccurred.connect(self.handleError)
+        commandProcess.readyReadStandardOutput.connect(partial(self.appendLog, commandProcess))
+        if proc_number == 0:
+            commandProcess.started.connect(self.startLoading)
+            commandProcess.finished.connect(partial(self.runUpdateCommands, 1))
+            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
+        elif proc_number == 1:
+            commandProcess.finished.connect(partial(self.runUpdateCommands, 2))
+            commandProcess.start('flatpak', ['update', '--appstream', '--user'])
+        elif proc_number == 2:
+            commandProcess.finished.connect(self.runListCommands)
+            commandProcess.start('flatpak', ['update', '--user', '-y'])
+        self._processes.append(commandProcess)
+
+    def runListCommands(self, proc_number=0):
+        commandProcess = QProcess()
+        commandProcess.finished.connect(partial(self._processes.remove, commandProcess))
         commandProcess.errorOccurred.connect(self.handleError)
         if proc_number == 0:
             commandProcess.started.connect(self.startLoading)
-            commandProcess.finished.connect(partial(self.runCommands, 1))
-            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
-        elif proc_number == 1:
-            commandProcess.finished.connect(partial(self.runCommands, 2))
-            commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
-        elif proc_number == 2:
-            commandProcess.finished.connect(partial(self.runCommands, 3))
-            commandProcess.start('flatpak', ['update', '--appstream', '--user'])
-        elif proc_number == 3:
-            commandProcess.finished.connect(partial(self.runCommands, 4))
-            commandProcess.start('flatpak', ['update', '--user'])
-        elif proc_number == 4:
-            commandProcess.finished.connect(partial(self.loadAppstream, commandProcess))
+            commandProcess.finished.connect(partial(self.runListCommands, 1))
+            commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
             commandProcess.start('flatpak', ['list', '--user'])
+        if proc_number == 1:
+            commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
+            commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
         self._processes.append(commandProcess)
 
+    def loadListData(self, process, proc_number):
+        if proc_number == 0:
+            self._installed_list = str(process.readAllStandardOutput(), 'utf-8')
+        if proc_number == 1:
+            self._updates_list = str(process.readAllStandardOutput(), 'utf-8')
+            self.loadAppstream(process=True)
+
     def loadAppstream(self, process=None):
-        if process:
-            installed_list = str(process.readAllStandardOutput(), 'utf-8')
         stream = appstream.Store()
         stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
 
@@ -78,35 +100,40 @@ class Loader(QObject):
             if component.project_license:
                 if not 'LicenseRef-proprietary' in component.project_license:
                     if not 'CC-BY-NC-SA' in component.project_license:
-                        if 'Game' in component.categories or 'Games' in component.categories:
+                        if 'Game' in component.categories:
+                            installed = False
+                            last_played_date = None
                             if process:
-                                installed = component.bundle['value'][4:] in installed_list
-                                setGame(component.id, installed)
+                                name = component.bundle['value'][4:]
+                                installed = name in self._installed_list
                             else:
                                 gr = getGame(component.id)
                                 if gr:
                                     installed = gr.installed
-                                else:
-                                    installed = False
+                                    last_played_date = gr.last_played_date
 
-                            self.gameLoaded.emit(
-                                Game(
-                                    id=component.id,
-                                    name=component.name,
-                                    iconSmall=self.getIconSmall(component.icons),
-                                    iconLarge=self.getIconLarge(component.icons),
-                                    license=component.project_license,
-                                    developer_name=component.developer_name,
-                                    summary=component.summary,
-                                    description=component.description,
-                                    screenshots=self.getScreenshots(component.screenshots),
-                                    categories=component.categories,
-                                    releases=self.getReleases(component.releases),
-                                    urls=self.getUrls(component.urls),
-                                    ref=component.bundle['value'],
-                                    installed=installed
-                                )
+                            game = Game(
+                                id=component.id,
+                                name=component.name,
+                                iconSmall=self.getIconSmall(component.icons),
+                                iconLarge=self.getIconLarge(component.icons),
+                                license=component.project_license,
+                                developerName=component.developer_name,
+                                summary=component.summary,
+                                description=component.description,
+                                screenshots=self.getScreenshots(component.screenshots),
+                                categories=component.categories,
+                                releases=self.getReleases(component.releases),
+                                urls=self.getUrls(component.urls),
+                                ref=component.bundle['value'],
+                                installed=installed,
+                                lastPlayedDate=last_played_date
                             )
+
+                            if process:
+                                setGame(game=game)
+
+                            self.gameLoaded.emit(game)
         self.finishLoading()
 
     def getIconSmall(self, icons):
@@ -210,6 +237,16 @@ class Loader(QObject):
             self._error = error
             self.stateChanged.emit()
 
+    @pyqtProperty(str, notify=logChanged)
+    def log(self):
+        return self._log
+
+    @log.setter
+    def log(self, log):
+        if log != self._log:
+            self._log = log
+            self.logChanged.emit()
+
     @pyqtProperty(str, notify=stateChanged)
     def message(self):
         return self._message
@@ -232,6 +269,21 @@ class Loader(QObject):
         setMeta(self.metaKey, 'y')
         self.loading = False
         self.finished.emit()
+
+    def appendLog(self, process, finished=False):
+        log_data = str(process.readAllStandardOutput(), 'utf-8')
+        if finished:
+            pass
+        else:
+            if log_data[:1] == '\r':
+                rs = self._log.rsplit('\r', 1)
+                if len(rs) > 1:
+                    self._log = rs[0] + log_data
+                else:
+                    self._log = self._log.rsplit('\n', 1)[0] + log_data
+            else:
+                self._log = self._log + log_data
+        self.logChanged.emit()
 
     def handleError(self, error):
         self._timer.stop()

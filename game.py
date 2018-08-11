@@ -3,7 +3,7 @@ from datetime import datetime
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
 
-from models import getGame, setGame
+from models import setGame
 
 class Url(QObject):
     typeChanged = pyqtSignal()
@@ -148,6 +148,7 @@ class Game(QObject):
     refChanged = pyqtSignal()
 
     installedChanged = pyqtSignal()
+    lastPlayedDateChanged = pyqtSignal()
 
     playingChanged = pyqtSignal()
     processingChanged = pyqtSignal()
@@ -160,7 +161,7 @@ class Game(QObject):
             iconSmall='',
             iconLarge='',
             license='',
-            developer_name='',
+            developerName='',
             summary='',
             description='',
             screenshots=[],
@@ -169,6 +170,7 @@ class Game(QObject):
             urls=[],
             ref='',
             installed=False,
+            lastPlayedDate=None,
             *args,
             **kwargs):
         super().__init__(*args, **kwargs)
@@ -178,9 +180,8 @@ class Game(QObject):
         self._iconSmall = iconSmall
         self._iconLarge = iconLarge
 
-
         self._license = license
-        self._developerName = developer_name
+        self._developerName = developerName
         self._summary = summary
         self._description = description
         self._screenshots = screenshots
@@ -191,6 +192,7 @@ class Game(QObject):
         self._ref = ref
 
         self._installed = installed
+        self._lastPlayedDate = lastPlayedDate
 
         # Dynamic values
         self._playing = False
@@ -345,6 +347,15 @@ class Game(QObject):
         self._installed = installed
         self.installedChanged.emit()
 
+    @pyqtProperty(bool, notify=lastPlayedDateChanged)
+    def lastPlayedDate(self):
+        return self._lastPlayedDate
+
+    @lastPlayedDate.setter
+    def lastPlayedDate(self, lastPlayedDate):
+        self._lastPlayedDate = lastPlayedDate
+        self.lastPlayedDateChanged.emit()
+
     @pyqtProperty(bool, notify=processingChanged)
     def processing(self):
         return self._processing
@@ -370,6 +381,8 @@ class Game(QObject):
 
     def stopGame(self):
         self.playing = False
+        self.lastPlayedDate = datetime.now()
+        self.save()
         print('stop game')
 
     def startInstall(self):
@@ -378,7 +391,7 @@ class Game(QObject):
     def finishInstall(self, process):
         self.processing = False
         self.installed = True
-        setGame(id=self.id, installed=self.installed)
+        self.save()
         self.appendLog(process, finished=True)
 
     def startUninstall(self):
@@ -387,7 +400,7 @@ class Game(QObject):
     def finishUninstall(self, process):
         self.processing = False
         self.installed = False
-        setGame(id=self.id, installed=self.installed)
+        self.save()
         self.appendLog(process, finished=True)
 
     def startUpdate(self):
@@ -410,3 +423,6 @@ class Game(QObject):
             else:
                 self._log = self._log + log_data
         self.logChanged.emit()
+
+    def save(self):
+        setGame(self)

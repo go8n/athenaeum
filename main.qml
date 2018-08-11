@@ -12,10 +12,11 @@ ApplicationWindow {
     signal playGame(string id)
     signal search(string query)
     signal updateAll()
+    signal checkAll()
     signal filterAll()
     signal filterInstalled()
     // signal filterFavourites()
-    // signal filterRecent()
+    signal filterRecent()
     signal sortAZ()
     signal sortZA()
 
@@ -57,6 +58,35 @@ ApplicationWindow {
             width: parent.width
             topPadding: 10
             horizontalAlignment: Text.AlignHCenter
+        }
+
+        /* Logs */
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.rightMargin: 40
+            anchors.leftMargin: 40
+            anchors.bottom: parent.bottom
+            color: bg
+            height: 150
+
+            Flickable {
+                id: testFlick
+                anchors.fill: parent
+
+                clip: true
+                boundsBehavior: Flickable.StopAtBounds
+
+                TextArea {
+                    id: ta
+                    onContentHeightChanged: {
+                        testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
+                    }
+                    color: tc
+                    readOnly: true
+                    text: loader.log
+                }
+            }
         }
     }
 
