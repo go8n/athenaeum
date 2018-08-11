@@ -89,8 +89,9 @@ class Library(QObject):
     def installGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
-            installProcess = QProcess()
+            installProcess = QProcess(parent=self.parent())
             installProcess.started.connect(self._games[idx].startInstall)
+            installProcess.finished.connect(partial(self._processes.remove, installProcess))
             installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
             installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
@@ -101,8 +102,9 @@ class Library(QObject):
         idx = self.findById(game_id)
         if idx is not None:
             print('uninstall')
-            uninstallProcess = QProcess()
+            uninstallProcess = QProcess(parent=self.parent())
             uninstallProcess.started.connect(self._games[idx].startUninstall)
+            uninstallProcess.finished.connect(partial(self._processes.remove, uninstallProcess))
             uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
             uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
@@ -112,8 +114,9 @@ class Library(QObject):
         idx = self.findById(game_id)
         if idx is not None:
             print('update')
-            updateProcess = QProcess()
+            updateProcess = QProcess(parent=self.parent())
             updateProcess.started.connect(self._games[idx].startUpdate)
+            updateProcess.finished.connect(partial(self._processes.remove, updateProcess))
             updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
             updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
@@ -122,8 +125,9 @@ class Library(QObject):
     def playGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
-            playProcess = QProcess()
+            playProcess = QProcess(parent=self.parent())
             playProcess.started.connect(self._games[idx].startGame)
+            playProcess.finished.connect(partial(self._processes.remove, playProcess))
             playProcess.finished.connect(self._games[idx].stopGame)
             playProcess.start('flatpak', ['run', self._games[idx].ref])
             self._processes.append(playProcess)
