@@ -36,5 +36,5 @@ class SystemTrayIcon(QSystemTrayIcon):
                 playGameAction.triggered.connect(partial(self.playGame.emit, game.id))
             self._trayIconMenu.addSeparator()
 
-        exitAction = self._trayIconMenu.addAction('Exit')
+        exitAction = self._trayIconMenu.addAction(QIcon('icons/close.svg'), 'Exit')
         exitAction.triggered.connect(self.parent().quit)
