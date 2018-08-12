@@ -12,6 +12,7 @@ import appstream
 
 class Library(QObject):
     gamesChanged = pyqtSignal()
+    recentChanged = pyqtSignal(list)
     filterChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
 
@@ -23,10 +24,19 @@ class Library(QObject):
         self._currentGame = Game()
         self._threads = []
         self._processes = []
+        self._recent = []
 
     def load(self):
         self.filter = self.games
         self.indexUpdated(0)
+
+        recent = []
+        now = datetime.now()
+        for game in self._games:
+            if game.lastPlayedDate:
+                if (game.lastPlayedDate + timedelta(days=3)) > now:
+                    recent.append(game)
+        self.recent = recent
 
     def reset(self):
         self._games = []
@@ -34,6 +44,7 @@ class Library(QObject):
         self._currentGame = Game()
         self._threads = []
         self._processes = []
+        self._recent = []
 
     def findById(self, game_id):
         for index, game in enumerate(self.games):
@@ -61,6 +72,16 @@ class Library(QObject):
             self._games = games
             self.gamesChanged.emit()
 
+    @pyqtProperty(list, notify=recentChanged)
+    def recent(self):
+        return self._recent
+
+    @recent.setter
+    def recent(self, recent):
+        if recent != self._recent:
+            self._recent = recent
+            self.recentChanged.emit(self._recent)
+
     @pyqtProperty(QQmlListProperty, notify=filterChanged)
     def filter(self):
         return QQmlListProperty(Game, self, self._filter)
@@ -79,12 +100,16 @@ class Library(QObject):
         self._filter.append(game)
         self.filterChanged.emit()
 
+    def appendRecent(self, game):
+        if game not in self._recent:
+            self._recent.append(game)
+            self.recentChanged.emit(self._recent)
+
     def indexUpdated(self, index):
         try:
             self.currentGame = self._filter[index]
         except IndexError:
             print('Index does not exist.')
-
 
     def installGame(self, game_id):
         idx = self.findById(game_id)
@@ -130,6 +155,7 @@ class Library(QObject):
             playProcess.finished.connect(partial(self._processes.remove, playProcess))
             playProcess.finished.connect(self._games[idx].stopGame)
             playProcess.start('flatpak', ['run', self._games[idx].ref])
+            self.appendRecent(self._games[idx])
             self._processes.append(playProcess)
 
     def search(self, query):
@@ -152,12 +178,7 @@ class Library(QObject):
                 self.appendFilter(game)
 
     def filterRecent(self):
-            self.filter = []
-            now = datetime.now()
-            for game in self._games:
-                if game.lastPlayedDate:
-                    if (game.lastPlayedDate + timedelta(days=3)) > now:
-                        self.appendFilter(game)
+        self.filter = self.recent
 
     def sortAZ(self):
         self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())

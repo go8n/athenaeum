@@ -1,24 +1,30 @@
 import signal, os, sys
 
-from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
+from PyQt5.QtWidgets import QApplication
 
 from game import Game
 from library import Library
 from loader import Loader
 from models import GameRecord, MetaRecord, SettingsRecord, db
+from systemtrayicon import SystemTrayIcon
+
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
 
+    icon = 'athena_icon_32x32.png'
+
     db.connect()
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
 
-    app = QGuiApplication(sys.argv)
+    app = QApplication(sys.argv)
     app.setApplicationDisplayName('Athenaeum')
-    app.setQuitOnLastWindowClosed(True)
+    app.setWindowIcon(QIcon(icon))
+    app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
     tr.load("app_" + QLocale.system().name());
@@ -36,32 +42,37 @@ def main():
     loader.finished.connect(library.load)
     loader.gameLoaded.connect(library.appendGame)
 
-    loader.load()
-
     engine = QQmlApplicationEngine(parent=app)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
 
     engine.load('main.qml')
 
-    engine.rootObjects()[0].indexUpdated.connect(library.indexUpdated)
-    engine.rootObjects()[0].installGame.connect(library.installGame)
-    engine.rootObjects()[0].uninstallGame.connect(library.uninstallGame)
-    engine.rootObjects()[0].updateGame.connect(library.updateGame)
-    engine.rootObjects()[0].playGame.connect(library.playGame)
-    engine.rootObjects()[0].updateAll.connect(loader.runUpdateCommands)
-    engine.rootObjects()[0].checkAll.connect(loader.runListCommands)
+    root = engine.rootObjects()[0]
 
-    engine.rootObjects()[0].search.connect(library.search)
-    engine.rootObjects()[0].filterAll.connect(library.filterAll)
-    engine.rootObjects()[0].filterInstalled.connect(library.filterInstalled)
-    # engine.rootObjects()[0].filterFavourites.connect(library.filterFavourites)
-    engine.rootObjects()[0].filterRecent.connect(library.filterRecent)
-    engine.rootObjects()[0].sortAZ.connect(library.sortAZ)
-    engine.rootObjects()[0].sortZA.connect(library.sortZA)
+    root.indexUpdated.connect(library.indexUpdated)
+    root.installGame.connect(library.installGame)
+    root.uninstallGame.connect(library.uninstallGame)
+    root.updateGame.connect(library.updateGame)
+    root.playGame.connect(library.playGame)
+    root.updateAll.connect(loader.runUpdateCommands)
+    root.checkAll.connect(loader.runListCommands)
+
+    root.search.connect(library.search)
+    root.filterAll.connect(library.filterAll)
+    root.filterInstalled.connect(library.filterInstalled)
+    # root.filterFavourites.connect(library.filterFavourites)
+    root.filterRecent.connect(library.filterRecent)
+    root.sortAZ.connect(library.sortAZ)
+    root.sortZA.connect(library.sortZA)
+
+    systemTrayIcon = SystemTrayIcon(icon=QIcon(icon), root=root, parent=app)
+    systemTrayIcon.playGame.connect(library.playGame)
+    library.recentChanged.connect(systemTrayIcon.prepareMenu)
+
+    loader.load()
 
     os._exit(app.exec())
-
 
 if __name__ == '__main__':
     main()

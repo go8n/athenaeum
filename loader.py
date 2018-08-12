@@ -106,11 +106,11 @@ class Loader(QObject):
                             if process:
                                 name = component.bundle['value'][4:]
                                 installed = name in self._installed_list
-                            else:
-                                gr = getGame(component.id)
-                                if gr:
-                                    installed = gr.installed
-                                    last_played_date = gr.last_played_date
+
+                            gr = getGame(component.id)
+                            if gr:
+                                installed = gr.installed
+                                last_played_date = gr.last_played_date
 
                             game = Game(
                                 id=component.id,
