@@ -1,4 +1,3 @@
-from time import sleep
 from functools import partial
 from datetime import datetime, timedelta
 import operator
@@ -7,29 +6,21 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
-import appstream
+from models import setMeta, getMeta
 
 
 class Library(QObject):
     gamesChanged = pyqtSignal()
     recentChanged = pyqtSignal(list)
     filterChanged = pyqtSignal()
+    filterNameChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self._games = []
-        self._filter = []
-        self._currentGame = Game()
-        self._threads = []
-        self._processes = []
-        self._recent = []
+        self.reset()
 
     def load(self):
-        self.filter = self.games
-        self.indexUpdated(0)
-
         recent = []
         now = datetime.now()
         for game in self._games:
@@ -38,9 +29,13 @@ class Library(QObject):
                     recent.append(game)
         self.recent = recent
 
+        self.filterGames(getMeta('filter') or 'all')
+        self.indexUpdated(0)
+
     def reset(self):
         self._games = []
         self._filter = []
+        self._filterName = ''
         self._currentGame = Game()
         self._threads = []
         self._processes = []
@@ -91,6 +86,16 @@ class Library(QObject):
         if filter != self._filter:
             self._filter = filter
             self.filterChanged.emit()
+
+    @pyqtProperty('QString', notify=filterNameChanged)
+    def filterName(self):
+        return self._filterName
+
+    @filterName.setter
+    def filterName(self, filterName):
+        if filterName != self._filterName:
+            self._filterName = filterName
+            self.filterNameChanged.emit()
 
     def appendGame(self, game):
         self._games.append(game)
@@ -158,32 +163,36 @@ class Library(QObject):
             self.appendRecent(self._games[idx])
             self._processes.append(playProcess)
 
-    def search(self, query):
+    def searchGames(self, query):
         if query:
+            self.filterName = self.tr('Results')
             self.filter = []
             query = query.lower()
             for game in self._games:
                 if query in game.name.lower():
                     self.appendFilter(game)
         else:
+            self.filterName = self.tr('All Games')
             self.filter = self.games
 
-    def filterAll(self):
-        self.filter = self.games
+    def filterGames(self, filter):
+        if filter == 'installed':
+            self.filterName = self.tr('Installed')
+            self.filter = []
+            for game in self._games:
+                if game.installed:
+                    self.appendFilter(game)
+        elif filter == 'recent':
+            self.filterName = self.tr('Recent')
+            self.filter = self.recent
+        else:
+            self.filterName = self.tr('All Games')
+            self.filter = self.games
+        setMeta(key='filter', value=filter)
 
-    def filterInstalled(self):
-        self.filter = []
-        for game in self._games:
-            if game.installed:
-                self.appendFilter(game)
-
-    def filterRecent(self):
-        self.filter = self.recent
-
-    def sortAZ(self):
-        self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
-        self.filterChanged.emit()
-
-    def sortZA(self):
-        self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
+    def sortGames(self, sort):
+        if sort == 'za':
+            self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
+        else:
+            self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
         self.filterChanged.emit()

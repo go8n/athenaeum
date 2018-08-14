@@ -24,7 +24,7 @@ class SettingsRecord(BaseModel):
 
 def getMeta(key):
     try:
-        return (MetaRecord.get(MetaRecord.key == 'flathub_added')).value
+        return (MetaRecord.get(MetaRecord.key == key)).value
     except DoesNotExist:
         return None
 

@@ -11,14 +11,10 @@ ApplicationWindow {
     signal updateGame(string id)
     signal playGame(string id)
     signal search(string query)
+    signal filter(string filter)
+    signal sort(string sort)
     signal updateAll()
     signal checkAll()
-    signal filterAll()
-    signal filterInstalled()
-    // signal filterFavourites()
-    signal filterRecent()
-    signal sortAZ()
-    signal sortZA()
 
     width: 1000
     height: 700

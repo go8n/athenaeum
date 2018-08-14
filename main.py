@@ -58,13 +58,9 @@ def main():
     root.updateAll.connect(loader.runUpdateCommands)
     root.checkAll.connect(loader.runListCommands)
 
-    root.search.connect(library.search)
-    root.filterAll.connect(library.filterAll)
-    root.filterInstalled.connect(library.filterInstalled)
-    # root.filterFavourites.connect(library.filterFavourites)
-    root.filterRecent.connect(library.filterRecent)
-    root.sortAZ.connect(library.sortAZ)
-    root.sortZA.connect(library.sortZA)
+    root.search.connect(library.searchGames)
+    root.filter.connect(library.filterGames)
+    root.sort.connect(library.sortGames)
 
     systemTrayIcon = SystemTrayIcon(icon=QIcon(icon), root=root, parent=app)
     systemTrayIcon.playGame.connect(library.playGame)

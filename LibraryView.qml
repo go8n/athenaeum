@@ -72,29 +72,32 @@ Page {
                         MenuItem {
                             text: qsTr('All Games')
                             onTriggered: {
-                                window.filterAll()
+                                window.filter('all')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
                             text: qsTr('Installed')
                             onTriggered: {
-                                window.filterInstalled()
+                                window.filter('installed')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
                             text: qsTr('Recent')
-                            onTriggered: window.filterRecent()
+                            onTriggered: {
+                                window.filter('recent')
+                                searchField.text = ''
+                            }
                         }
                         MenuSeparator { }
                         MenuItem {
                             text: qsTr('Sort A-Z')
-                            onTriggered: window.sortAZ()
+                            onTriggered: window.sort('az')
                         }
                         MenuItem {
                             text: qsTr('Sort Z-A')
-                            onTriggered: window.sortZA()
+                            onTriggered: window.sort('za')
                         }
                     }
                 }
@@ -163,6 +166,18 @@ Page {
         focus: true
         onCurrentItemChanged:{
             window.indexUpdated(listView.currentIndex)
+        }
+
+        header: Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 25
+            color: fg
+            Text {
+                anchors.centerIn: parent
+                color: tc
+                text: library.filterName
+            }
         }
 
         delegate: Component {
