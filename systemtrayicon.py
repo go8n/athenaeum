@@ -28,7 +28,6 @@ class SystemTrayIcon(QSystemTrayIcon):
                 # self.parent().activateWindow()
 
     def prepareMenu(self, recent=None):
-        print("prepared")
         self._trayIconMenu.clear()
         if recent:
             for game in recent[:8]:
