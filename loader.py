@@ -138,20 +138,26 @@ class Loader(QObject):
 
     def getIconSmall(self, icons):
         path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
-        if icons['cached'][0]['height'] == '64':
-            return path + '/64x64/' + icons['cached'][0]['value']
-        elif icons['cached'][1]['height'] == '64':
-            return path + '/64x64/' + icons['cached'][0]['value']
+        if icons:
+            if icons['cached'][0]['height'] == '64':
+                return path + '/64x64/' + icons['cached'][0]['value']
+            elif icons['cached'][1]['height'] == '64':
+                return path + '/64x64/' + icons['cached'][0]['value']
+            else:
+                return path + '/128x128/' + icons['cached'][0]['height']['value']
         else:
-            return path + '/128x128/' + icons['cached'][0]['height']['value']
+            return ''
 
     def getIconLarge(self, icons):
         path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
-        cached_icon = icons['cached'][0]
-        if cached_icon['height'] == '128':
-            return path + '/128x128/' + cached_icon['value']
-        elif cached_icon['height'] == '64':
-            return path + '/64x64/' + cached_icon['value']
+        if icons:
+            cached_icon = icons['cached'][0]
+            if cached_icon['height'] == '128':
+                return path + '/128x128/' + cached_icon['value']
+            elif cached_icon['height'] == '64':
+                return path + '/64x64/' + cached_icon['value']
+        else:
+            return ''
 
     def getScreenshots(self, screenshots):
         transfer = []
