@@ -29,7 +29,7 @@ def getMeta(key):
         return None
 
 def setMeta(key, value):
-    MetaRecord.replace(key=key, value=value).execute()
+    MetaRecord.insert(key=key, value=value).on_conflict(action='REPLACE').execute()
 
 def getGame(id):
     try:
