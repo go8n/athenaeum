@@ -38,9 +38,9 @@ def getGame(id):
         return None
 
 def setGame(game):
-    GameRecord.replace(
+    GameRecord.insert(
         id=game.id,
         installed=game.installed,
         last_played_date=game.lastPlayedDate,
         modified_date=datetime.datetime.now()
-    ).execute()
+    ).on_conflict(action='REPLACE').execute()
