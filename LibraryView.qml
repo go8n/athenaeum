@@ -1,7 +1,7 @@
-import QtQuick 2.7
-import QtQuick.Controls 2.4
-import QtQuick.Controls.Material 2.4
-import QtQuick.Layouts 1.11
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQuick.Controls.Material 2.2
+import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Page {
@@ -355,23 +355,30 @@ Page {
                             text: qsTr('Install')
                             visible: !library.currentGame.installed
                             enabled: !library.currentGame.processing
-                            icon.source: 'icons/download.svg'
-                            icon.height: 16
-                            icon.width: 16
                             onClicked: {
                                 window.installGame(library.currentGame.id)
                             }
-
+                            Component.onCompleted: {
+                                if (icon !== "undefined") {
+                                    icon.source = Qt.resolvedUrl('icons/download.svg');
+                                    icon.height = 16;
+                                    icon.width = 16;
+                                }
+                            }
                         }
                         Button {
                             text: qsTr('Play')
                             visible:  library.currentGame.installed
                             enabled: !library.currentGame.playing
-                            icon.source: 'icons/caret-right.svg'
-                            icon.height: 16
-                            icon.width: 16
                             onClicked: {
                                 window.playGame(library.currentGame.id)
+                            }
+                            Component.onCompleted: {
+                                if (icon !== "undefined") {
+                                    icon.source = Qt.resolvedUrl('icons/caret-right.svg');
+                                    icon.height = 16
+                                    icon.width = 16
+                                }
                             }
                             background: Rectangle {
                                 implicitWidth: 100
@@ -409,7 +416,8 @@ Page {
                             }
                             Popup {
                                 id: uninstallPopup
-                                parent: Overlay.overlay
+                                // parent: Overlay.overlay
+                                parent: stackView
                                 background: Rectangle {
                                     anchors.fill: parent
                                     color: fg
@@ -533,12 +541,12 @@ Page {
                         }
                         Popup {
                             id: fullscreenPreview
-                            parent: Overlay.overlay
-                            x: Math.round((window.width - width) / 2)
-                            y: Math.round((window.height - height) / 2)
-
-                            width: window.width
-                            height: window.height
+                            // parent: Overlay.overlay
+                            x: Math.round((stackView.width - width) / 2)
+                            y: Math.round((stackView.height - height) / 2)
+                            parent: stackView
+                            width: stackView.width
+                            height: stackView.height
                             dim: true
                             modal: true
                             MouseArea {
