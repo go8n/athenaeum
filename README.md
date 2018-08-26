@@ -2,15 +2,30 @@
 
 A libre replacement for Steam
 
-![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/rcSvHcbxTbTqmJOlMWRZGpYc)
+![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/AuGUNUQuBPRbnNDCTwCoovAQ)
 
 ## Getting Started
 
-clone this repo
+clone this repo.
 
 ### Prerequisites
 
-Working list, in general you need python3, flatpak, pyqt5 and python-peewee.
+Working list, in general you need python3, flatpak, qt5, pyqt5 and python-peewee.
+
+Ubuntu 18.04
+
+```
+flatpak
+pyqt5
+python3-pyqt5
+python3-pyqt5.qtquick
+python3-peewee
+python3-dateutil
+qml-module-qtquick2
+qml-module-qtquick-layouts
+qml-module-qtquick-controls2
+qml-module-qtquick-window2
+```
 
 Arch
 
@@ -65,6 +80,7 @@ Make sure your game appdata.xml contains the `project_license` field with a Free
 * PyQt5
 * Qt5
 * PeeweeORM
+* Python-Appstream
 * LibreICONS
 
 ## Contributing
@@ -73,9 +89,9 @@ As you would any other project.
 
 ### Other ways
 
-Find libre games and create flatpak configs and submit them to flathub.
+Find libre games, create flatpak manifests for them and submit them to flathub.
 
-A good place to start is LibreGameWiki.
+A good place to start finding games is LibreGameWiki.
 
 https://libregamewiki.org/List_of_games
 
