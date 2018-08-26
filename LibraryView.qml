@@ -359,10 +359,12 @@ Page {
                                 window.installGame(library.currentGame.id)
                             }
                             Component.onCompleted: {
-                                if (icon !== "undefined") {
+                                try {
                                     icon.source = Qt.resolvedUrl('icons/download.svg');
                                     icon.height = 16;
                                     icon.width = 16;
+                                } catch (e) {
+                                    // ignore
                                 }
                             }
                         }
@@ -374,10 +376,12 @@ Page {
                                 window.playGame(library.currentGame.id)
                             }
                             Component.onCompleted: {
-                                if (icon !== "undefined") {
+                                try {
                                     icon.source = Qt.resolvedUrl('icons/caret-right.svg');
-                                    icon.height = 16
-                                    icon.width = 16
+                                    icon.height = 16;
+                                    icon.width = 16;
+                                } catch (e) {
+                                    // ignore
                                 }
                             }
                             background: Rectangle {
