@@ -36,6 +36,7 @@ pyqt5-common
 python-pyqt5
 python-sip-pyqt5
 python-peewee
+python-dateutil
 qt5-base
 qt5-svg
 qt5-quickcontrols2
