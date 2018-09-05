@@ -7,6 +7,8 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QS
 import appstream
 from models import getMeta, setMeta, getGame, setGame
 from game import Game, Screenshot, Release, Url
+from lists import badLicenses, badCategories
+
 
 class Loader(QObject):
     finished = pyqtSignal()
@@ -98,48 +100,46 @@ class Loader(QObject):
         stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
 
         for component in stream.get_components():
-            if component.project_license:
-                if not 'LicenseRef-proprietary' in component.project_license:
-                    if not 'CC-BY-NC-SA' in component.project_license:
-                        if 'Game' in component.categories:
-                            installed = False
-                            last_played_date = None
-                            created_date = None
-                            if process:
-                                name = component.bundle['value'][4:]
-                                installed = name in self._installed_list
+            if component.project_license and not [x for x in badLicenses if x in component.project_license]:
+                if 'Game' in component.categories and not [x for x in badCategories if x in component.categories]:
+                    installed = False
+                    last_played_date = None
+                    created_date = None
+                    if process:
+                        name = component.bundle['value'][4:]
+                        installed = name in self._installed_list
 
-                            gr = getGame(component.id)
-                            if gr:
-                                installed = gr.installed
-                                last_played_date = gr.last_played_date
-                                created_date = gr.created_date
-                            else:
-                                created_date = datetime.now()
+                    gr = getGame(component.id)
+                    if gr:
+                        installed = gr.installed
+                        last_played_date = gr.last_played_date
+                        created_date = gr.created_date
+                    else:
+                        created_date = datetime.now()
 
-                            game = Game(
-                                id=component.id,
-                                name=component.name,
-                                iconSmall=self.getIconSmall(component.icons),
-                                iconLarge=self.getIconLarge(component.icons),
-                                license=component.project_license,
-                                developerName=component.developer_name,
-                                summary=component.summary,
-                                description=component.description,
-                                screenshots=self.getScreenshots(component.screenshots),
-                                categories=component.categories,
-                                releases=self.getReleases(component.releases),
-                                urls=self.getUrls(component.urls),
-                                ref=component.bundle['value'],
-                                installed=installed,
-                                lastPlayedDate=last_played_date,
-                                createdDate=created_date
-                            )
+                    game = Game(
+                        id=component.id,
+                        name=component.name,
+                        iconSmall=self.getIconSmall(component.icons),
+                        iconLarge=self.getIconLarge(component.icons),
+                        license=component.project_license,
+                        developerName=component.developer_name,
+                        summary=component.summary,
+                        description=component.description,
+                        screenshots=self.getScreenshots(component.screenshots),
+                        categories=component.categories,
+                        releases=self.getReleases(component.releases),
+                        urls=self.getUrls(component.urls),
+                        ref=component.bundle['value'],
+                        installed=installed,
+                        lastPlayedDate=last_played_date,
+                        createdDate=created_date
+                    )
 
-                            if process:
-                                setGame(game=game)
+                    if process:
+                        setGame(game=game)
 
-                            self.gameLoaded.emit(game)
+                    self.gameLoaded.emit(game)
         self.finishLoading()
 
     def getIconSmall(self, icons):
