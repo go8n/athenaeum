@@ -90,6 +90,13 @@ Page {
                                 searchField.text = ''
                             }
                         }
+                        MenuItem {
+                            text: qsTr('New')
+                            onTriggered: {
+                                window.filter('new')
+                                searchField.text = ''
+                            }
+                        }
                         MenuSeparator { }
                         MenuItem {
                             text: qsTr('Sort A-Z')

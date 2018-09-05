@@ -1,4 +1,5 @@
 import random
+from datetime import datetime, timedelta
 from functools import partial
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
@@ -103,6 +104,7 @@ class Loader(QObject):
                         if 'Game' in component.categories:
                             installed = False
                             last_played_date = None
+                            created_date = None
                             if process:
                                 name = component.bundle['value'][4:]
                                 installed = name in self._installed_list
@@ -111,6 +113,9 @@ class Loader(QObject):
                             if gr:
                                 installed = gr.installed
                                 last_played_date = gr.last_played_date
+                                created_date = gr.created_date
+                            else:
+                                created_date = datetime.now()
 
                             game = Game(
                                 id=component.id,
@@ -127,7 +132,8 @@ class Loader(QObject):
                                 urls=self.getUrls(component.urls),
                                 ref=component.bundle['value'],
                                 installed=installed,
-                                lastPlayedDate=last_played_date
+                                lastPlayedDate=last_played_date,
+                                createdDate=created_date
                             )
 
                             if process:

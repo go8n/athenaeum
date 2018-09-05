@@ -29,6 +29,7 @@ class Game(QObject):
 
     installedChanged = pyqtSignal()
     lastPlayedDateChanged = pyqtSignal()
+    createdDateChanged = pyqtSignal()
 
     playingChanged = pyqtSignal()
     processingChanged = pyqtSignal()
@@ -51,6 +52,7 @@ class Game(QObject):
             ref='',
             installed=False,
             lastPlayedDate=None,
+            createdDate=None,
             *args,
             **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,6 +75,7 @@ class Game(QObject):
 
         self._installed = installed
         self._lastPlayedDate = lastPlayedDate
+        self._createdDate = createdDate
 
         # Dynamic values
         self._playing = False
@@ -227,7 +230,7 @@ class Game(QObject):
         self._installed = installed
         self.installedChanged.emit()
 
-    @pyqtProperty(bool, notify=lastPlayedDateChanged)
+    @pyqtProperty(datetime, notify=lastPlayedDateChanged)
     def lastPlayedDate(self):
         return self._lastPlayedDate
 
@@ -235,6 +238,15 @@ class Game(QObject):
     def lastPlayedDate(self, lastPlayedDate):
         self._lastPlayedDate = lastPlayedDate
         self.lastPlayedDateChanged.emit()
+
+    @pyqtProperty(datetime, notify=createdDateChanged)
+    def createdDate(self):
+        return self._createdDate
+
+    @createdDate.setter
+    def createdDate(self, createdDate):
+        self._createdDate = createdDate
+        self.createdDateChanged.emit()
 
     @pyqtProperty(bool, notify=processingChanged)
     def processing(self):

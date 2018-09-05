@@ -10,8 +10,8 @@ class BaseModel(Model):
 class GameRecord(BaseModel):
     id = CharField(unique=True)
     installed = BooleanField(default=False)
-    created_date = DateTimeField(default=datetime.datetime.now)
-    modified_date = DateTimeField()
+    created_date = DateTimeField()
+    modified_date = DateTimeField(default=datetime.datetime.now)
     last_played_date = DateTimeField(null=True)
 
 class MetaRecord(BaseModel):
@@ -41,6 +41,6 @@ def setGame(game):
     GameRecord.insert(
         id=game.id,
         installed=game.installed,
-        last_played_date=game.lastPlayedDate,
-        modified_date=datetime.datetime.now()
+        created_date=game.createdDate,
+        last_played_date=game.lastPlayedDate
     ).on_conflict(action='REPLACE').execute()

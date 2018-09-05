@@ -12,6 +12,7 @@ from models import setMeta, getMeta
 class Library(QObject):
     gamesChanged = pyqtSignal()
     recentChanged = pyqtSignal(list)
+    newChanged = pyqtSignal(list)
     filterChanged = pyqtSignal()
     filterNameChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
@@ -22,14 +23,21 @@ class Library(QObject):
 
     def load(self):
         recent = []
+        new = []
         now = datetime.now()
         for game in self._games:
             if game.lastPlayedDate:
                 if (game.lastPlayedDate + timedelta(days=3)) > now:
                     recent.append(game)
-        self.recent = recent
+            if game.createdDate:
+                if (game.createdDate + timedelta(days=3)) > now:
+                    new.append(game)
 
-        self.filterGames(getMeta('filter') or 'all')
+        self.recent = recent
+        self.new = new
+
+        self._filterValue = getMeta('filter')
+        self.filterGames(self._filterValue or 'all')
         self.indexUpdated(0)
 
     def reset(self):
@@ -40,6 +48,7 @@ class Library(QObject):
         self._threads = []
         self._processes = []
         self._recent = []
+        self._new = []
 
     def findById(self, game_id):
         for index, game in enumerate(self.games):
@@ -76,6 +85,16 @@ class Library(QObject):
         if recent != self._recent:
             self._recent = recent
             self.recentChanged.emit(self._recent)
+
+    @pyqtProperty(list, notify=newChanged)
+    def new(self):
+        return self._new
+
+    @new.setter
+    def new(self, new):
+        if new != self._new:
+            self._new = new
+            self.newChanged.emit(self._new)
 
     @pyqtProperty(QQmlListProperty, notify=filterChanged)
     def filter(self):
@@ -172,8 +191,7 @@ class Library(QObject):
                 if query in game.name.lower():
                     self.appendFilter(game)
         else:
-            self.filterName = self.tr('All Games')
-            self.filter = self.games
+            self.filterGames(self._filterValue)
 
     def filterGames(self, filter):
         if filter == 'installed':
@@ -185,9 +203,13 @@ class Library(QObject):
         elif filter == 'recent':
             self.filterName = self.tr('Recent')
             self.filter = self.recent
+        elif filter == 'new':
+            self.filterName = self.tr('New')
+            self.filter = self.new
         else:
             self.filterName = self.tr('All Games')
             self.filter = self.games
+        self._filterValue = filter
         setMeta(key='filter', value=filter)
 
     def sortGames(self, sort):
