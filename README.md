@@ -4,6 +4,13 @@ A libre replacement for Steam
 
 ![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/AuGUNUQuBPRbnNDCTwCoovAQ)
 
+## What Works
+
+* Installing Games
+* Running Games
+* Uninstalling Games
+* Updates (Only monolithic atm, individual to come)
+
 ## Getting Started
 
 clone this repo.
@@ -43,7 +50,7 @@ qt5-quickcontrols2
 qt5-declarative
 ```
 
-### Installing
+### Installing Athenaeum
 
 not supported atm
 
