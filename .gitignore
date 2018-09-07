@@ -5,3 +5,4 @@ libs/
 /__pycache__
 *.db
 s.py
+*.egg-info/
