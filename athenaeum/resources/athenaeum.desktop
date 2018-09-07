@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Athenaeum
+Icon=athenaeum
+Exec=athenaeum
+Terminal=false
+Categories=Game;PackageManager;

@@ -2,6 +2,8 @@
 
 A libre replacement for Steam
 
+*In the modern period, the term "Athenaeum" is widely used in various countries for schools, libraries, museums, cultural centers, performance halls and theaters, periodicals, clubs and societies - all aspiring to fulfill a cultural function similar to that of the ancient Roman school.*
+
 ![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/AuGUNUQuBPRbnNDCTwCoovAQ)
 
 ## What Works
@@ -13,7 +15,13 @@ A libre replacement for Steam
 
 ## Getting Started
 
-clone this repo.
+### Arch Users
+
+Download just the `PKGBUILD` and use that.
+
+### Other Distros
+
+Clone this repo.
 
 ### Prerequisites
 
@@ -28,6 +36,7 @@ python3-pyqt5
 python3-pyqt5.qtquick
 python3-peewee
 python3-dateutil
+python3-xdg
 qml-module-qtquick2
 qml-module-qtquick-layouts
 qml-module-qtquick-controls2
@@ -44,6 +53,7 @@ python-pyqt5
 python-sip-pyqt5
 python-peewee
 python-dateutil
+python-xdg
 qt5-base
 qt5-svg
 qt5-quickcontrols2
@@ -52,7 +62,13 @@ qt5-declarative
 
 ### Installing Athenaeum
 
-not supported atm
+#### Arch
+
+Use the `PKGBUILD` to build it then use pacman to install it.
+
+#### Other
+
+Not currently supported, though you can probably do it with the `setup.py`
 
 ### Running Athenaeum
 

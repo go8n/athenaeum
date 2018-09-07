@@ -1,0 +1,17 @@
+include athenaeum/icons/bug.svg
+include athenaeum/icons/caret-right.svg
+include athenaeum/icons/close.svg
+include athenaeum/icons/cogs.svg
+include athenaeum/icons/donate.svg
+include athenaeum/icons/download.svg
+include athenaeum/icons/globe.svg
+include athenaeum/icons/help.svg
+include athenaeum/icons/home.svg
+include athenaeum/icons/question.svg
+include athenaeum/icons/refresh.svg
+include athenaeum/icons/LICENSE
+include athenaeum/icons/CREDITS
+
+include athenaeum/Athenaeum.qml
+include athenaeum/LibraryView.qml
+include athenaeum/SettingsView.qml
