@@ -11,3 +11,7 @@ include athenaeum/icons/question.svg
 include athenaeum/icons/refresh.svg
 include athenaeum/icons/LICENSE
 include athenaeum/icons/CREDITS
+
+include athenaeum/Athenaeum.qml
+include athenaeum/LibraryView.qml
+include athenaeum/SettingsView.qml
