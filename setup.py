@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="Athenaeum",
+    name="athenaeum",
     version='0.1',
     author='librebob',
     license='GPL-3.0-or-later',
@@ -11,7 +11,7 @@ setup(
     entry_points={
         'gui_scripts': [
             'athenaeum = athenaeum.athenaeum:main',
-        ],
+        ]
     },
     install_requires=[],
     description="A libre replacement for Steam",
