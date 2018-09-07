@@ -75,13 +75,13 @@ Not currently supported, though you can probably do it with the `setup.py`
 Arch
 
 ```
-python main.py
+python athenaeum.py
 ```
 
 Ubuntu
 
 ```
-python3 main.py
+python3 athenaeum.py
 ```
 
 ## Running the tests
