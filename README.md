@@ -15,7 +15,13 @@ A libre replacement for Steam
 
 ## Getting Started
 
-clone this repo.
+### Arch Users
+
+Download just the `PKGBUILD` and use that.
+
+### Other Distros
+
+Clone this repo.
 
 ### Prerequisites
 
@@ -56,7 +62,13 @@ qt5-declarative
 
 ### Installing Athenaeum
 
-not supported atm
+#### Arch
+
+Use the `PKGBUILD` to build it then use pacman to install it.
+
+#### Other
+
+Not currently supported, though you can probably do it with the `setup.py`
 
 ### Running Athenaeum
 
