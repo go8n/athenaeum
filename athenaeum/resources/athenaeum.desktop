@@ -3,7 +3,6 @@
 Type=Application
 Name=Athenaeum
 Icon=athenaeum
-Exec=
+Exec=athenaeum
 Terminal=false
-NoDisplay=false
 Categories=Game;PackageManager;
