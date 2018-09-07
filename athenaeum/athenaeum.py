@@ -53,7 +53,7 @@ def main():
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
 
-    engine.load('Athenaeum.qml')
+    engine.load(BASEDIR + '/Athenaeum.qml')
 
     root = engine.rootObjects()[0]
 
