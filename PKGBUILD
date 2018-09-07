@@ -1,3 +1,4 @@
+# Maintainer: librebob librebob@protonmail.com
 pkgname=athenaeum-git
 _pkgname=athenaeum
 pkgver=0.1
