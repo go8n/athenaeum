@@ -23,14 +23,18 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
 
-    icon = 'athena_icon_32x32.png'
-
     db.connect()
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
 
     app = QApplication(sys.argv)
+
+    searchPaths = QIcon.fallbackSearchPaths()
+    searchPaths.append(BASEDIR + "/resources/icons/hicolor/32x32")
+    searchPaths.append(BASEDIR + "/resource/icons/hicolor/64x64")
+    QIcon.setFallbackSearchPaths(searchPaths)
+
     app.setApplicationDisplayName('Athenaeum')
-    app.setWindowIcon(QIcon(icon))
+    app.setWindowIcon(QIcon.fromTheme('athenaeum'))
     app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
@@ -69,7 +73,7 @@ def main():
     root.filter.connect(library.filterGames)
     root.sort.connect(library.sortGames)
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon(icon), root=root, parent=app)
+    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum'), root=root, parent=app)
     systemTrayIcon.playGame.connect(library.playGame)
     library.recentChanged.connect(systemTrayIcon.prepareMenu)
 
