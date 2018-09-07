@@ -1,7 +1,12 @@
 from peewee import *
+from xdg import BaseDirectory
 import datetime
 
-db = SqliteDatabase('store.db')
+try:
+    path = BaseDirectory.save_data_path('athenaeum')
+    db = SqliteDatabase(path + '/store.db')
+except Error as e:
+    sys.exit("Error setting up database.")
 
 class BaseModel(Model):
     class Meta:
