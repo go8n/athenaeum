@@ -1,3 +1,4 @@
+import os
 from functools import partial
 
 from PyQt5.QtGui import QIcon
@@ -35,5 +36,5 @@ class SystemTrayIcon(QSystemTrayIcon):
                 playGameAction.triggered.connect(partial(self.playGame.emit, game.id))
             self._trayIconMenu.addSeparator()
 
-        exitAction = self._trayIconMenu.addAction(QIcon('icons/close.svg'), 'Exit')
+        exitAction = self._trayIconMenu.addAction(QIcon(os.path.dirname(__file__) + '/icons/close.svg'), 'Exit')
         exitAction.triggered.connect(self.parent().quit)
