@@ -2,6 +2,8 @@
 
 A libre replacement for Steam
 
+*In the modern period, the term "Athenaeum" is widely used in various countries for schools, libraries, museums, cultural centers, performance halls and theaters, periodicals, clubs and societies - all aspiring to fulfill a cultural function similar to that of the ancient Roman school.*
+
 ![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/AuGUNUQuBPRbnNDCTwCoovAQ)
 
 ## What Works
