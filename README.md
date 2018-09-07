@@ -19,6 +19,8 @@ A libre replacement for Steam
 
 Download just the `PKGBUILD` and use that.
 
+Or get it from the AUR https://aur.archlinux.org/packages/athenaeum-git/
+
 ### Other Distros
 
 Clone this repo.
@@ -65,6 +67,8 @@ qt5-declarative
 #### Arch
 
 Use the `PKGBUILD` to build it then use pacman to install it.
+
+Or get it from the AUR https://aur.archlinux.org/packages/athenaeum-git/
 
 #### Other
 
