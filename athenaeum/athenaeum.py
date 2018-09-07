@@ -5,6 +5,13 @@ from PyQt5.QtCore import QTranslator, QLocale
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtWidgets import QApplication
 
+# Helpful snippet from kawaii-player https://github.com/kanishka-linux/kawaii-player/
+if getattr(sys, 'frozen', False):
+    BASEDIR, BASEFILE = os.path.split(os.path.abspath(sys.executable))
+else:
+    BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
+sys.path.insert(0, BASEDIR)
+
 from game import Game
 from library import Library
 from loader import Loader
