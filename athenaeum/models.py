@@ -15,6 +15,7 @@ class BaseModel(Model):
 class GameRecord(BaseModel):
     id = CharField(unique=True)
     installed = BooleanField(default=False)
+    has_update = BooleanField(default=False)
     created_date = DateTimeField()
     modified_date = DateTimeField(default=datetime.datetime.now)
     last_played_date = DateTimeField(null=True)
@@ -46,6 +47,7 @@ def setGame(game):
     GameRecord.insert(
         id=game.id,
         installed=game.installed,
+        has_update=game.hasUpdate,
         created_date=game.createdDate,
         last_played_date=game.lastPlayedDate
     ).on_conflict(action='REPLACE').execute()

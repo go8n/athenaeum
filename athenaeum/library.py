@@ -14,7 +14,7 @@ class Library(QObject):
     recentChanged = pyqtSignal(list)
     newChanged = pyqtSignal(list)
     filterChanged = pyqtSignal()
-    filterNameChanged = pyqtSignal()
+    filterValueChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
@@ -36,14 +36,14 @@ class Library(QObject):
         self.recent = recent
         self.new = new
 
-        self._filterValue = getMeta('filter')
-        self.filterGames(self._filterValue or 'all')
+        self.filterValue = getMeta('filter')
+        self.filterGames(self.filterValue or 'all')
         self.indexUpdated(0)
 
     def reset(self):
         self._games = []
         self._filter = []
-        self._filterName = ''
+        self._filterValue = ''
         self._currentGame = Game()
         self._threads = []
         self._processes = []
@@ -106,15 +106,15 @@ class Library(QObject):
             self._filter = filter
             self.filterChanged.emit()
 
-    @pyqtProperty('QString', notify=filterNameChanged)
-    def filterName(self):
-        return self._filterName
+    @pyqtProperty('QString', notify=filterValueChanged)
+    def filterValue(self):
+        return self._filterValue
 
-    @filterName.setter
-    def filterName(self, filterName):
-        if filterName != self._filterName:
-            self._filterName = filterName
-            self.filterNameChanged.emit()
+    @filterValue.setter
+    def filterValue(self, filterValue):
+        if filterValue != self._filterValue:
+            self._filterValue = filterValue
+            self.filterValueChanged.emit()
 
     def appendGame(self, game):
         self._games.append(game)
@@ -184,32 +184,35 @@ class Library(QObject):
 
     def searchGames(self, query):
         if query:
-            self.filterName = self.tr('Results')
+            self.filterValue = 'results'
             self.filter = []
             query = query.lower()
             for game in self._games:
                 if query in game.name.lower():
                     self.appendFilter(game)
         else:
-            self.filterGames(self._filterValue)
+            self.filterGames(self.filterValue)
 
     def filterGames(self, filter):
+        self.filterValue = filter
+
         if filter == 'installed':
-            self.filterName = self.tr('Installed')
             self.filter = []
             for game in self._games:
                 if game.installed:
                     self.appendFilter(game)
         elif filter == 'recent':
-            self.filterName = self.tr('Recent')
             self.filter = self.recent
         elif filter == 'new':
-            self.filterName = self.tr('New')
             self.filter = self.new
+        elif filter == 'update':
+            self.filter = []
+            for game in self._games:
+                if game.hasUpdate:
+                    self.appendFilter(game)
         else:
-            self.filterName = self.tr('All Games')
             self.filter = self.games
-        self._filterValue = filter
+
         setMeta(key='filter', value=filter)
 
     def sortGames(self, sort):

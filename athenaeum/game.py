@@ -28,6 +28,7 @@ class Game(QObject):
     refChanged = pyqtSignal()
 
     installedChanged = pyqtSignal()
+    hasUpdateChanged = pyqtSignal()
     lastPlayedDateChanged = pyqtSignal()
     createdDateChanged = pyqtSignal()
 
@@ -51,6 +52,7 @@ class Game(QObject):
             urls=[],
             ref='',
             installed=False,
+            hasUpdate=False,
             lastPlayedDate=None,
             createdDate=None,
             *args,
@@ -74,6 +76,7 @@ class Game(QObject):
         self._ref = ref
 
         self._installed = installed
+        self._hasUpdate = hasUpdate
         self._lastPlayedDate = lastPlayedDate
         self._createdDate = createdDate
 
@@ -230,6 +233,15 @@ class Game(QObject):
         self._installed = installed
         self.installedChanged.emit()
 
+    @pyqtProperty(bool, notify=hasUpdateChanged)
+    def hasUpdate(self):
+        return self._hasUpdate
+
+    @hasUpdate.setter
+    def hasUpdate(self, hasUpdate):
+        self._hasUpdate = hasUpdate
+        self.hasUpdateChanged.emit()
+
     @pyqtProperty(datetime, notify=lastPlayedDateChanged)
     def lastPlayedDate(self):
         return self._lastPlayedDate
@@ -298,8 +310,11 @@ class Game(QObject):
     def startUpdate(self):
         self.processing = True
 
-    def finishUpdate(self):
+    def finishUpdate(self, process):
         self.processing = False
+        self.hasUpdate = False
+        self.save()
+        self.appendLog(process, finished=True)
 
     def appendLog(self, process, finished=False):
         log_data = str(process.readAllStandardOutput(), 'utf-8')

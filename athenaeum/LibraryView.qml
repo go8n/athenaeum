@@ -97,6 +97,13 @@ Page {
                                 searchField.text = ''
                             }
                         }
+                        MenuItem {
+                            text: qsTr('Has Update')
+                            onTriggered: {
+                                window.filter('update')
+                                searchField.text = ''
+                            }
+                        }
                         MenuSeparator { }
                         MenuItem {
                             text: qsTr('Sort A-Z')
@@ -181,9 +188,23 @@ Page {
             height: 25
             color: fg
             Text {
+                function formatFilterName(filter) {
+                    switch(filter) {
+                    case 'installed':
+                        return qsTr('Installed');
+                    case 'recent':
+                        return qsTr('Recent');
+                    case 'new':
+                        return qsTr('New');
+                    case 'update':
+                        return qsTr('Has Update');
+                    default:
+                        return qsTr('All Games');
+                    }
+                }
                 anchors.centerIn: parent
                 color: tc
-                text: library.filterName
+                text: formatFilterName(library.filterValue)
             }
         }
 
@@ -397,22 +418,29 @@ Page {
                                 color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
                             }
                         }
-                        // Button {
-                        //     text: qsTr('Update')
-                        //     visible:  library.currentGame.hasUpdates && library.currentGame.installed
-                        //     enabled: !library.currentGame.playing && !library.currentGame.processing
-                        //     icon.source: 'icons/refresh.svg'
-                        //     icon.height: 16
-                        //     icon.width: 16
-                        //     onClicked: {
-                        //         window.updateGame(library.currentGame.id)
-                        //     }
-                        //     background: Rectangle {
-                        //         implicitWidth: 40
-                        //         implicitHeight: 40
-                        //         color: dg
-                        //     }
-                        // }
+                        Button {
+                            text: qsTr('Update');
+                            visible: library.currentGame.hasUpdate && library.currentGame.installed
+                            enabled: !library.currentGame.playing && !library.currentGame.processing
+                            Component.onCompleted: {
+                                try {
+                                    icon.source = Qt.resolvedUrl('icons/refresh.svg');
+                                    icon.height = 16;
+                                    icon.width = 16;
+                                } catch (e) {
+                                    // ignore
+                                }
+                            }
+                            onClicked: {
+                                window.updateGame(library.currentGame.id)
+                            }
+                            background: Rectangle {
+                                id: bgRect
+                                implicitWidth: 100
+                                implicitHeight: 40
+                                color: dg
+                            }
+                        }
                         Button {
                             text: qsTr('Uninstall')
                             visible: library.currentGame.installed

@@ -103,15 +103,20 @@ class Loader(QObject):
             if component.project_license and not [x for x in badLicenses if x in component.project_license]:
                 if 'Game' in component.categories and not [x for x in badCategories if x in component.categories]:
                     installed = False
+                    has_update = False
                     last_played_date = None
                     created_date = None
+
                     if process:
                         name = component.bundle['value'][4:]
                         installed = name in self._installed_list
+                        has_update = name.split('/')[0] in self._updates_list
 
                     gr = getGame(component.id)
                     if gr:
                         installed = gr.installed
+                        if not process:
+                            has_update = gr.has_update
                         last_played_date = gr.last_played_date
                         created_date = gr.created_date
                     else:
@@ -132,6 +137,7 @@ class Loader(QObject):
                         urls=self.getUrls(component.urls),
                         ref=component.bundle['value'],
                         installed=installed,
+                        hasUpdate=has_update,
                         lastPlayedDate=last_played_date,
                         createdDate=created_date
                     )
