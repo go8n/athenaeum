@@ -1,7 +1,8 @@
 import signal, os, sys
 
+
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QTranslator, QLocale
+from PyQt5.QtCore import QTranslator, QLocale, Qt
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtWidgets import QApplication
 
@@ -13,6 +14,7 @@ else:
 sys.path.insert(0, BASEDIR)
 
 from game import Game
+from settings import Settings
 from library import Library
 from loader import Loader
 from models import GameRecord, MetaRecord, SettingsRecord, db
@@ -28,28 +30,25 @@ def main():
 
     app = QApplication(sys.argv)
 
-    searchPaths = QIcon.fallbackSearchPaths()
-    searchPaths.append(BASEDIR + "/resources/icons/hicolor/32x32")
-    searchPaths.append(BASEDIR + "/resource/icons/hicolor/64x64")
-    QIcon.setFallbackSearchPaths(searchPaths)
-
     app.setApplicationDisplayName('Athenaeum')
-    app.setWindowIcon(QIcon.fromTheme('athenaeum'))
-    app.setQuitOnLastWindowClosed(False)
+    app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
+    # app.setQuitOnLastWindowClosed(True)
 
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
     if loaded:
         print('Loaded ' + QLocale.system().name() + ' translation.')
     else:
-        print('Using default.')
+        print('Using default translation.')
 
     app.installTranslator(tr);
 
     qmlRegisterType(Game, 'Athenaeum', 1, 0, 'Game')
     qmlRegisterType(Library, 'Athenaeum', 1, 0, 'Library')
     qmlRegisterType(Loader, 'Athenaeum', 1, 0, 'Loader')
+    qmlRegisterType(Settings, 'Athenaeum', 1, 0, 'Settings')
 
+    settings = Settings(parent=app)
     loader = Loader(parent=app)
     library = Library(parent=app)
 
@@ -58,6 +57,7 @@ def main():
     loader.gameLoaded.connect(library.appendGame)
 
     engine = QQmlApplicationEngine(parent=app)
+    engine.rootContext().setContextProperty('settings', settings)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
 
@@ -78,9 +78,14 @@ def main():
     root.filter.connect(library.filterGames)
     root.sort.connect(library.sortGames)
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum'), root=root, parent=app)
+    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/athenaeum.png")),
+    root=root, show=settings.showTrayIcon, parent=app)
+
     systemTrayIcon.playGame.connect(library.playGame)
     library.recentChanged.connect(systemTrayIcon.prepareMenu)
+
+    settings.showTrayIconChanged.connect(systemTrayIcon.setVisible)
+    # settings.closeToTrayChanged.connect(app.setQuitOnLastWindowClosed)
 
     loader.load()
 

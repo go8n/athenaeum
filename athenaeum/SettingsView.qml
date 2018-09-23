@@ -46,7 +46,7 @@ Page {
                     color: fg
                 }
                 color: tc
-                text: "Settings"
+                text: qsTr("Settings")
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
@@ -71,10 +71,46 @@ Page {
                 Menu {
                     id: menu
                     MenuItem {
-                        text: "Reset All"
+                        text: qsTr("Reset All")
+                    }
+                    MenuItem {
+                        text: qsTr('Exit')
+                        onTriggered: Qt.quit()
                     }
                 }
             }
         }
+    }
+
+    Column {
+        padding: 40
+        Row {
+            CheckBox {
+                checked: settings.showTrayIcon
+                onClicked: {
+                    settings.showTrayIcon = checked
+                }
+            }
+            Text {
+                height: parent.height
+                verticalAlignment: Qt.AlignVCenter
+                color: tc
+                text: qsTr("Show Tray Icon")
+            }
+        }
+        // Row {
+        //     CheckBox {
+        //         checked: settings.closeToTray
+        //         onClicked: {
+        //             settings.closeToTray = checked
+        //         }
+        //     }
+        //     Text {
+        //         height: parent.height
+        //         verticalAlignment: Qt.AlignVCenter
+        //         color: tc
+        //         text: qsTr("Close to Tray")
+        //     }
+        // }
     }
 }

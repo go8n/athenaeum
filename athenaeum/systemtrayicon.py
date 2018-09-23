@@ -9,16 +9,17 @@ from PyQt5.QtWidgets import QSystemTrayIcon, QMenu
 class SystemTrayIcon(QSystemTrayIcon):
     playGame = pyqtSignal(str)
 
-    def __init__(self, root, *args, **kwargs):
+    def __init__(self, root, show, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._root = root
+
+        self.setVisible(show)
 
         self._trayIconMenu = QMenu();
         self.prepareMenu()
 
         self.setContextMenu(self._trayIconMenu)
         self.activated.connect(self.signalReceived)
-        self.show()
 
     def signalReceived(self, reason):
         if reason == QSystemTrayIcon.Trigger:
@@ -26,7 +27,6 @@ class SystemTrayIcon(QSystemTrayIcon):
                 self._root.hide()
             else:
                 self._root.show()
-                # self.parent().activateWindow()
 
     def prepareMenu(self, recent=None):
         self._trayIconMenu.clear()

@@ -121,7 +121,9 @@ Athenaeum leverages the QT translation classes and tools. To get started simply 
 
 After that use `linguist` to edit the file adding your translations. Once there's some translations ` lrelease -verbose athenaeum.pro` will be used to generate the files that will be loaded at runtime.
 
-The QT website explains this all better and in more details. https://doc-snapshots.qt.io/qt5-5.11/qtlinguist-hellotr-example.html
+The QT website explains this all better and in more detail.
+
+https://doc-snapshots.qt.io/qt5-5.11/qtlinguist-hellotr-example.html
 
 ### Other ways
 

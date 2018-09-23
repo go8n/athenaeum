@@ -1,6 +1,7 @@
 from peewee import *
 from xdg import BaseDirectory
 import datetime
+import json
 
 try:
     path = BaseDirectory.save_data_path('athenaeum')
@@ -36,6 +37,15 @@ def getMeta(key):
 
 def setMeta(key, value):
     MetaRecord.insert(key=key, value=value).on_conflict(action='REPLACE').execute()
+
+def getSetting(key):
+    try:
+        return json.loads((SettingsRecord.get(SettingsRecord.key == key)).value)
+    except DoesNotExist:
+        return None
+
+def setSetting(key, value):
+    SettingsRecord.insert(key=key, value=json.dumps(value)).on_conflict(action='REPLACE').execute()
 
 def getGame(id):
     try:
