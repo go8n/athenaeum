@@ -115,6 +115,14 @@ Make sure your game appdata.xml contains the `project_license` field with a Free
 
 As you would any other project.
 
+### Translations
+
+Athenaeum leverages the QT translation classes and tools. To get started simply add a translation file to `athenaeum.pro` eg. `athenaeum/translations/athenaeum_ja.ts` then run `lupdate -verbose athenaeum.pro` to generate the file.
+
+After that use `linguist` to edit the file adding your translations. Once there's some translations ` lrelease -verbose athenaeum.pro` will be used to generate the files that will be loaded at runtime.
+
+The QT website explains this all better and in more details. https://doc-snapshots.qt.io/qt5-5.11/qtlinguist-hellotr-example.html
+
 ### Other ways
 
 Find libre games, create flatpak manifests for them and submit them to flathub.

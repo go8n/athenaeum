@@ -38,7 +38,11 @@ def main():
     app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
-    tr.load("app_" + QLocale.system().name());
+    loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
+    if loaded:
+        print('Loaded ' + QLocale.system().name() + ' translation.')
+    else:
+        print('Using default.')
 
     app.installTranslator(tr);
 
@@ -66,6 +70,7 @@ def main():
     root.uninstallGame.connect(library.uninstallGame)
     root.updateGame.connect(library.updateGame)
     root.playGame.connect(library.playGame)
+
     root.updateAll.connect(loader.runUpdateCommands)
     root.checkAll.connect(loader.runListCommands)
 
