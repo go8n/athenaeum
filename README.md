@@ -33,7 +33,6 @@ Ubuntu 18.04
 
 ```
 flatpak
-pyqt5
 python3-pyqt5
 python3-pyqt5.qtquick
 python3-peewee
