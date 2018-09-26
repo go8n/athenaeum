@@ -38,6 +38,8 @@ class Library(QObject):
 
         self.filterValue = getMeta('filter')
         self.filterGames(self.filterValue or 'all')
+        if not self.filter:
+            self.filterGames('all')
         self.indexUpdated(0)
 
     def reset(self):
@@ -197,19 +199,21 @@ class Library(QObject):
         self.filterValue = filter
 
         if filter == 'installed':
-            self.filter = []
+            tmp = []
             for game in self._games:
                 if game.installed:
-                    self.appendFilter(game)
+                    tmp.append(game)
+            self.filter = tmp
         elif filter == 'recent':
             self.filter = self.recent
         elif filter == 'new':
             self.filter = self.new
         elif filter == 'update':
-            self.filter = []
+            tmp = []
             for game in self._games:
                 if game.hasUpdate:
-                    self.appendFilter(game)
+                    tmp.append(game)
+            self.filter = tmp
         else:
             self.filter = self.games
 

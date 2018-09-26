@@ -32,7 +32,7 @@ def main():
 
     app.setApplicationDisplayName('Athenaeum')
     app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
-    # app.setQuitOnLastWindowClosed(True)
+    app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");

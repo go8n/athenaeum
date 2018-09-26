@@ -98,7 +98,7 @@ Page {
                             }
                         }
                         MenuItem {
-                            text: qsTr('Has Update')
+                            text: qsTr('Has Updates')
                             onTriggered: {
                                 window.filter('update')
                                 searchField.text = ''
