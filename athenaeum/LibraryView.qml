@@ -883,24 +883,19 @@ Page {
                                 id: linksList
                                 delegate: Column {
                                     width: parent.width
-                                    // Text {
-                                    //     leftPadding: 10
-                                    //     rightPadding: 50
-                                    //     topPadding: 5
-                                    //     bottomPadding: index+1 < linksList.count ? 0 : 5
-                                    //     width: parent.width
-                                    //     color: hl
-                                    //     font.pixelSize: 12
-                                    //     text: '<html><style type="text/css">a { color:'+tc+'; text-decoration: none; }</style><a href="' + url + '"><img src="icons/' + icon + '">&#8239;' + title + '</a></html>'
-                                    //     textFormat: Text.RichText
-                                    //     wrapMode: Text.WrapAnywhere
-                                    //     onLinkActivated: Qt.openUrlExternally(link)
-                                    // }
                                     Button {
                                         leftPadding: 10
                                         rightPadding: 50
                                         topPadding: 5
                                         // bottomPadding: index+1 < linksList.count ? 0 : 5
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                Qt.openUrlExternally(url)
+                                            }
+                                        }
                                         contentItem: Row {
                                             Image {
                                                 width: 14
@@ -934,14 +929,9 @@ Page {
                                                 color: tc
                                             }
                                         }
-
                                         background: Rectangle {
                                             anchors.fill: parent
                                             color: fg
-                                        }
-
-                                        onClicked: {
-                                            Qt.openUrlExternally(url)
                                         }
                                     }
                                 }
