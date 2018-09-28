@@ -5,6 +5,7 @@ from models import setSetting, getSetting
 class Settings(QObject):
     showTrayIconChanged = pyqtSignal(bool)
     closeToTrayChanged = pyqtSignal(bool)
+    alwaysShowLogsChanged = pyqtSignal(bool)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -12,6 +13,8 @@ class Settings(QObject):
         self._showTrayIcon = True if showTrayIcon is None else showTrayIcon
         closeToTray = getSetting('close_to_tray')
         self._closeToTray = True if closeToTray is None else closeToTray
+        alwaysShowLogs = getSetting('close_to_tray')
+        self._alwaysShowLogs = True if alwaysShowLogs is None else alwaysShowLogs
 
     @pyqtProperty(bool, notify=showTrayIconChanged)
     def showTrayIcon(self):
@@ -35,3 +38,14 @@ class Settings(QObject):
             setSetting('close_to_tray', closeToTray)
             print(not closeToTray)
             self.closeToTrayChanged.emit(not closeToTray)
+
+    @pyqtProperty(bool, notify=alwaysShowLogsChanged)
+    def alwaysShowLogs(self):
+        return self._alwaysShowLogs
+
+    @alwaysShowLogs.setter
+    def alwaysShowLogs(self, alwaysShowLogs):
+        if alwaysShowLogs != self._alwaysShowLogs:
+            self._alwaysShowLogs = alwaysShowLogs
+            setSetting('close_to_tray', alwaysShowLogs)
+            self.alwaysShowLogsChanged.emit(alwaysShowLogs)

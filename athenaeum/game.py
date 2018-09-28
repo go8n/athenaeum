@@ -281,12 +281,14 @@ class Game(QObject):
 
     def startGame(self):
         self.playing = True
+        self.lastPlayedDate = datetime.now()
         print('start game')
 
-    def stopGame(self):
+    def stopGame(self, process):
         self.playing = False
         self.lastPlayedDate = datetime.now()
         self.save()
+        self.appendLog(process, finished=True)
         print('stop game')
 
     def startInstall(self):
@@ -317,7 +319,14 @@ class Game(QObject):
         self.appendLog(process, finished=True)
 
     def appendLog(self, process, finished=False):
-        log_data = str(process.readAllStandardOutput(), 'utf-8')
+        output_data = str(process.readAllStandardOutput(), 'utf-8')
+        if '\n' == output_data:
+            output_data = ''
+        error_data = str(process.readAllStandardError(), 'utf-8')
+        if '\n' == error_data:
+            error_data = ''
+
+        log_data = output_data + error_data
         if finished:
             pass
         else:

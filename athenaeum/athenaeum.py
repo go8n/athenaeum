@@ -82,7 +82,7 @@ def main():
     root=root, show=settings.showTrayIcon, parent=app)
 
     systemTrayIcon.playGame.connect(library.playGame)
-    library.recentChanged.connect(systemTrayIcon.prepareMenu)
+    library.filtersChanged.connect(systemTrayIcon.prepareMenu)
 
     settings.showTrayIconChanged.connect(systemTrayIcon.setVisible)
     # settings.closeToTrayChanged.connect(app.setQuitOnLastWindowClosed)

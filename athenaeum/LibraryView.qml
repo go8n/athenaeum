@@ -70,37 +70,44 @@ Page {
                     Menu {
                         id: sortMenu
                         MenuItem {
-                            text: qsTr('All Games')
+                            text: qsTr('All Games (%L1)').arg(library.games.length)
                             onTriggered: {
                                 window.filter('all')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
-                            text: qsTr('Installed')
+                            text: qsTr('Installed (%L1)').arg(library.installedCount)
                             onTriggered: {
                                 window.filter('installed')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
-                            text: qsTr('Recent')
+                            text: qsTr('Recent (%L1)').arg(library.recentCount)
                             onTriggered: {
                                 window.filter('recent')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
-                            text: qsTr('New')
+                            text: qsTr('New (%L1)').arg(library.newCount)
                             onTriggered: {
                                 window.filter('new')
                                 searchField.text = ''
                             }
                         }
                         MenuItem {
-                            text: qsTr('Has Updates')
+                            text: qsTr('Has Updates (%L1)').arg(library.hasUpdatesCount)
                             onTriggered: {
                                 window.filter('update')
+                                searchField.text = ''
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr('Processing (%L1)').arg(library.processingCount)
+                            onTriggered: {
+                                window.filter('processing')
                                 searchField.text = ''
                             }
                         }
@@ -198,6 +205,8 @@ Page {
                             return qsTr('New');
                         case 'update':
                             return qsTr('Has Update');
+                        case 'results':
+                            return qsTr('Results');
                         default:
                             return qsTr('All Games');
                     }
@@ -510,7 +519,7 @@ Page {
                     anchors.leftMargin: 40
                     color: bl
                     height: 150
-                    visible: library.currentGame.processing
+                    visible: library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
 
                     Flickable {
                         id: testFlick

@@ -31,7 +31,7 @@ class SystemTrayIcon(QSystemTrayIcon):
     def prepareMenu(self, recent=None):
         self._trayIconMenu.clear()
         if recent:
-            for game in recent[:8]:
+            for game in recent:
                 playGameAction = self._trayIconMenu.addAction(QIcon(game.iconSmall), game.name)
                 playGameAction.triggered.connect(partial(self.playGame.emit, game.id))
             self._trayIconMenu.addSeparator()

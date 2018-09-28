@@ -11,30 +11,19 @@ from models import setMeta, getMeta
 
 class Library(QObject):
     gamesChanged = pyqtSignal()
-    recentChanged = pyqtSignal(list)
-    newChanged = pyqtSignal(list)
     filterChanged = pyqtSignal()
+    filtersChanged = pyqtSignal(list)
     filterValueChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
+    errorChanged = pyqtSignal()
+    displayNotification = pyqtSignal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reset()
 
     def load(self):
-        recent = []
-        new = []
-        now = datetime.now()
-        for game in self._games:
-            if game.lastPlayedDate:
-                if (game.lastPlayedDate + timedelta(days=3)) > now:
-                    recent.append(game)
-            if game.createdDate:
-                if (game.createdDate + timedelta(days=3)) > now:
-                    new.append(game)
-
-        self.recent = recent
-        self.new = new
+        self.updateFilters(True)
 
         self.filterValue = getMeta('filter')
         self.filterGames(self.filterValue or 'all')
@@ -45,12 +34,18 @@ class Library(QObject):
     def reset(self):
         self._games = []
         self._filter = []
+        self._filters = {
+            'installed': [],
+            'recent': [],
+            'new': [],
+            'has_updates': [],
+            'processing': []
+        }
         self._filterValue = ''
         self._currentGame = Game()
         self._threads = []
         self._processes = []
-        self._recent = []
-        self._new = []
+        self._error = 0
 
     def findById(self, game_id):
         for index, game in enumerate(self.games):
@@ -78,25 +73,25 @@ class Library(QObject):
             self._games = games
             self.gamesChanged.emit()
 
-    @pyqtProperty(list, notify=recentChanged)
-    def recent(self):
-        return self._recent
+    @pyqtProperty(int, notify=filtersChanged)
+    def recentCount(self):
+        return len(self._filters['recent'])
 
-    @recent.setter
-    def recent(self, recent):
-        if recent != self._recent:
-            self._recent = recent
-            self.recentChanged.emit(self._recent)
+    @pyqtProperty(int, notify=filtersChanged)
+    def newCount(self):
+        return len(self._filters['new'])
 
-    @pyqtProperty(list, notify=newChanged)
-    def new(self):
-        return self._new
+    @pyqtProperty(int, notify=filtersChanged)
+    def hasUpdatesCount(self):
+        return len(self._filters['has_updates'])
 
-    @new.setter
-    def new(self, new):
-        if new != self._new:
-            self._new = new
-            self.newChanged.emit(self._new)
+    @pyqtProperty(int, notify=filtersChanged)
+    def installedCount(self):
+        return len(self._filters['installed'])
+
+    @pyqtProperty(int, notify=filtersChanged)
+    def processingCount(self):
+        return len(self._filters['processing'])
 
     @pyqtProperty(QQmlListProperty, notify=filterChanged)
     def filter(self):
@@ -122,30 +117,43 @@ class Library(QObject):
         self._games.append(game)
         self.gamesChanged.emit()
 
-    def appendFilter(self, game):
-        self._filter.append(game)
-        self.filterChanged.emit()
-
-    def appendRecent(self, game):
-        if game not in self._recent:
-            self._recent.append(game)
-            self.recentChanged.emit(self._recent)
-
     def indexUpdated(self, index):
         try:
             self.currentGame = self._filter[index]
         except IndexError:
             print('Index does not exist.')
+    #
+    # @pyqtProperty(int, notify=errorChanged)
+    # def error(self):
+    #     return self._error
+    #
+    # @error.setter
+    # def error(self, error):
+    #     if error != self._error:
+    #         self._error = error
+    #         self.errorChanged.emit()
+
+    def processCleanup(self, process, idx, action=''):
+        print(process.exitCode())
+        print(process.error())
+        # if action:
+        #     if 'install' == action:
+        #         self.displayNotification.emit('Installed successfully.')
+
+        self._processes.remove(process)
 
     def installGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
             installProcess = QProcess(parent=self.parent())
             installProcess.started.connect(self._games[idx].startInstall)
-            installProcess.finished.connect(partial(self._processes.remove, installProcess))
+            installProcess.started.connect(self.updateFilters)
+            installProcess.finished.connect(partial(self.processCleanup, installProcess, idx, 'install'))
             installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
+            installProcess.finished.connect(self.updateFilters)
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
             installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
+            self.updateFilters()
             self._processes.append(installProcess)
 
     def uninstallGame(self, game_id):
@@ -155,10 +163,13 @@ class Library(QObject):
             print('uninstall')
             uninstallProcess = QProcess(parent=self.parent())
             uninstallProcess.started.connect(self._games[idx].startUninstall)
-            uninstallProcess.finished.connect(partial(self._processes.remove, uninstallProcess))
+            uninstallProcess.started.connect(self.updateFilters)
+            uninstallProcess.finished.connect(partial(self.processCleanup, uninstallProcess, idx, 'uninstall'))
             uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
+            uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
             uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
+            self.updateFilters()
             self._processes.append(uninstallProcess)
 
     def updateGame(self, game_id):
@@ -167,8 +178,10 @@ class Library(QObject):
             print('update')
             updateProcess = QProcess(parent=self.parent())
             updateProcess.started.connect(self._games[idx].startUpdate)
-            updateProcess.finished.connect(partial(self._processes.remove, updateProcess))
+            updateProcess.started.connect(self.updateFilters)
+            updateProcess.finished.connect(partial(self.processCleanup, updateProcess, idx, 'update'))
             updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
+            updateProcess.finished.connect(self.updateFilters)
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
             updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
             self._processes.append(updateProcess)
@@ -178,46 +191,63 @@ class Library(QObject):
         if idx is not None:
             playProcess = QProcess(parent=self.parent())
             playProcess.started.connect(self._games[idx].startGame)
-            playProcess.finished.connect(partial(self._processes.remove, playProcess))
-            playProcess.finished.connect(self._games[idx].stopGame)
+            playProcess.started.connect(self.updateFilters)
+            playProcess.finished.connect(partial(self.processCleanup, playProcess, idx))
+            playProcess.finished.connect(partial(self._games[idx].stopGame, playProcess))
+            playProcess.finished.connect(self.updateFilters)
+            playProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, playProcess))
+            playProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, playProcess))
             playProcess.start('flatpak', ['run', self._games[idx].ref])
-            self.appendRecent(self._games[idx])
             self._processes.append(playProcess)
 
     def searchGames(self, query):
         if query:
             self.filterValue = 'results'
-            self.filter = []
+            tmp = []
             query = query.lower()
             for game in self._games:
                 if query in game.name.lower():
-                    self.appendFilter(game)
+                    tmp.append(game)
+            self.filter = tmp
         else:
             self.filterGames(self.filterValue)
 
     def filterGames(self, filter):
-        self.filterValue = filter
-
-        if filter == 'installed':
-            tmp = []
-            for game in self._games:
-                if game.installed:
-                    tmp.append(game)
-            self.filter = tmp
-        elif filter == 'recent':
-            self.filter = self.recent
-        elif filter == 'new':
-            self.filter = self.new
-        elif filter == 'update':
-            tmp = []
-            for game in self._games:
-                if game.hasUpdate:
-                    tmp.append(game)
-            self.filter = tmp
-        else:
+        if filter not in self._filters.keys():
+            self.filterValue = 'all'
             self.filter = self.games
+        else:
+            self.filterValue = filter
+            self.filter = self._filters[filter]
 
         setMeta(key='filter', value=filter)
+
+    def updateFilters(self, new_load=False):
+        filters = {
+            'installed': [],
+            'recent': [],
+            'new': [] if new_load else self._filters['new'],
+            'has_updates': [],
+            'processing': []
+        }
+
+        now = datetime.now()
+        for game in self._games:
+            if game.installed:
+                filters['installed'].append(game)
+            if game.processing:
+                filters['processing'].append(game)
+            if game.hasUpdate:
+                filters['has_updates'].append(game)
+            if game.lastPlayedDate:
+                if (game.lastPlayedDate + timedelta(days=3)) > now:
+                    filters['recent'].append(game)
+            if game.createdDate and new_load:
+                if (game.createdDate + timedelta(days=3)) > now:
+                    filters['new'].append(game)
+
+        self._filters = filters
+        self.filtersChanged.emit(self._filters['recent'][:5] or self._filters['installed'][:5])
 
     def sortGames(self, sort):
         if sort == 'za':

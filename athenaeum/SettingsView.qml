@@ -98,6 +98,20 @@ Page {
                 text: qsTr("Show Tray Icon")
             }
         }
+        Row {
+            CheckBox {
+                checked: settings.alwaysShowLogs
+                onClicked: {
+                    settings.alwaysShowLogs = checked
+                }
+            }
+            Text {
+                height: parent.height
+                verticalAlignment: Qt.AlignVCenter
+                color: tc
+                text: qsTr("Always Show Logs")
+            }
+        }
         // Row {
         //     CheckBox {
         //         checked: settings.closeToTray
