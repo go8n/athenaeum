@@ -39,7 +39,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="101"/>
         <location filename="../LibraryView.qml" line="200"/>
         <source>Has Update</source>
         <translation type="unfinished"></translation>
@@ -47,6 +46,11 @@
     <message>
         <location filename="../LibraryView.qml" line="109"/>
         <source>Sort A-Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="101"/>
+        <source>Has Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -150,7 +154,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="937"/>
+        <location filename="../LibraryView.qml" line="914"/>
+        <source>Homepage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="916"/>
+        <source>Bug Tracker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="918"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="920"/>
+        <source>FAQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="922"/>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="924"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="926"/>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="928"/>
+        <source>Manifest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="957"/>
         <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
@@ -163,8 +207,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../SettingsView.qml" line="49"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../SettingsView.qml" line="58"/>
         <source>⋮</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SettingsView.qml" line="74"/>
+        <source>Reset All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SettingsView.qml" line="77"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SettingsView.qml" line="98"/>
+        <source>Show Tray Icon</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
