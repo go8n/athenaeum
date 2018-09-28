@@ -190,16 +190,16 @@ Page {
             Text {
                 function formatFilterName(filter) {
                     switch(filter) {
-                    case 'installed':
-                        return qsTr('Installed');
-                    case 'recent':
-                        return qsTr('Recent');
-                    case 'new':
-                        return qsTr('New');
-                    case 'update':
-                        return qsTr('Has Update');
-                    default:
-                        return qsTr('All Games');
+                        case 'installed':
+                            return qsTr('Installed');
+                        case 'recent':
+                            return qsTr('Recent');
+                        case 'new':
+                            return qsTr('New');
+                        case 'update':
+                            return qsTr('Has Update');
+                        default:
+                            return qsTr('All Games');
                     }
                 }
                 anchors.centerIn: parent
@@ -908,9 +908,29 @@ Page {
                                                 fillMode: Image.PreserveAspectFit
                                             }
                                             Text {
+                                                function getTitle(type) {
+                                                    switch(type) {
+                                                        case 'homepage':
+                                                            return qsTr('Homepage');
+                                                        case 'bugtracker':
+                                                            return qsTr('Bug Tracker');
+                                                        case 'help':
+                                                            return qsTr('Help');
+                                                        case 'faq':
+                                                            return qsTr('FAQ');
+                                                        case 'donation':
+                                                            return qsTr('Donate');
+                                                        case 'translate':
+                                                            return qsTr('Translation');
+                                                        case 'unknown':
+                                                            return qsTr('Unknown');
+                                                        case 'manifest':
+                                                            return qsTr('Manifest');
+                                                    }
+                                                }
                                                 leftPadding: 5
                                                 font.pixelSize: 12
-                                                text: title
+                                                text: getTitle(type)
                                                 color: tc
                                             }
                                         }
