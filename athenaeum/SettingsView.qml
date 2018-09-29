@@ -100,6 +100,20 @@ Page {
         }
         Row {
             CheckBox {
+                checked: settings.closeToTray
+                onClicked: {
+                    settings.closeToTray = checked
+                }
+            }
+            Text {
+                height: parent.height
+                verticalAlignment: Qt.AlignVCenter
+                color: tc
+                text: qsTr("Close to Tray")
+            }
+        }
+        Row {
+            CheckBox {
                 checked: settings.alwaysShowLogs
                 onClicked: {
                     settings.alwaysShowLogs = checked
@@ -112,19 +126,5 @@ Page {
                 text: qsTr("Always Show Logs")
             }
         }
-        // Row {
-        //     CheckBox {
-        //         checked: settings.closeToTray
-        //         onClicked: {
-        //             settings.closeToTray = checked
-        //         }
-        //     }
-        //     Text {
-        //         height: parent.height
-        //         verticalAlignment: Qt.AlignVCenter
-        //         color: tc
-        //         text: qsTr("Close to Tray")
-        //     }
-        // }
     }
 }

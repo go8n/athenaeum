@@ -13,7 +13,7 @@ class Settings(QObject):
         self._showTrayIcon = True if showTrayIcon is None else showTrayIcon
         closeToTray = getSetting('close_to_tray')
         self._closeToTray = True if closeToTray is None else closeToTray
-        alwaysShowLogs = getSetting('close_to_tray')
+        alwaysShowLogs = getSetting('always_show_logs')
         self._alwaysShowLogs = True if alwaysShowLogs is None else alwaysShowLogs
 
     @pyqtProperty(bool, notify=showTrayIconChanged)
@@ -36,7 +36,6 @@ class Settings(QObject):
         if closeToTray != self._closeToTray:
             self._closeToTray = closeToTray
             setSetting('close_to_tray', closeToTray)
-            print(not closeToTray)
             self.closeToTrayChanged.emit(not closeToTray)
 
     @pyqtProperty(bool, notify=alwaysShowLogsChanged)
@@ -47,5 +46,5 @@ class Settings(QObject):
     def alwaysShowLogs(self, alwaysShowLogs):
         if alwaysShowLogs != self._alwaysShowLogs:
             self._alwaysShowLogs = alwaysShowLogs
-            setSetting('close_to_tray', alwaysShowLogs)
+            setSetting('always_show_logs', alwaysShowLogs)
             self.alwaysShowLogsChanged.emit(alwaysShowLogs)

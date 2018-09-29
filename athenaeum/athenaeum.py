@@ -29,10 +29,11 @@ def main():
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
 
     app = QApplication(sys.argv)
+    settings = Settings(parent=app)
 
     app.setApplicationDisplayName('Athenaeum')
     app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
-    app.setQuitOnLastWindowClosed(False)
+    app.setQuitOnLastWindowClosed(not settings.closeToTrayChanged)
 
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
@@ -48,7 +49,7 @@ def main():
     qmlRegisterType(Loader, 'Athenaeum', 1, 0, 'Loader')
     qmlRegisterType(Settings, 'Athenaeum', 1, 0, 'Settings')
 
-    settings = Settings(parent=app)
+
     loader = Loader(parent=app)
     library = Library(parent=app)
 
@@ -85,7 +86,7 @@ def main():
     library.filtersChanged.connect(systemTrayIcon.prepareMenu)
 
     settings.showTrayIconChanged.connect(systemTrayIcon.setVisible)
-    # settings.closeToTrayChanged.connect(app.setQuitOnLastWindowClosed)
+    settings.closeToTrayChanged.connect(app.setQuitOnLastWindowClosed)
 
     loader.load()
 
