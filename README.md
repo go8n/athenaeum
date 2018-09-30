@@ -40,6 +40,7 @@ python3-pyqt5.qtquick
 python3-peewee
 python3-dateutil
 python3-xdg
+python3-dbus
 qml-module-qtquick2
 qml-module-qtquick-layouts
 qml-module-qtquick-controls2
@@ -57,6 +58,7 @@ python-sip-pyqt5
 python-peewee
 python-dateutil
 python-xdg
+python-dbus
 qt5-base
 qt5-svg
 qt5-quickcontrols2

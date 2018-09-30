@@ -8,7 +8,7 @@ pkgdesc="A libre replacement for Steam"
 arch=(any)
 url="https://gitlab.com/librebob/athenaeum"
 license=('GPL-3.0-or-later')
-depends=('flatpak' 'python3' 'pyqt5-common' 'python-pyqt5' 'python-sip-pyqt5' 'python-peewee' 'python-xdg' 'python-dateutil' 'qt5-base' 'qt5-svg' 'qt5-quickcontrols2' 'qt5-declarative' 'sqlite')
+depends=('flatpak' 'python' 'pyqt5-common' 'python-pyqt5' 'python-sip-pyqt5' 'python-peewee' 'python-xdg' 'python-dateutil' 'python-dbus' 'qt5-base' 'qt5-svg' 'qt5-quickcontrols2' 'qt5-declarative' 'sqlite')
 makedepends=('git')
 
 source=("git+https://gitlab.com/librebob/athenaeum.git")
