@@ -15,7 +15,7 @@ class Settings(QObject):
         closeToTray = getSetting('close_to_tray')
         self._closeToTray = True if closeToTray is None else closeToTray
         alwaysShowLogs = getSetting('close_to_tray')
-        self._alwaysShowLogs = True if alwaysShowLogs is None else alwaysShowLogs
+        self._alwaysShowLogs = False if alwaysShowLogs is None else alwaysShowLogs
         notificationsEnabled = getSetting('notifications_enabled')
         self._notificationsEnabled = True if notificationsEnabled is None else notificationsEnabled
 
