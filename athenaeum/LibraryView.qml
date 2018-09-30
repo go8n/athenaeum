@@ -991,4 +991,24 @@ Page {
             }
         }
     }
+    Connections {
+        target: library
+        function getMessage(action) {
+            switch(action) {
+                case 'install':
+                    return qsTr('Installed successfully.');
+                case 'uninstall':
+                    return qsTr('Uninstalled successfully.');
+                case 'update':
+                    return qsTr('Updated successfully.');
+                case 'error':
+                    return qsTr('An error occurred.');
+            }
+        }
+        onDisplayNotification: {
+            if (settings.notificationsEnabled) {
+                window.notify(library.games[index].name, getMessage(action), library.games[index].iconLarge)
+            }
+        }
+    }
 }

@@ -16,7 +16,7 @@ class Library(QObject):
     filterValueChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
     errorChanged = pyqtSignal()
-    displayNotification = pyqtSignal(str)
+    displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -133,12 +133,14 @@ class Library(QObject):
     #         self._error = error
     #         self.errorChanged.emit()
 
-    def processCleanup(self, process, idx, action=''):
-        print(process.exitCode())
-        print(process.error())
-        # if action:
-        #     if 'install' == action:
-        #         self.displayNotification.emit('Installed successfully.')
+    def processCleanup(self, process, index, action=''):
+        exit_code = process.exitCode()
+
+        if exit_code:
+            action = 'error'
+
+        if action:
+            self.displayNotification.emit(index, action)
 
         self._processes.remove(process)
 

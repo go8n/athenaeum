@@ -15,6 +15,7 @@ ApplicationWindow {
     signal sort(string sort)
     signal updateAll()
     signal checkAll()
+    signal notify(string name, string message, string icon)
 
     width: 1000
     height: 700
@@ -85,5 +86,4 @@ ApplicationWindow {
             }
         }
     }
-
 }

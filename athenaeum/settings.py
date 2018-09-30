@@ -6,6 +6,7 @@ class Settings(QObject):
     showTrayIconChanged = pyqtSignal(bool)
     closeToTrayChanged = pyqtSignal(bool)
     alwaysShowLogsChanged = pyqtSignal(bool)
+    notificationsEnabledChanged = pyqtSignal(bool)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -15,6 +16,8 @@ class Settings(QObject):
         self._closeToTray = True if closeToTray is None else closeToTray
         alwaysShowLogs = getSetting('close_to_tray')
         self._alwaysShowLogs = True if alwaysShowLogs is None else alwaysShowLogs
+        notificationsEnabled = getSetting('notifications_enabled')
+        self._notificationsEnabled = True if notificationsEnabled is None else notificationsEnabled
 
     @pyqtProperty(bool, notify=showTrayIconChanged)
     def showTrayIcon(self):
@@ -49,3 +52,14 @@ class Settings(QObject):
             self._alwaysShowLogs = alwaysShowLogs
             setSetting('close_to_tray', alwaysShowLogs)
             self.alwaysShowLogsChanged.emit(alwaysShowLogs)
+
+    @pyqtProperty(bool, notify=notificationsEnabledChanged)
+    def notificationsEnabled(self):
+        return self._notificationsEnabled
+
+    @notificationsEnabled.setter
+    def notificationsEnabled(self, notificationsEnabled):
+        if notificationsEnabled != self._notificationsEnabled:
+            self._notificationsEnabled = notificationsEnabled
+            setSetting('notifications_enabled', notificationsEnabled)
+            self.notificationsEnabledChanged.emit(notificationsEnabled)

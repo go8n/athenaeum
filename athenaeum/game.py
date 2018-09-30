@@ -282,14 +282,12 @@ class Game(QObject):
     def startGame(self):
         self.playing = True
         self.lastPlayedDate = datetime.now()
-        print('start game')
 
     def stopGame(self, process):
         self.playing = False
         self.lastPlayedDate = datetime.now()
         self.save()
         self.appendLog(process, finished=True)
-        print('stop game')
 
     def startInstall(self):
         self.processing = True

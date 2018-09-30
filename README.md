@@ -118,6 +118,14 @@ As you would any other project.
 
 ### Translations
 
+#### Using Weblate.org
+
+The kind people of weblate.org have provided Athenaeum with hosting for translations. Using their webapp makes translating a lot easier!
+
+https://hosted.weblate.org/projects/athenaeum/translations/
+
+#### Using QT tools
+
 Athenaeum leverages the QT translation classes and tools. To get started simply add a translation file to `athenaeum.pro` eg. `athenaeum/translations/athenaeum_ja.ts` then run `lupdate -verbose athenaeum.pro` to generate the file.
 
 After that use `linguist` to edit the file adding your translations. Once there's some translations ` lrelease -verbose athenaeum.pro` will be used to generate the files that will be loaded at runtime.

@@ -112,6 +112,20 @@ Page {
                 text: qsTr("Always Show Logs")
             }
         }
+        Row {
+            CheckBox {
+                checked: settings.notificationsEnabled
+                onClicked: {
+                    settings.notificationsEnabled = checked
+                }
+            }
+            Text {
+                height: parent.height
+                verticalAlignment: Qt.AlignVCenter
+                color: tc
+                text: qsTr("Notifications Enabled")
+            }
+        }
         // Row {
         //     CheckBox {
         //         checked: settings.closeToTray

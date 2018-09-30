@@ -1,5 +1,5 @@
 import signal, os, sys
-
+import notify2
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTranslator, QLocale, Qt
@@ -33,6 +33,8 @@ def main():
     app.setApplicationDisplayName('Athenaeum')
     app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
     app.setQuitOnLastWindowClosed(False)
+
+    notify2.init("Athenaeum")
 
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
@@ -78,6 +80,8 @@ def main():
     root.filter.connect(library.filterGames)
     root.sort.connect(library.sortGames)
 
+    root.notify.connect(show_notifitcation)
+
     systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/athenaeum.png")),
     root=root, show=settings.showTrayIcon, parent=app)
 
@@ -90,6 +94,11 @@ def main():
     loader.load()
 
     os._exit(app.exec())
+
+def show_notifitcation(summary='', message='', icon_path=''):
+    n = notify2.Notification(summary, message, icon_path)
+    n.set_urgency(notify2.URGENCY_NORMAL)
+    n.show()
 
 if __name__ == '__main__':
     main()
