@@ -1,5 +1,4 @@
 import signal, os, sys
-import notify2
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTranslator, QLocale, Qt
@@ -13,6 +12,7 @@ else:
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
 sys.path.insert(0, BASEDIR)
 
+import notify2
 from game import Game
 from settings import Settings
 from library import Library
