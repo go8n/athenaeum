@@ -1,4 +1,4 @@
-import random
+import random, platform
 from datetime import datetime, timedelta
 from functools import partial
 
@@ -19,7 +19,7 @@ class Loader(QObject):
     logChanged = pyqtSignal()
     gameLoaded = pyqtSignal(Game)
 
-    arch = 'x86_64'
+    arch = platform.machine()
 
     metaKey = 'flathub_added'
 
