@@ -6,3 +6,15 @@ badLicenses = [
 badCategories = [
     'Emulator'
 ]
+
+nonFreeAssets = [
+    'Sauerbraten',
+    'OpenArena',
+    'RuneLite',
+]
+
+engineClones = [
+    'OpenRA',
+    'OpenMW',
+    'ScummVM'
+]
