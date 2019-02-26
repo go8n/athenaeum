@@ -3,7 +3,6 @@ pkgname=athenaeum-git
 _pkgname=athenaeum
 pkgver=0.1
 pkgrel=1
-_pkgrel=1
 pkgdesc="A libre replacement for Steam"
 arch=(any)
 url="https://gitlab.com/librebob/athenaeum"
@@ -13,7 +12,13 @@ makedepends=('git')
 
 source=("git+https://gitlab.com/librebob/athenaeum.git")
 md5sums=('SKIP')
-_gitname=athenaeum
+
+pkgver() {
+    cd $srcdir/$_pkgname
+    # Git, no tags available
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
 
 package() {
   cd $srcdir/$_pkgname
