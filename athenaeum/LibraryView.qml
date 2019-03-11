@@ -7,19 +7,20 @@ import Athenaeum 1.0
 Page {
     id: libraryView
 
-    property color bg : '#202228'
-    property color sel: '#4d84c7'
-    property color hl: '#314661'
-    property color fg: '#2d3139'
-    property color tc: '#caccd1'
-    property color ac: '#808186'
-    property color dg: '#e0e0e0'
-    property color bl: '#0b0b0b'
+    // property color bg : '#202228'
+    // property color sel: '#4d84c7'
+    // property color hl: '#314661'
+    // property color fg: '#2d3139'
+    // property color tc: '#caccd1'
+    // property color ac: '#808186'
+    // property color dg: '#e0e0e0'
+    // property color bl: '#0b0b0b'
     property color tr: 'transparent'
-
+    // Material.theme: Material.Dark
+    // Material.accent: Material.Purple
     background: Rectangle {
         anchors.fill: parent
-        color: bg
+        color: Material.background
     }
     header: ToolBar {
         id: toolBar
@@ -37,9 +38,10 @@ Page {
                     // anchors.fill: parent
                     background: Rectangle {
                         anchors.fill: parent
-                        color: bg
+                        color: Material.background
+                        implicitHeight: 40
                     }
-                    color: tc
+                    color: Material.foreground
                     id: searchField
                     placeholderText: qsTr('Search %L1 Games...').arg(library.games.length)
 
@@ -56,15 +58,18 @@ Page {
                 ToolButton {
                     id: dropDown
                     anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    // height: 40
                     contentItem: Text {
                             text: qsTr("⌄")
-                            color: tc
+                            color: Material.foreground
                             horizontalAlignment: Text.AlignHCenter
                     }
                     background: Rectangle {
                         anchors.fill: parent
-                        color: hl
-                        implicitHeight: 40
+                        color: Material.background
+                        // implicitHeight: 40
                     }
                     onClicked: sortMenu.open()
                     Menu {
@@ -127,9 +132,9 @@ Page {
             Label {
                 background: Rectangle {
                     anchors.fill: parent
-                    color: fg
+                    color: Material.background
                 }
-                color: tc
+                color: Material.foreground
                 text: qsTr('Library')
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
@@ -139,14 +144,14 @@ Page {
             ToolButton {
                 contentItem: Text {
                         text: qsTr("⋮")
-                        color: tc
+                        color: Material.foreground
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
 
                 background: Rectangle {
                     anchors.fill: parent
-                    color: fg
+                    color: Material.background
                     implicitWidth: 40
                     implicitHeight: 40
                 }
@@ -193,7 +198,7 @@ Page {
             anchors.left: parent.left
             anchors.right: parent.right
             height: 25
-            color: fg
+            color: Material.background
             Text {
                 function formatFilterName(filter) {
                     switch(filter) {
@@ -212,7 +217,7 @@ Page {
                     }
                 }
                 anchors.centerIn: parent
-                color: tc
+                color: Material.foreground
                 text: formatFilterName(library.filterValue)
             }
         }
@@ -224,7 +229,7 @@ Page {
                 anchors.right: parent.right
                 height: 35
                 id: rect
-                border.color: bg
+                border.color: Material.background
                 border.width: 1
                 MouseArea {
                     anchors.fill: parent
@@ -235,7 +240,7 @@ Page {
                     id: itemMouseArea
                     hoverEnabled: true
                 }
-                color: ListView.isCurrentItem ? sel : itemMouseArea.containsMouse ? hl : fg
+                color: ListView.isCurrentItem ? Material.accent : itemMouseArea.containsMouse ? Material.accent : Material.background
                 Rectangle {
                     id: gameIcon
                     anchors.top: parent.top
@@ -252,7 +257,7 @@ Page {
                     }
                 }
                 Text {
-                    color: tc
+                    color: Material.foreground
                     clip: true
                     width: parent.width
                     anchors.left: gameIcon.right
@@ -283,13 +288,13 @@ Page {
                         width: childrenRect.width
                         height: childrenRect.height
                         anchors.centerIn: parent
-                        color: sel
+                        //color: sel
                         radius: 3
                         Text {
                             text: qsTr('New')
                             font.pixelSize: 12
                             padding: 3
-                            color: tc
+                            //color: tc
                         }
                     }
                 }
@@ -302,7 +307,7 @@ Page {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        color: bg
+        color: Material.background
         ScrollView {
             anchors.fill: parent
             contentHeight: col.height
@@ -318,7 +323,7 @@ Page {
                     anchors.rightMargin: 40
                     anchors.leftMargin: 40
 
-                    color: bg
+                    color: Material.background
                     height: childrenRect.height + 40
 
                     Rectangle {
@@ -332,7 +337,7 @@ Page {
                         height: 128
                         id: gameLogo
 
-                        color: fg
+                        color: Material.primary
                         radius: 10
                         Image {
                             id: img
@@ -350,7 +355,7 @@ Page {
 
                         leftPadding: 20
 
-                        color: tc
+                        color: Material.foreground
                         text: library.currentGame.name
 
 
@@ -370,7 +375,7 @@ Page {
                         anchors.right: parent.right
                         leftPadding: 20
 
-                        color: tc
+                        color: Material.foreground
                         text: library.currentGame.summary
 
                         fontSizeMode: Text.VerticalFit
@@ -424,7 +429,7 @@ Page {
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 40
-                                color: library.currentGame.playing ? 'lightgreen' : 'lightblue'
+                                color: library.currentGame.playing ? Material.color(Material.LightGreen) : Material.accent
                             }
                         }
                         Button {
@@ -444,10 +449,10 @@ Page {
                                 window.updateGame(library.currentGame.id)
                             }
                             background: Rectangle {
-                                id: bgRect
+                                id: bg
                                 implicitWidth: 100
                                 implicitHeight: 40
-                                color: dg
+                                color: Material.primary
                             }
                         }
                         Button {
@@ -468,7 +473,7 @@ Page {
                                 parent: stackView
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    color: fg
+                                    color: Material.primary
                                 }
                                 x: Math.round((parent.width - width) / 2)
                                 y: Math.round((parent.height - height) / 2)
@@ -479,7 +484,7 @@ Page {
                                     id: uninstallDialog
                                     Text {
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        color: tc
+                                        color: Material.foreground
                                         font.pixelSize: 20
                                         text: qsTr('Are you sure?')
                                     }
@@ -506,7 +511,7 @@ Page {
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 40
-                                color: uninstallMouseArea.containsMouse ? 'lightcoral' : dg
+                                color: Material.color(uninstallMouseArea.containsMouse ? Material.Red : Material.Grey)
                             }
                         }
                     }
@@ -517,7 +522,7 @@ Page {
                     anchors.right: parent.right
                     anchors.rightMargin: 40
                     anchors.leftMargin: 40
-                    color: bl
+                    color: "black"
                     height: 150
                     visible: library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
 
@@ -535,7 +540,7 @@ Page {
                             onContentHeightChanged: {
                                 testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
                             }
-                            color: tc
+                            color: Material.foreground
                             readOnly: true
                             text: library.currentGame.log
                         }
@@ -555,7 +560,7 @@ Page {
                         clip: true
                         // height: childrenRect.height > 300 ? 300 : childrenRect.height
                         height: 300 + carousel.height
-                        color: bl
+                        color: "black"
                         BusyIndicator {
                             id: previewLoadingIndicator
                             anchors.centerIn: parent
@@ -617,7 +622,7 @@ Page {
                             height: 50
                             anchors.bottom: parent.bottom
                             opacity: 0.7
-                            color: bl
+                            color: "black"
                             ListView {
                                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -634,7 +639,7 @@ Page {
                                 delegate: Rectangle {
                                     height: parent.height
                                     width: 100
-                                    color: fg
+                                    color: Material.primary
                                     Image {
                                         anchors.fill: parent
                                         anchors.margins: 1
@@ -651,7 +656,7 @@ Page {
                                         hoverEnabled: true
                                         id: thumbMouseArea
                                     }
-                                    border.color: ListView.isCurrentItem ? sel : thumbMouseArea.containsMouse ? hl : fg
+                                    // border.color: ListView.isCurrentItem ? sel : thumbMouseArea.containsMouse ? hl : fg
                                 }
                             }
                         }
@@ -677,13 +682,13 @@ Page {
                             width: parent.width
                             height: descHeading.height
                             color: tr
-                            Rectangle {
-                                anchors.fill: parent
-                                color: fg
-                                anchors.leftMargin: 40
-                                anchors.rightMargin: 40
-                                anchors.bottomMargin: 10
-                            }
+                            // Rectangle {
+                            //     anchors.fill: parent
+                            //     // color: Material.primary
+                            //     anchors.leftMargin: 40
+                            //     anchors.rightMargin: 40
+                            //     anchors.bottomMargin: 10
+                            // }
                             Text {
                                 id: descHeading
                                 leftPadding: 50
@@ -691,7 +696,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 20
                                 width: parent.width
-                                color: tc
+                                color: Material.foreground
                                 font.pixelSize: 24
                                 text: qsTr('Description')
                                 wrapMode: Text.WrapAnywhere
@@ -704,7 +709,7 @@ Page {
                             topPadding: 0
                             bottomPadding: 10
                             width: parent.width
-                            color: tc
+                            color: Material.foreground
                             textFormat: Text.RichText
                             font.pixelSize: 16
                             text: library.currentGame.description
@@ -716,13 +721,13 @@ Page {
                             width: parent.width
                             height: releaseHeading.height
                             color: tr
-                            Rectangle {
-                                anchors.fill: parent
-                                color: fg
-                                anchors.leftMargin: 40
-                                anchors.rightMargin: 40
-                                anchors.bottomMargin: 10
-                            }
+                            // Rectangle {
+                            //     anchors.fill: parent
+                            //     color: Material.primary
+                            //     anchors.leftMargin: 40
+                            //     anchors.rightMargin: 40
+                            //     anchors.bottomMargin: 10
+                            // }
                             Text {
                                 id: releaseHeading
                                 leftPadding: 50
@@ -730,7 +735,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 20
                                 width: parent.width
-                                color: tc
+                                color: Material.foreground
                                 font.pixelSize: 24
                                 text: qsTr('Releases')
                                 wrapMode: Text.WrapAnywhere
@@ -754,13 +759,13 @@ Page {
                                     spacing: 10
                                     leftPadding: 50
                                     Text {
-                                        color: tc
+                                        color: Material.foreground
                                         font.pixelSize: 20
                                         text: qsTr('Version %1').arg(version)
                                         wrapMode: Text.WrapAnywhere
                                     }
                                     Text {
-                                        color: tc
+                                        color: Material.foreground
                                         font.pixelSize: 20
                                         text: formatTimestamp(timestamp)
                                         wrapMode: Text.WrapAnywhere
@@ -772,7 +777,7 @@ Page {
                                     topPadding: 10
                                     bottomPadding: 10
                                     width: parent.width
-                                    color: tc
+                                    color: Material.foreground
                                     font.pixelSize: 16
                                     text: description
                                     wrapMode: Text.WrapAnywhere
@@ -787,12 +792,12 @@ Page {
                         color: tr
                         // height:  Math.max(libraryView.height - bodyGrid.y - 35 , Math.max(desc.height, lists.height))
                         height: lists.height
-                        Rectangle {
-                            anchors.fill: parent
-                            color: fg
-                            anchors.rightMargin: 40
-                            anchors.bottomMargin: 40
-                        }
+                        // Rectangle {
+                        //     anchors.fill: parent
+                        //     color: Material.primary
+                        //     anchors.rightMargin: 40
+                        //     anchors.bottomMargin: 40
+                        // }
                         Column {
                             id: lists
                             width: parent.width
@@ -806,7 +811,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: parent.width
-                                color: sel
+                                color: Material.foreground
                                 font.pixelSize: 16
                                 text: qsTr('Developer')
                                 wrapMode: Text.WrapAnywhere
@@ -816,7 +821,7 @@ Page {
                                     anchors.bottom: parent.bottom
                                     height: 1
                                     color: tr
-                                    border.color: hl
+                                    border.color: Material.accent
                                     anchors.rightMargin: 40
                                 }
                             }
@@ -827,7 +832,7 @@ Page {
                                 topPadding: 5
                                 bottomPadding: 5
                                 width: parent.width
-                                color: tc
+                                color: Material.foreground
                                 font.pixelSize: 12
                                 text: library.currentGame.developerName
                                 wrapMode: Text.WordWrap
@@ -839,7 +844,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: parent.width
-                                color: sel
+                                color: Material.foreground
                                 font.pixelSize: 16
                                 text: qsTr('License')
                                 wrapMode: Text.WrapAnywhere
@@ -849,7 +854,7 @@ Page {
                                     anchors.bottom: parent.bottom
                                     height:1
                                     color: tr
-                                    border.color: hl
+                                    border.color: Material.accent
                                     anchors.rightMargin: 40
                                 }
                             }
@@ -860,7 +865,7 @@ Page {
                                 topPadding: 5
                                 bottomPadding: 5
                                 width: parent.width
-                                color: tc
+                                color: Material.foreground
                                 font.pixelSize: 12
                                 text: library.currentGame.license
                                 wrapMode: Text.WordWrap
@@ -871,7 +876,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: parent.width
-                                color: sel
+                                color: Material.foreground
                                 font.pixelSize: 16
                                 text: qsTr('Links')
                                 wrapMode: Text.WrapAnywhere
@@ -881,7 +886,7 @@ Page {
                                     anchors.bottom: parent.bottom
                                     height:1
                                     color: tr
-                                    border.color: hl
+                                    border.color: Material.accent
                                     anchors.rightMargin: 40
                                 }
                             }
@@ -935,12 +940,12 @@ Page {
                                                 leftPadding: 5
                                                 font.pixelSize: 12
                                                 text: getTitle(type)
-                                                color: tc
+                                                color: Material.foreground
                                             }
                                         }
                                         background: Rectangle {
                                             anchors.fill: parent
-                                            color: fg
+                                            color: tr
                                         }
                                     }
                                 }
@@ -951,7 +956,7 @@ Page {
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: parent.width
-                                color: sel
+                                color: Material.foreground
                                 font.pixelSize: 16
                                 text: qsTr('Categories')
                                 wrapMode: Text.WrapAnywhere
@@ -961,7 +966,7 @@ Page {
                                     anchors.bottom: parent.bottom
                                     height:1
                                     color: tr
-                                    border.color: hl
+                                    border.color: Material.accent
                                     anchors.rightMargin: 40
                                 }
                             }
@@ -978,7 +983,7 @@ Page {
                                         topPadding: 5
                                         bottomPadding: index+1 < categoriesList.count ? 0 : 5
                                         width: parent.width
-                                        color: tc
+                                        color: Material.foreground
                                         font.pixelSize: 12
                                         text: library.currentGame.categories[index]
                                         wrapMode: Text.WrapAnywhere

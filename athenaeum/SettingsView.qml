@@ -16,7 +16,7 @@ Page {
 
     background: Rectangle {
         anchors.fill: parent
-        color: bg
+        //color: bg
     }
     header: ToolBar {
         id: toolBar
@@ -26,26 +26,26 @@ Page {
             ToolButton {
                 contentItem: Text {
                         text: qsTr("‹")
-                        color: tc
+                        //color: tc
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
 
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: fg
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
+                // background: Rectangle {
+                //     anchors.fill: parent
+                //     //color: fg
+                //     implicitWidth: 40
+                //     implicitHeight: 40
+                // }
                 Layout.fillHeight: true
                 onClicked: stackView.pop()
             }
             Label {
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: fg
-                }
-                color: tc
+                // background: Rectangle {
+                //     anchors.fill: parent
+                //     //color: fg
+                // }
+                //color: tc
                 text: qsTr("Settings")
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -56,16 +56,16 @@ Page {
             ToolButton {
                 contentItem: Text {
                         text: qsTr("⋮")
-                        color: tc
+                        //color: tc
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: fg
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
+                // background: Rectangle {
+                //     anchors.fill: parent
+                //     //color: fg
+                //     implicitWidth: 40
+                //     implicitHeight: 40
+                // }
                 Layout.fillHeight: true
                 onClicked: menu.open()
                 Menu {
@@ -94,7 +94,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                color: tc
+                //color: tc
                 text: qsTr("Show Tray Icon")
             }
         }
@@ -108,7 +108,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                color: tc
+                //color: tc
                 text: qsTr("Always Show Logs")
             }
         }
@@ -122,8 +122,32 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                color: tc
+                //color: tc
                 text: qsTr("Notifications Enabled")
+            }
+        }
+        Row {
+            Text {
+                height: parent.height
+                verticalAlignment: Qt.AlignVCenter
+                //color: tc
+                text: qsTr("Theme")
+                rightPadding: 10
+            }
+            ComboBox {
+                id: materialTheme
+                model: ["Light", "Dark", "System"]
+                currentIndex: theme
+                onActivated: {
+                    if (model[index] == "Light") {
+                        theme = Material.Light
+                    } else if (model[index] == "Dark") {
+                        theme = Material.Dark
+                    } else {
+                        theme = Material.System
+                    }
+                    console.log(model[index])
+                }
             }
         }
         // Row {
@@ -136,7 +160,7 @@ Page {
         //     Text {
         //         height: parent.height
         //         verticalAlignment: Qt.AlignVCenter
-        //         color: tc
+        //         //color: tc
         //         text: qsTr("Close to Tray")
         //     }
         // }

@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
@@ -21,16 +22,21 @@ ApplicationWindow {
     height: 700
     visible: true
 
-    property color bg : '#202228'
-    property color sel: '#4d84c7'
-    property color hl: '#314661'
-    property color fg: '#2d3139'
-    property color tc: '#caccd1'
-    property color dg: '#e0e0e0'
+    property int theme: Material.Dark
+
+    // Material.theme: Material.Light
+
+
+    // Material.foreground: Material.BlueGrey
+    // Material.background: Material.BlueGrey
 
     // property Component gameView: GameView{}
     property Component libraryView: LibraryView{}
     property Component settingsView: SettingsView{}
+
+    Material.theme: theme
+    Material.accent: Material.LightBlue
+    Material.primary: Material.Grey
 
     StackView {
         id: stackView
@@ -40,7 +46,7 @@ ApplicationWindow {
     }
     Rectangle {
         anchors.fill: parent
-        color: bg
+        //color: bg
         visible: loader.loading
         BusyIndicator {
             id: loadingIndicator
@@ -51,7 +57,7 @@ ApplicationWindow {
             id: loadingMessage
             anchors.top: loadingIndicator.bottom
             text: loader.message
-            color: tc
+            //color: tc
             width: parent.width
             topPadding: 10
             horizontalAlignment: Text.AlignHCenter
@@ -64,7 +70,7 @@ ApplicationWindow {
             anchors.rightMargin: 40
             anchors.leftMargin: 40
             anchors.bottom: parent.bottom
-            color: bg
+            //color: bg
             height: 150
 
             Flickable {
@@ -79,7 +85,7 @@ ApplicationWindow {
                     onContentHeightChanged: {
                         testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
                     }
-                    color: tc
+                    //color: tc
                     readOnly: true
                     text: loader.log
                 }

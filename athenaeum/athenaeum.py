@@ -27,7 +27,11 @@ def main():
 
     db.connect()
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
-
+    os.environ['QT_STYLE_OVERRIDE'] = ''
+    os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
+    # os.environ['QT_STYLE_OVERRIDE'] = ''
+    # sys_argv = sys.argv
+    # sys_argv += ['--style', 'material']
     app = QApplication(sys.argv)
 
     app.setApplicationDisplayName('Athenaeum')
