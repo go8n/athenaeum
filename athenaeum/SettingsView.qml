@@ -7,16 +7,9 @@ import Athenaeum 1.0
 Page {
     id: settingsView
 
-    property color bg : '#202228'
-    property color sel: '#4d84c7'
-    property color hl: '#314661'
-    property color fg: '#2d3139'
-    property color tc: '#caccd1'
-    property color dg: '#e0e0e0'
-
     background: Rectangle {
         anchors.fill: parent
-        //color: bg
+        color: Material.background
     }
     header: ToolBar {
         id: toolBar
@@ -26,26 +19,25 @@ Page {
             ToolButton {
                 contentItem: Text {
                         text: qsTr("‹")
-                        //color: tc
+                        color: Material.foreground
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
-
-                // background: Rectangle {
-                //     anchors.fill: parent
-                //     //color: fg
-                //     implicitWidth: 40
-                //     implicitHeight: 40
-                // }
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: Material.background
+                    implicitWidth: 40
+                    implicitHeight: 40
+                }
                 Layout.fillHeight: true
                 onClicked: stackView.pop()
             }
             Label {
-                // background: Rectangle {
-                //     anchors.fill: parent
-                //     //color: fg
-                // }
-                //color: tc
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: Material.background
+                }
+                color: Material.foreground
                 text: qsTr("Settings")
                 elide: Label.ElideRight
                 horizontalAlignment: Qt.AlignHCenter
@@ -56,16 +48,16 @@ Page {
             ToolButton {
                 contentItem: Text {
                         text: qsTr("⋮")
-                        //color: tc
+                        color: Material.foreground
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
-                // background: Rectangle {
-                //     anchors.fill: parent
-                //     //color: fg
-                //     implicitWidth: 40
-                //     implicitHeight: 40
-                // }
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: Material.background
+                    implicitWidth: 40
+                    implicitHeight: 40
+                }
                 Layout.fillHeight: true
                 onClicked: menu.open()
                 Menu {
@@ -94,7 +86,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                //color: tc
+                color: Material.foreground
                 text: qsTr("Show Tray Icon")
             }
         }
@@ -108,7 +100,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                //color: tc
+                color: Material.foreground
                 text: qsTr("Always Show Logs")
             }
         }
@@ -122,7 +114,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                //color: tc
+                color: Material.foreground
                 text: qsTr("Notifications Enabled")
             }
         }
@@ -130,7 +122,7 @@ Page {
             Text {
                 height: parent.height
                 verticalAlignment: Qt.AlignVCenter
-                //color: tc
+                color: Material.foreground
                 text: qsTr("Theme")
                 rightPadding: 10
             }
@@ -146,7 +138,6 @@ Page {
                     } else {
                         theme = Material.System
                     }
-                    console.log(model[index])
                 }
             }
         }
