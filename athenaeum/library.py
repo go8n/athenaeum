@@ -204,10 +204,9 @@ class Library(QObject):
 
     def searchGames(self, query):
         if query:
-            self.filterValue = 'results'
             tmp = []
             query = query.lower()
-            for game in self._games:
+            for game in self._filter:
                 if query in game.name.lower():
                     tmp.append(game)
             self.filter = tmp
