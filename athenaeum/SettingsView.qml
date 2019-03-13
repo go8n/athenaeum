@@ -131,6 +131,7 @@ Page {
                 model: ["Light", "Dark", "System"]
                 currentIndex: theme
                 onActivated: {
+                    settings.theme = model[index]
                     if (model[index] == "Light") {
                         theme = Material.Light
                     } else if (model[index] == "Dark") {

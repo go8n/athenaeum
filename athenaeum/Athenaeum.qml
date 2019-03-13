@@ -22,15 +22,10 @@ ApplicationWindow {
     height: 700
     visible: true
 
-    property int theme: Material.Dark
+    property int theme: settings.theme == 'Dark' ? Material.Dark : settings.theme == 'Light' ? Material.Light: Material.System
+    
+    property color tr: 'transparent'
 
-    // Material.theme: Material.Light
-
-
-    // Material.foreground: Material.BlueGrey
-    // Material.background: Material.BlueGrey
-
-    // property Component gameView: GameView{}
     property Component libraryView: LibraryView{}
     property Component settingsView: SettingsView{}
 
