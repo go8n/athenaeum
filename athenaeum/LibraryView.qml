@@ -7,141 +7,58 @@ import Athenaeum 1.0
 Page {
     id: libraryView
 
-    // property color bg : '#202228'
-    // property color sel: '#4d84c7'
-    // property color hl: '#314661'
-    // property color fg: '#2d3139'
-    // property color tc: '#caccd1'
-    // property color ac: '#808186'
-    // property color dg: '#e0e0e0'
-    // property color bl: '#0b0b0b'
-    property color tr: 'transparent'
-    // Material.theme: Material.Dark
-    // Material.accent: Material.Purple
     background: Rectangle {
         anchors.fill: parent
         color: Material.background
     }
     header: ToolBar {
         id: toolBar
-        RowLayout {
-            spacing: 0
+        Rectangle {
+            
             anchors.fill: parent
-            Rectangle {
+            color: Material.background
+
+//                         MenuSeparator { }
+//                         MenuItem {
+//                             text: qsTr('Sort A-Z')
+//                             onTriggered: window.sort('az')
+//                         }
+//                         MenuItem {
+//                             text: qsTr('Sort Z-A')
+//                             onTriggered: window.sort('za')
+//                         }
+
+            TextField {
+                id: searchField
+                leftPadding: 10
+                rightPadding: 10
+                anchors.bottom: parent.bottom
                 width: listView.width
-                Layout.fillHeight: true
-                TextField {
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.right: dropDown. left
-                    anchors.bottom: parent.bottom
-                    // anchors.fill: parent
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: Material.background
-                        implicitHeight: 40
-                    }
-                    color: Material.foreground
-                    id: searchField
-                    placeholderText: qsTr('Search %L1 Games...').arg(library.games.length)
-
-                    onTextChanged: {
-                        window.search(text)
-                    }
-                    onAccepted: {
-                        window.indexUpdated(0)
-                    }
-                    Keys.onEscapePressed: {
-                        text = ''
-                    }
-                }
-                ToolButton {
-                    id: dropDown
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    // height: 40
-                    contentItem: Text {
-                            text: qsTr("⌄")
-                            color: Material.foreground
-                            horizontalAlignment: Text.AlignHCenter
-                    }
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: Material.background
-                        // implicitHeight: 40
-                    }
-                    onClicked: sortMenu.open()
-                    Menu {
-                        id: sortMenu
-                        MenuItem {
-                            text: qsTr('All Games (%L1)').arg(library.games.length)
-                            onTriggered: {
-                                window.filter('all')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr('Installed (%L1)').arg(library.installedCount)
-                            onTriggered: {
-                                window.filter('installed')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr('Recent (%L1)').arg(library.recentCount)
-                            onTriggered: {
-                                window.filter('recent')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr('New (%L1)').arg(library.newCount)
-                            onTriggered: {
-                                window.filter('new')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr('Has Updates (%L1)').arg(library.hasUpdatesCount)
-                            onTriggered: {
-                                window.filter('update')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr('Processing (%L1)').arg(library.processingCount)
-                            onTriggered: {
-                                window.filter('processing')
-                                searchField.text = ''
-                            }
-                        }
-                        MenuSeparator { }
-                        MenuItem {
-                            text: qsTr('Sort A-Z')
-                            onTriggered: window.sort('az')
-                        }
-                        MenuItem {
-                            text: qsTr('Sort Z-A')
-                            onTriggered: window.sort('za')
-                        }
-                    }
-                }
-
-            }
-            Label {
                 background: Rectangle {
                     anchors.fill: parent
                     color: Material.background
                 }
                 color: Material.foreground
+                placeholderText: qsTr('Search...')
+
+                onTextChanged: {
+                    window.search(text)
+                }
+                onAccepted: {
+                    window.indexUpdated(0)
+                }
+                Keys.onEscapePressed: {
+                    text = ''
+                }
+            }
+            Label {
+                anchors.centerIn: parent
+                color: Material.foreground
                 text: qsTr('Library')
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
             }
             ToolButton {
+                height: parent.height
+                anchors.right: parent.right
                 contentItem: Text {
                         text: qsTr("⋮")
                         color: Material.foreground
@@ -149,13 +66,6 @@ Page {
                         verticalAlignment: Text.AlignVCenter
                 }
 
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
-                Layout.fillHeight: true
                 onClicked: menu.open()
                 Menu {
                     id: menu
@@ -180,9 +90,59 @@ Page {
         }
     }
     /* Game List */
+    ComboBox {
+        id: filterCombo
+        width: 200
+        anchors.top: parent.top
+        currentIndex: getFilterIndex(library.filterValue)
+        function getFilterIndex(key) {
+                switch(key) {
+                    case 'installed':
+                        return 1;
+                    case 'recent':
+                        return 2;
+                    case 'new':
+                        return 3;
+                    case 'has_updates':
+                        return 4;
+                    case 'processing':
+                        return 5;
+                    default:
+                        return 0;
+                }
+            }
+        model: [
+            qsTr('All Games (%L1)').arg(library.games.length),
+            qsTr('Installed (%L1)').arg(library.installedCount),
+            qsTr('Recent (%L1)').arg(library.recentCount),
+            qsTr('New (%L1)').arg(library.newCount),
+            qsTr('Has Updates (%L1)').arg(library.hasUpdatesCount),
+            qsTr('Processing (%L1)').arg(library.processingCount)
+        ]
+        onActivated: {
+            window.filter(getFilterKey(index))
+            searchField.text = ''
+            function getFilterKey(index) {
+                switch(index) {
+                    case 1:
+                        return 'installed';
+                    case 2:
+                        return 'recent';
+                    case 3:
+                        return 'new';
+                    case 4:
+                        return 'has_updates';
+                    case 5:
+                        return 'processing';
+                    default:
+                        return 'all';
+                }
+            }
+        }
+    }
     ListView {
         id: listView
-        anchors.top: parent.top
+        anchors.top: filterCombo.bottom
         anchors.bottom: parent.bottom
         model: library.filter
         width: 200
@@ -190,38 +150,10 @@ Page {
         boundsBehavior: Flickable.StopAtBounds
         keyNavigationEnabled: true
         focus: true
+        clip:true
         onCurrentItemChanged:{
             window.indexUpdated(listView.currentIndex)
         }
-
-        header: Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 25
-            color: Material.background
-            Text {
-                function formatFilterName(filter) {
-                    switch(filter) {
-                        case 'installed':
-                            return qsTr('Installed');
-                        case 'recent':
-                            return qsTr('Recent');
-                        case 'new':
-                            return qsTr('New');
-                        case 'update':
-                            return qsTr('Has Update');
-                        case 'results':
-                            return qsTr('Results');
-                        default:
-                            return qsTr('All Games');
-                    }
-                }
-                anchors.centerIn: parent
-                color: Material.foreground
-                text: formatFilterName(library.filterValue)
-            }
-        }
-
         delegate: Component {
             id: delegateComponent
             Rectangle {
@@ -229,7 +161,7 @@ Page {
                 anchors.right: parent.right
                 height: 35
                 id: rect
-                border.color: Material.background
+                border.color: ListView.isCurrentItem || itemMouseArea.containsMouse ? Material.accent : tr
                 border.width: 1
                 MouseArea {
                     anchors.fill: parent
@@ -240,7 +172,8 @@ Page {
                     id: itemMouseArea
                     hoverEnabled: true
                 }
-                color: ListView.isCurrentItem ? Material.accent : itemMouseArea.containsMouse ? Material.accent : Material.background
+//                 color: ListView.isCurrentItem ? Material.accent : itemMouseArea.containsMouse ? Material.accent : Material.background
+                color: tr
                 Rectangle {
                     id: gameIcon
                     anchors.top: parent.top
@@ -257,7 +190,7 @@ Page {
                     }
                 }
                 Text {
-                    color: Material.foreground
+                    color: ListView.isCurrentItem ? Material.background : Material.foreground
                     clip: true
                     width: parent.width
                     anchors.left: gameIcon.right
@@ -473,7 +406,7 @@ Page {
                                 parent: stackView
                                 background: Rectangle {
                                     anchors.fill: parent
-                                    color: Material.primary
+                                    color: Material.background
                                 }
                                 x: Math.round((parent.width - width) / 2)
                                 y: Math.round((parent.height - height) / 2)
@@ -575,9 +508,9 @@ Page {
                             opacity: 0.6
                         }
                         Image {
+                            id: largeView
                             anchors.left: parent.left
                             anchors.right: parent.right
-                            id: largeView
                             fillMode: Image.PreserveAspectFit
                             // width: parent.width
                             // anchors.fill:
@@ -605,15 +538,16 @@ Page {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
+                                    console.log(bgImage.source)
                                     fullscreenPreview.close()
                                 }
                             }
                             background: Image {
+                                id: bgImage
                                 fillMode: Image.PreserveAspectFit
                                 anchors.centerIn: parent
                                 width: sourceSize.width > parent.width ? parent.width : sourceSize.width
-                                // width: parent.width
-                                // height: parent.height
+                                height: parent.height
                                 source: largeView.source
                             }
                         }
@@ -624,9 +558,8 @@ Page {
                             opacity: 0.7
                             color: "black"
                             ListView {
-                                anchors.horizontalCenter: parent.horizontalCenter
-
                                 id: carousel
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 clip: true
                                 width: contentWidth
                                 height: parent.height
@@ -639,7 +572,7 @@ Page {
                                 delegate: Rectangle {
                                     height: parent.height
                                     width: 100
-                                    color: Material.primary
+                                    color: Material.background
                                     Image {
                                         anchors.fill: parent
                                         anchors.margins: 1
@@ -656,7 +589,7 @@ Page {
                                         hoverEnabled: true
                                         id: thumbMouseArea
                                     }
-                                    // border.color: ListView.isCurrentItem ? sel : thumbMouseArea.containsMouse ? hl : fg
+                                    border.color: ListView.isCurrentItem ? Material.accent : thumbMouseArea.containsMouse ? Material.foreground : Material.primary
                                 }
                             }
                         }
