@@ -204,7 +204,7 @@ Page {
                     verticalAlignment: Text.AlignVCenter
                 }
                 BusyIndicator {
-                    visible: false
+                    visible: true
                     height: parent.height
                     width: parent.height
                     id: gameProcessing
@@ -473,7 +473,7 @@ Page {
                             onContentHeightChanged: {
                                 testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
                             }
-                            color: Material.foreground
+                            color: "white"
                             readOnly: true
                             text: library.currentGame.log
                         }
