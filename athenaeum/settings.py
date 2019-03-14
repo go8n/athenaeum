@@ -7,6 +7,7 @@ class Settings(QObject):
     closeToTrayChanged = pyqtSignal(bool)
     alwaysShowLogsChanged = pyqtSignal(bool)
     notificationsEnabledChanged = pyqtSignal(bool)
+    themeChanged = pyqtSignal(str)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -18,6 +19,8 @@ class Settings(QObject):
         self._alwaysShowLogs = False if alwaysShowLogs is None else alwaysShowLogs
         notificationsEnabled = getSetting('notifications_enabled')
         self._notificationsEnabled = True if notificationsEnabled is None else notificationsEnabled
+        theme = getSetting('theme')
+        self._theme = 'Dark' if theme is None else theme
 
     @pyqtProperty(bool, notify=showTrayIconChanged)
     def showTrayIcon(self):
@@ -63,3 +66,15 @@ class Settings(QObject):
             self._notificationsEnabled = notificationsEnabled
             setSetting('notifications_enabled', notificationsEnabled)
             self.notificationsEnabledChanged.emit(notificationsEnabled)
+            
+    @pyqtProperty(str, notify=themeChanged)
+    def theme(self):
+        return self._theme
+
+    @theme.setter
+    def theme(self, theme):
+        if theme != self._theme:
+            self._theme = theme
+            setSetting('theme', theme)
+            self.themeChanged.emit(theme)
+            

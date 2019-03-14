@@ -27,7 +27,12 @@ def main():
 
     db.connect()
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
-
+    os.environ['QT_STYLE_OVERRIDE'] = ''
+    os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
+    os.environ['QT_QPA_PLATFORM'] = 'wayland;xcb'
+    # os.environ['QT_STYLE_OVERRIDE'] = ''
+    # sys_argv = sys.argv
+    # sys_argv += ['--style', 'material']
     app = QApplication(sys.argv)
 
     app.setApplicationDisplayName('Athenaeum')
@@ -76,8 +81,7 @@ def main():
 
     root.search.connect(library.searchGames)
     root.filter.connect(library.filterGames)
-    root.sort.connect(library.sortGames)
-    
+
     try:
         notify2.init("Athenaeum")
         root.notify.connect(show_notifitcation)
