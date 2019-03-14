@@ -23,7 +23,7 @@ ApplicationWindow {
     visible: true
 
     property int theme: settings.theme == 'Dark' ? Material.Dark : settings.theme == 'Light' ? Material.Light: Material.System
-    
+
     property color tr: 'transparent'
 
     property Component libraryView: LibraryView{}
@@ -83,6 +83,10 @@ ApplicationWindow {
                     color: Material.foreground
                     readOnly: true
                     text: loader.log
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: Material.background
+                    }
                 }
             }
         }
