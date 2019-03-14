@@ -39,8 +39,6 @@ def main():
     app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
     app.setQuitOnLastWindowClosed(False)
 
-    notify2.init("Athenaeum")
-
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
     if loaded:
@@ -84,7 +82,11 @@ def main():
     root.search.connect(library.searchGames)
     root.filter.connect(library.filterGames)
 
-    root.notify.connect(show_notifitcation)
+    try:
+        notify2.init("Athenaeum")
+        root.notify.connect(show_notifitcation)
+    except Error as e:
+        print('Error initializing notifications.');
 
     systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/athenaeum.png")),
     root=root, show=settings.showTrayIcon, parent=app)
