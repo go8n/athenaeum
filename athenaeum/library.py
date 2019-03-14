@@ -23,10 +23,11 @@ class Library(QObject):
         self.reset()
 
     def load(self):
+        self.filterValue = getMeta('filter')
+
         self.sortGames()
         self.updateFilters(True)
 
-        self.filterValue = getMeta('filter')
         self.filterGames(self.filterValue or 'all')
         if not self.filter:
             self.filterGames('all')
@@ -156,7 +157,6 @@ class Library(QObject):
             installProcess.finished.connect(self.updateFilters)
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
             installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
-            self.updateFilters()
             self._processes.append(installProcess)
 
     def uninstallGame(self, game_id):
@@ -172,7 +172,6 @@ class Library(QObject):
             uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
             uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
-            self.updateFilters()
             self._processes.append(uninstallProcess)
 
     def updateGame(self, game_id):
@@ -249,6 +248,7 @@ class Library(QObject):
                     filters['new'].append(game)
 
         self._filters = filters
+        self.filterGames(self.filterValue)
         self.filtersChanged.emit(self._filters['recent'][:5] or self._filters['installed'][:5])
 
     def sortGames(self, sort='az'):
