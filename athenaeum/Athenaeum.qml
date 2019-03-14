@@ -41,7 +41,7 @@ ApplicationWindow {
     }
     Rectangle {
         anchors.fill: parent
-        //color: bg
+        color: Material.background
         visible: loader.loading
         BusyIndicator {
             id: loadingIndicator
@@ -52,7 +52,7 @@ ApplicationWindow {
             id: loadingMessage
             anchors.top: loadingIndicator.bottom
             text: loader.message
-            //color: tc
+            color: Material.foreground
             width: parent.width
             topPadding: 10
             horizontalAlignment: Text.AlignHCenter
@@ -65,7 +65,7 @@ ApplicationWindow {
             anchors.rightMargin: 40
             anchors.leftMargin: 40
             anchors.bottom: parent.bottom
-            //color: bg
+            color: Material.background
             height: 150
 
             Flickable {
@@ -80,7 +80,7 @@ ApplicationWindow {
                     onContentHeightChanged: {
                         testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
                     }
-                    //color: tc
+                    color: Material.foreground
                     readOnly: true
                     text: loader.log
                 }
