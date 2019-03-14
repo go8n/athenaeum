@@ -83,7 +83,6 @@ def main():
 
     root.search.connect(library.searchGames)
     root.filter.connect(library.filterGames)
-    root.sort.connect(library.sortGames)
 
     root.notify.connect(show_notifitcation)
 

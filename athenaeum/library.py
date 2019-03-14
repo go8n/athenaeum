@@ -23,6 +23,7 @@ class Library(QObject):
         self.reset()
 
     def load(self):
+        self.sortGames()
         self.updateFilters(True)
 
         self.filterValue = getMeta('filter')
@@ -250,9 +251,8 @@ class Library(QObject):
         self._filters = filters
         self.filtersChanged.emit(self._filters['recent'][:5] or self._filters['installed'][:5])
 
-    def sortGames(self, sort):
+    def sortGames(self, sort='az'):
         if sort == 'za':
-            self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
+            self._games.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
         else:
-            self._filter.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
-        self.filterChanged.emit()
+            self._games.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
