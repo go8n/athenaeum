@@ -27,7 +27,7 @@ Page {
                     color: Material.background
                 }
                 color: Material.foreground
-                placeholderText: qsTr('Search...')
+                placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
 
                 onTextChanged: {
                     window.search(text)
