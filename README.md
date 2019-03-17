@@ -6,7 +6,7 @@ A libre replacement for Steam
 
 Matrix Channel: [#athenaeum:matrix.org](https://riot.im/app/#/room/#athenaeum:matrix.org)
 
-![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/AuGUNUQuBPRbnNDCTwCoovAQ)
+![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT)
 
 ## What Works
 
@@ -127,6 +127,8 @@ The kind people of weblate.org have provided Athenaeum with hosting for translat
 https://hosted.weblate.org/projects/athenaeum/translations/
 
 #### Using QT tools
+
+On Fedora you'll require the qt5-devel package for this.
 
 Athenaeum leverages the QT translation classes and tools. To get started simply add a translation file to `athenaeum.pro` eg. `athenaeum/translations/athenaeum_ja.ts` then run `lupdate -verbose athenaeum.pro` to generate the file.
 
