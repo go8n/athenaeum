@@ -2,9 +2,11 @@ test:
   script:
   - apt-get update -qy
   - apt-get install -y 
-    python-dev python3-pyqt5
+    python3-dev
+    pip3
+    flatpak
+    python3-pyqt5
     python3-pyqt5.qtquick
-    python3-peewee
     python3-dateutil
     python3-xdg
     python3-dbus
@@ -12,4 +14,6 @@ test:
     qml-module-qtquick-layouts
     qml-module-qtquick-controls2
     qml-module-qtquick-window2
+  - pip3 install 
+    peewee
   - cd test; python3 -m unittest
