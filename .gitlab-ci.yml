@@ -3,7 +3,6 @@ test:
   - apt-get update -qy
   - apt-get install -y 
     python3-dev
-    pip3
     flatpak
     python3-pyqt5
     python3-pyqt5.qtquick
