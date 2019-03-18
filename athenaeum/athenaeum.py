@@ -30,7 +30,7 @@ def main():
 
     os.environ['QT_STYLE_OVERRIDE'] = ''
     os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
-    os.environ['QT_QPA_PLATFORM'] = 'wayland;xcb'
+    #os.environ['QT_QPA_PLATFORM'] = 'wayland;xcb'
 
     app = QApplication(sys.argv)
 
