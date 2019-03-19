@@ -65,6 +65,15 @@ qt5-quickcontrols2
 qt5-declarative
 ```
 
+Fedora 29 (Comes with a lot of the depedancies by default)
+
+```
+python3-pip
+pip3 install pyqt5
+python3-peewee
+python3-dateutil
+```
+
 ### Installing Athenaeum
 
 #### Arch
@@ -85,7 +94,7 @@ Arch
 python athenaeum.py
 ```
 
-Ubuntu
+Ubuntu / Fedora
 
 ```
 python3 athenaeum.py
@@ -93,7 +102,20 @@ python3 athenaeum.py
 
 ## Running the tests
 
-not supported atm
+Ubuntu / Fedora
+
+```
+$ cd test
+$ python3 -m unittest
+```
+
+Arch
+
+```
+$ cd test
+$ python -m unittest
+```
+
 
 ## Getting your game on Athenaeum
 
@@ -148,6 +170,6 @@ https://libregamewiki.org/List_of_games
 
 ## License
 
-GPLv3 or later (GPLv3+), any other code as licensed (python-appstream is lgplv2+).
+GPLv3 or later (GPLv3+), any other code as licensed (python-appstream is LGPLv2+, notify2 is BSD-2).
 
 Assets as licensed (LibreICONS is MIT).
