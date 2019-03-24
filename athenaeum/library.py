@@ -206,9 +206,14 @@ class Library(QObject):
         if query:
             tmp = []
             query = query.lower()
-            for game in self._filter:
-                if query in game.name.lower():
-                    tmp.append(game)
+            if self.filterValue == 'all':
+                for game in self._games:
+                    if query in game.name.lower():
+                        tmp.append(game)
+            else:
+                for game in self._filters[self.filterValue]:
+                    if query in game.name.lower():
+                        tmp.append(game)
             self.filter = tmp
         else:
             self.filterGames(self.filterValue)

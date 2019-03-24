@@ -7,7 +7,7 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QS
 import appstream
 from models import getMeta, setMeta, getGame, setGame
 from game import Game, Screenshot, Release, Url
-from lists import badLicenses, badCategories
+from lists import badLicenses, badCategories, loadingMessages
 
 
 class Loader(QObject):
@@ -25,16 +25,6 @@ class Loader(QObject):
 
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo', 'git':'https://github.com/flathub'}
 
-    messages = [
-        'Mining Mese blocks...',
-        'Peeling bananas...',
-        'Constructing castles...',
-        'Collecting cow bells...',
-        'Summoning demons...',
-        'Building power plants...',
-        'Planting mines...',
-        'Evolving...'
-    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -43,7 +33,7 @@ class Loader(QObject):
         self._processes = []
         self._timer = QTimer()
         self._timer.timeout.connect(self.changeMessage)
-        self._message = random.choice(self.messages)
+        self._message = random.choice(loadingMessages)
         self._appsteamPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/appstream.xml.gz'
         self._iconsPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/icons'
         self._log = ''
@@ -246,7 +236,7 @@ class Loader(QObject):
             self.stateChanged.emit()
 
     def changeMessage(self):
-        self.message = random.choice(self.messages)
+        self.message = random.choice(loadingMessages)
 
     def startLoading(self):
         self.loading = True
