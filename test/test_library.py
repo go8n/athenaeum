@@ -34,7 +34,6 @@ class TestGame(unittest.TestCase):
 
     def test_search(self):
         l = library.Library()
-        l.setMeta = unittest.mock.MagicMock(name='setMeta')
 
         l.appendGame(game.Game(name='basketball'))
         l.appendGame(game.Game(name='Bear'))

@@ -1,10 +1,10 @@
 from peewee import *
-from xdg import BaseDirectory
+from PyQt5.QtCore import QStandardPaths
 import datetime
 import json
 
 try:
-    path = BaseDirectory.save_data_path('athenaeum')
+    path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/athenaeum'
     db = SqliteDatabase(path + '/store.db')
 except Error as e:
     sys.exit("Error setting up database.")

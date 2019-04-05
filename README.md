@@ -39,8 +39,6 @@ python3-pyqt5
 python3-pyqt5.qtquick
 python3-peewee
 python3-dateutil
-python3-xdg
-python3-dbus
 qml-module-qtquick2
 qml-module-qtquick-layouts
 qml-module-qtquick-controls2
@@ -57,8 +55,6 @@ python-pyqt5
 python-sip-pyqt5
 python-peewee
 python-dateutil
-python-xdg
-python-dbus
 qt5-base
 qt5-svg
 qt5-quickcontrols2
@@ -170,6 +166,6 @@ https://libregamewiki.org/List_of_games
 
 ## License
 
-GPLv3 or later (GPLv3+), any other code as licensed (python-appstream is LGPLv2+, notify2 is BSD-2).
+GPLv3 or later (GPLv3+), any other code as licensed (python-appstream is LGPLv2+).
 
 Assets as licensed (LibreICONS is MIT).
