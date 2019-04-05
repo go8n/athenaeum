@@ -18,8 +18,9 @@ class Library(QObject):
     errorChanged = pyqtSignal()
     displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, flatpak=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._flatpak = flatpak
         self.reset()
 
     def load(self):
@@ -199,7 +200,10 @@ class Library(QObject):
             playProcess.finished.connect(self.updateFilters)
             playProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, playProcess))
             playProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, playProcess))
-            playProcess.start('flatpak', ['run', self._games[idx].ref])
+            if self._flatpak:
+                playProcess.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[idx].ref])
+            else:
+                playProcess.start('flatpak', ['run', self._games[idx].ref])
             self._processes.append(playProcess)
 
     def searchGames(self, query):

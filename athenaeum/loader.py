@@ -26,8 +26,9 @@ class Loader(QObject):
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo', 'git':'https://github.com/flathub'}
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, flatpak=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._flatpak = flatpak
         self._loading = True
         self._error = False
         self._processes = []

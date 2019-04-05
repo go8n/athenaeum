@@ -24,6 +24,10 @@ from systemtrayicon import SystemTrayIcon
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
+    
+    inFlatpak = False
+    if os.path.isfile('/.flatpak-info'):
+        inFlatpak = True
 
     db.connect()
     db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
@@ -53,8 +57,8 @@ def main():
     qmlRegisterType(Settings, 'Athenaeum', 1, 0, 'Settings')
 
     settings = Settings(parent=app)
-    loader = Loader(parent=app)
-    library = Library(parent=app)
+    loader = Loader(parent=app, flatpak=inFlatpak)
+    library = Library(parent=app, flatpak=inFlatpak)
 
     loader.started.connect(library.reset)
     loader.finished.connect(library.load)
