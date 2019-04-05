@@ -1,7 +1,7 @@
 import signal, os, sys
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QTranslator, QLocale, Qt
+from PyQt5.QtCore import QTranslator, QLocale, Qt, QVariant, QMetaType
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtWidgets import QApplication
 
@@ -12,7 +12,7 @@ else:
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
 sys.path.insert(0, BASEDIR)
 
-import notify2
+from notify import Notify
 from game import Game
 from settings import Settings
 from library import Library
@@ -81,9 +81,10 @@ def main():
     root.search.connect(library.searchGames)
     root.filter.connect(library.filterGames)
 
+    notify = None
     try:
-        notify2.init("Athenaeum")
-        root.notify.connect(show_notifitcation)
+        notify = Notify("Athenaeum")
+        root.notify.connect(notify.show_notifitcation)
     except Error as e:
         print('Error initializing notifications.');
 
@@ -100,10 +101,6 @@ def main():
 
     os._exit(app.exec())
 
-def show_notifitcation(summary='', message='', icon_path=''):
-    n = notify2.Notification(summary, message, icon_path)
-    n.set_urgency(notify2.URGENCY_NORMAL)
-    n.show()
 
 if __name__ == '__main__':
     main()
