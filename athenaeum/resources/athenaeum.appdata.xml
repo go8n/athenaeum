@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <id>com.gitlab.librebob.Athenaeum</id>
+    ​<launchable type="desktop-id">com.gitlab.librebob.Athenaeum.desktop</launchable>
+    <metadata_licence>CC0</metadata_licence>
+    <project_license>GPL-3.0+</project_license>
+    <name>Athenaeum</name>
+    <summary>A libre replacement for Steam</summary>
+    <description>
+        <p>
+            Athenaeum is a game laucher and manager designed as a libre replacement for Steam.
+        </p>
+        <p>
+            It's built with PyQt5 and utilizes the flatpak application container system.
+        </p>
+    </description>
+    <screenshots>
+        <screenshot type="default">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</screenshot>
+    </screenshots>
+    <url type="homepage">https://gitlab.com/librebob/athenaeum</url>
+    <url type="bugtracker">https://gitlab.com/librebob/athenaeum/issues</url>
+    <url type="translate">https://hosted.weblate.org/projects/athenaeum/</url>
+</application>
