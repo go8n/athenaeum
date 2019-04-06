@@ -56,13 +56,22 @@ class Loader(QObject):
         if proc_number == 0:
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runUpdateCommands, 1))
-            commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
+            else:
+                commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
         elif proc_number == 1:
             commandProcess.finished.connect(partial(self.runUpdateCommands, 2))
-            commandProcess.start('flatpak', ['update', '--appstream', '--user'])
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', '--appstream', '--user'])
+            else:
+                commandProcess.start('flatpak', ['update', '--appstream', '--user'])
         elif proc_number == 2:
             commandProcess.finished.connect(self.runListCommands)
-            commandProcess.start('flatpak', ['update', '--user', '-y'])
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', '--user', '-y'])
+            else:
+                commandProcess.start('flatpak', ['update', '--user', '-y'])
         self._processes.append(commandProcess)
 
     def runListCommands(self, proc_number=0):
@@ -73,10 +82,16 @@ class Loader(QObject):
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runListCommands, 1))
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
-            commandProcess.start('flatpak', ['list', '--user'])
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'list', '--user'])
+            else:
+                commandProcess.start('flatpak', ['list', '--user'])
         if proc_number == 1:
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
-            commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--updates', '--user'])
+            else:
+                commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
         self._processes.append(commandProcess)
 
     def loadListData(self, process, proc_number):
