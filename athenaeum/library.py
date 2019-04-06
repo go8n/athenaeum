@@ -157,7 +157,10 @@ class Library(QObject):
             installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
             installProcess.finished.connect(self.updateFilters)
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
-            installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
+            if self._flatpak:
+                installProcess.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[idx].ref, '-y', '--user'])
+            else:
+                installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
             self._processes.append(installProcess)
 
     def uninstallGame(self, game_id):
@@ -172,7 +175,10 @@ class Library(QObject):
             uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
             uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
-            uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
+            if self._flatpak:
+                uninstallProcess.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[idx].ref, '-y', '--user'])
+            else:
+                uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
             self._processes.append(uninstallProcess)
 
     def updateGame(self, game_id):
@@ -186,7 +192,10 @@ class Library(QObject):
             updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
             updateProcess.finished.connect(self.updateFilters)
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
-            updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
+            if self._flatpak:
+                updateProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[idx].ref, '-y', '--user'])
+            else:
+                updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
             self._processes.append(updateProcess)
 
     def playGame(self, game_id):
