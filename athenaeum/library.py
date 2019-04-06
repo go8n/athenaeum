@@ -233,7 +233,8 @@ class Library(QObject):
 
     def filterGames(self, filter):
         if filter not in self._filters.keys():
-            self.filterValue = 'all'
+            filter = 'all'
+            self.filterValue = filter
             self.filter = self.games
         else:
             self.filterValue = filter
