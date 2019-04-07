@@ -66,7 +66,7 @@ ApplicationWindow {
             anchors.leftMargin: 40
             anchors.bottom: parent.bottom
             color: Material.background
-            height: 150
+            height: 160
 
             Flickable {
                 id: testFlick

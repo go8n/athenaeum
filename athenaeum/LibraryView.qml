@@ -71,7 +71,75 @@ Page {
                     }
                     MenuItem {
                         text: qsTr('Exit')
-                        onTriggered: Qt.quit()
+                        onTriggered: library.processingCount > 0 ? confirmExit.open() : Qt.quit()
+                        Popup {
+                            id: confirmExit
+                             background: Rectangle {
+                                anchors.fill: parent
+                                color: Material.background
+                            }
+                            x: Math.round((parent.width - width) / 2)
+                            y: Math.round((parent.height - height) / 2)
+                            parent: stackView
+                            dim: true
+                            modal: true
+                            contentItem: Column {
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        color: Material.foreground
+                                        font.pixelSize: 20
+                                        text: qsTr('You have operations pending.')
+                                    }
+                                    Row {
+                                        topPadding: 20
+                                        spacing: 20
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        Button {
+                                            MouseArea {
+                                                id: exitPopupMouseArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                onClicked: {
+                                                    Qt.quit()
+                                                }
+                                            }
+                                            contentItem: Text {
+                                                color: Material.background
+                                                text: qsTr('Close Anyway')
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                            }
+
+                                            background: Rectangle {
+                                                implicitWidth: 100
+                                                implicitHeight: 40
+                                                color: exitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
+                                            }
+                                        }
+                                        Button {
+                                            contentItem: Text {
+                                                color: Material.background
+                                                text: qsTr('Cancel')
+                                                horizontalAlignment: Text.AlignHCenter
+                                                verticalAlignment: Text.AlignVCenter
+                                            }
+                                            MouseArea {
+                                                id: cancelExitPopupMouseArea
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                onClicked: {
+                                                    confirmExit.close()
+                                                }
+                                            }
+                                            background: Rectangle {
+                                                implicitWidth: 100
+                                                implicitHeight: 40
+                                                color: cancelExitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
+                                            }
+                                        }
+                                    }
+                                }
+                        }
                     }
                 }
             }
@@ -481,7 +549,7 @@ Page {
                     anchors.rightMargin: 40
                     anchors.leftMargin: 40
                     color: "black"
-                    height: 150
+                    height: 160
                     visible: library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
 
                     Flickable {
@@ -567,7 +635,6 @@ Page {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    console.log(bgImage.source)
                                     fullscreenPreview.close()
                                 }
                             }
