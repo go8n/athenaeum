@@ -42,12 +42,12 @@
     <message>
         <location filename="../LibraryView.qml" line="91"/>
         <source>You have operations pending.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tens operacions pendents.</translation>
     </message>
     <message>
         <location filename="../LibraryView.qml" line="108"/>
         <source>Close Anyway</source>
-        <translation type="unfinished"></translation>
+        <translation>Continuar tancant</translation>
     </message>
     <message>
         <location filename="../LibraryView.qml" line="174"/>
