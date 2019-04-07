@@ -47,7 +47,7 @@
     <message>
         <location filename="../LibraryView.qml" line="108"/>
         <source>Close Anyway</source>
-        <translation>Continuar tancant</translation>
+        <translation>Tanca igualment</translation>
     </message>
     <message>
         <location filename="../LibraryView.qml" line="174"/>
