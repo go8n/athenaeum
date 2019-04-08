@@ -1,5 +1,5 @@
 import unittest
-import unittest.mock
+from unittest.mock import MagicMock
 import env
 import library
 import game
@@ -33,7 +33,9 @@ class TestGame(unittest.TestCase):
         self.assertEqual('antelope', l.games[0].name)
 
     def test_search(self):
-        l = library.Library()
+        mockMetaRepo = MagicMock()
+        mockMetaRepo.setMeta.return_value = None
+        l = library.Library(metaRepository=mockMetaRepo)
 
         l.appendGame(game.Game(name='basketball'))
         l.appendGame(game.Game(name='Bear'))
