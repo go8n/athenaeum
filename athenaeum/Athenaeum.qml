@@ -17,6 +17,7 @@ ApplicationWindow {
     signal updateAll()
     signal checkAll()
     signal notify(string name, string message, string icon)
+    signal resetDatabase()
 
     width: 1000
     height: 700

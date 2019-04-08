@@ -5,7 +5,7 @@ from functools import partial
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
 import appstream
-from models import getMeta, setMeta, getGame, setGame
+from models import getMeta, setMeta, getGame, setGame, createDatabase, initDatabase, eraseDatabase
 from game import Game, Screenshot, Release, Url
 from lists import badLicenses, badCategories, loadingMessages
 
@@ -47,6 +47,12 @@ class Loader(QObject):
             self.loadAppstream()
         else:
             self.runUpdateCommands()
+            
+    def reset(self):
+        eraseDatabase()
+        initDatabase()
+        createDatabase()
+        self.runUpdateCommands()
 
     def runUpdateCommands(self, proc_number=0):
         commandProcess = QProcess()

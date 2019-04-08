@@ -17,7 +17,7 @@ from game import Game
 from settings import Settings
 from library import Library
 from loader import Loader
-from models import GameRecord, MetaRecord, SettingsRecord, db
+from models import GameRecord, MetaRecord, SettingsRecord, initDatabase
 from systemtrayicon import SystemTrayIcon
 
 
@@ -29,8 +29,7 @@ def main():
     if os.path.isfile('/.flatpak-info'):
         inFlatpak = True
 
-    db.connect()
-    db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
+    initDatabase()
 
     os.environ['QT_STYLE_OVERRIDE'] = ''
     os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
@@ -81,11 +80,11 @@ def main():
 
     root.updateAll.connect(loader.runUpdateCommands)
     root.checkAll.connect(loader.runListCommands)
+    root.resetDatabase.connect(loader.reset)
 
     root.search.connect(library.searchGames)
     root.filter.connect(library.filterGames)
 
-    notify = None
     try:
         notify = Notify("Athenaeum")
         root.notify.connect(notify.show_notifitcation)

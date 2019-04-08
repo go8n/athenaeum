@@ -2,12 +2,14 @@ from peewee import *
 from PyQt5.QtCore import QStandardPaths
 import datetime
 import json
+import os
 
+
+db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/athenaeum/store.db'
 try:
-    path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/athenaeum'
-    db = SqliteDatabase(path + '/store.db')
+    db = SqliteDatabase(db_path)
 except Error as e:
-    sys.exit("Error setting up database.")
+    sys.exit("Error creating database.")
 
 class BaseModel(Model):
     class Meta:
@@ -61,3 +63,18 @@ def setGame(game):
         created_date=game.createdDate,
         last_played_date=game.lastPlayedDate
     ).on_conflict(action='REPLACE').execute()
+
+
+def createDatabase():
+    try:
+        db = SqliteDatabase(db_path)
+    except Error as e:
+        sys.exit("Error creating database.")
+
+def initDatabase():
+    db.connect()
+    db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
+
+def eraseDatabase():
+    db.close()
+    os.remove(db_path)

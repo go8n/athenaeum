@@ -142,19 +142,11 @@ Page {
                 }
             }
         }
-        // Row {
-        //     CheckBox {
-        //         checked: settings.closeToTray
-        //         onClicked: {
-        //             settings.closeToTray = checked
-        //         }
-        //     }
-        //     Text {
-        //         height: parent.height
-        //         verticalAlignment: Qt.AlignVCenter
-        //         //color: tc
-        //         text: qsTr("Close to Tray")
-        //     }
-        // }
+        Button {
+            onClicked: {
+                window.resetDatabase()
+            }
+            text: qsTr('Reset Database')
+        }
     }
 }
