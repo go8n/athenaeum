@@ -17,7 +17,7 @@ from game import Game
 from settings import Settings
 from library import Library
 from loader import Loader
-from models import GameRecord, MetaRecord, SettingsRecord, initDatabase
+from models import initDatabase, MetaRepository, SettingRepository, GameRepository
 from systemtrayicon import SystemTrayIcon
 
 
@@ -54,10 +54,14 @@ def main():
     qmlRegisterType(Library, 'Athenaeum', 1, 0, 'Library')
     qmlRegisterType(Loader, 'Athenaeum', 1, 0, 'Loader')
     qmlRegisterType(Settings, 'Athenaeum', 1, 0, 'Settings')
+    
+    metaRepository = MetaRepository()
+    settingRepository = SettingRepository()
+    gameRepository = GameRepository()
 
-    settings = Settings(parent=app)
-    loader = Loader(parent=app, flatpak=inFlatpak)
-    library = Library(parent=app, flatpak=inFlatpak)
+    settings = Settings(parent=app, settingRepository=settingRepository)
+    loader = Loader(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
+    library = Library(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
 
     loader.started.connect(library.reset)
     loader.finished.connect(library.load)

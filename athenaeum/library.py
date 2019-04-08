@@ -6,7 +6,6 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
-from models import setMeta, getMeta
 
 
 class Library(QObject):
@@ -18,13 +17,15 @@ class Library(QObject):
     errorChanged = pyqtSignal()
     displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
 
-    def __init__(self, flatpak=False, *args, **kwargs):
+    def __init__(self, flatpak=False, metaRepository=None, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._flatpak = flatpak
+        self._metaRepository = metaRepository
+        self._gameRepository = gameRepository
         self.reset()
 
     def load(self):
-        self.filterValue = getMeta('filter')
+        self.filterValue = self._metaRepository.get('filter')
 
         self.sortGames()
         self.updateFilters(True)
@@ -155,6 +156,7 @@ class Library(QObject):
             installProcess.started.connect(self.updateFilters)
             installProcess.finished.connect(partial(self.processCleanup, installProcess, idx, 'install'))
             installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
+            installProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
             installProcess.finished.connect(self.updateFilters)
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
             if self._flatpak:
@@ -173,6 +175,7 @@ class Library(QObject):
             uninstallProcess.started.connect(self.updateFilters)
             uninstallProcess.finished.connect(partial(self.processCleanup, uninstallProcess, idx, 'uninstall'))
             uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
+            uninstallProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
             uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
             if self._flatpak:
@@ -190,6 +193,7 @@ class Library(QObject):
             updateProcess.started.connect(self.updateFilters)
             updateProcess.finished.connect(partial(self.processCleanup, updateProcess, idx, 'update'))
             updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
+            updateProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
             updateProcess.finished.connect(self.updateFilters)
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
             if self._flatpak:
@@ -206,6 +210,7 @@ class Library(QObject):
             playProcess.started.connect(self.updateFilters)
             playProcess.finished.connect(partial(self.processCleanup, playProcess, idx))
             playProcess.finished.connect(partial(self._games[idx].stopGame, playProcess))
+            playProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
             playProcess.finished.connect(self.updateFilters)
             playProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, playProcess))
             playProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, playProcess))
@@ -240,7 +245,7 @@ class Library(QObject):
             self.filterValue = filter
             self.filter = self._filters[filter]
 
-        setMeta(key='filter', value=filter)
+        self._metaRepository.set(key='filter', value=filter)
 
     def updateFilters(self, new_load=False):
         filters = {

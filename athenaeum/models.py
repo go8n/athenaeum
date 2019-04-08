@@ -31,39 +31,41 @@ class SettingsRecord(BaseModel):
     key = CharField(unique=True)
     value = TextField()
 
-def getMeta(key):
-    try:
-        return (MetaRecord.get(MetaRecord.key == key)).value
-    except DoesNotExist:
-        return None
+class MetaRepository():
+    def get(self, key):
+        try:
+            return (MetaRecord.get(MetaRecord.key == key)).value
+        except DoesNotExist:
+            return None
 
-def setMeta(key, value):
-    MetaRecord.insert(key=key, value=value).on_conflict(action='REPLACE').execute()
+    def set(self, key, value):
+        MetaRecord.insert(key=key, value=value).on_conflict(action='REPLACE').execute()
 
-def getSetting(key):
-    try:
-        return json.loads((SettingsRecord.get(SettingsRecord.key == key)).value)
-    except DoesNotExist:
-        return None
+class SettingRepository():
+    def get(self, key):
+        try:
+            return json.loads((SettingsRecord.get(SettingsRecord.key == key)).value)
+        except DoesNotExist:
+            return None
 
-def setSetting(key, value):
-    SettingsRecord.insert(key=key, value=json.dumps(value)).on_conflict(action='REPLACE').execute()
+    def set(self, key, value):
+        SettingsRecord.insert(key=key, value=json.dumps(value)).on_conflict(action='REPLACE').execute()
 
-def getGame(id):
-    try:
-        return GameRecord.get(GameRecord.id == id)
-    except DoesNotExist:
-        return None
+class GameRepository():
+    def get(self, id):
+        try:
+            return GameRecord.get(GameRecord.id == id)
+        except DoesNotExist:
+            return None
 
-def setGame(game):
-    GameRecord.insert(
-        id=game.id,
-        installed=game.installed,
-        has_update=game.hasUpdate,
-        created_date=game.createdDate,
-        last_played_date=game.lastPlayedDate
-    ).on_conflict(action='REPLACE').execute()
-
+    def set(self, game):
+        GameRecord.insert(
+            id=game.id,
+            installed=game.installed,
+            has_update=game.hasUpdate,
+            created_date=game.createdDate,
+            last_played_date=game.lastPlayedDate
+        ).on_conflict(action='REPLACE').execute()
 
 def createDatabase():
     try:

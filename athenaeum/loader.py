@@ -5,7 +5,7 @@ from functools import partial
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
 import appstream
-from models import getMeta, setMeta, getGame, setGame, createDatabase, initDatabase, eraseDatabase
+from models import createDatabase, initDatabase, eraseDatabase
 from game import Game, Screenshot, Release, Url
 from lists import badLicenses, badCategories, loadingMessages
 
@@ -26,9 +26,11 @@ class Loader(QObject):
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo', 'git':'https://github.com/flathub'}
 
 
-    def __init__(self, flatpak=False, *args, **kwargs):
+    def __init__(self, flatpak=False, metaRepository=None, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._flatpak = flatpak
+        self._metaRepository = metaRepository
+        self._gameRepository = gameRepository
         self._loading = True
         self._error = False
         self._processes = []
@@ -43,7 +45,7 @@ class Loader(QObject):
         self._updates_list = ''
 
     def load(self):
-        if getMeta(self.metaKey):
+        if self._metaRepository.get(self.metaKey):
             self.loadAppstream()
         else:
             self.runUpdateCommands()
@@ -89,15 +91,15 @@ class Loader(QObject):
             commandProcess.finished.connect(partial(self.runListCommands, 1))
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
             if self._flatpak:
-                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'list', '--user'])
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'list', '--user', '--app', '--columns=application'])
             else:
-                commandProcess.start('flatpak', ['list', '--user'])
+                commandProcess.start('flatpak', ['list', '--user', '--app', '--columns=application'])
         if proc_number == 1:
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
             if self._flatpak:
-                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--updates', '--user'])
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--updates', '--user', '--app', '--columns=application'])
             else:
-                commandProcess.start('flatpak', ['remote-ls', '--updates', '--user'])
+                commandProcess.start('flatpak', ['remote-ls', '--updates', '--user', '--app', '--columns=application'])
         self._processes.append(commandProcess)
 
     def loadListData(self, process, proc_number):
@@ -120,13 +122,14 @@ class Loader(QObject):
                     created_date = None
 
                     if process:
-                        name = component.bundle['value'][4:]
+                        name = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
                         installed = name in self._installed_list
                         has_update = name.split('/')[0] in self._updates_list
 
-                    gr = getGame(component.id)
+                    gr = self._gameRepository.get(component.id)
                     if gr:
-                        installed = gr.installed
+                        if not process:
+                            installed = gr.installed
                         if not process:
                             has_update = gr.has_update
                         last_played_date = gr.last_played_date
@@ -157,7 +160,7 @@ class Loader(QObject):
                     )
 
                     if process:
-                        setGame(game=game)
+                        self._gameRepository.set(game=game)
 
                     self.gameLoaded.emit(game)
         self.finishLoading()
@@ -266,7 +269,7 @@ class Loader(QObject):
         self.started.emit()
 
     def finishLoading(self):
-        setMeta(self.metaKey, 'y')
+        self._metaRepository.set(self.metaKey, 'y')
         self.loading = False
         self.finished.emit()
 
