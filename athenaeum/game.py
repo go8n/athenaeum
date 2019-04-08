@@ -3,8 +3,6 @@ from datetime import datetime
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
 from PyQt5.QtQml import QQmlListProperty
 
-from models import setGame
-
 from url import Url
 from screenshot import Screenshot
 from release import Release
@@ -286,7 +284,6 @@ class Game(QObject):
     def stopGame(self, process):
         self.playing = False
         self.lastPlayedDate = datetime.now()
-        self.save()
         self.appendLog(process, finished=True)
 
     def startInstall(self):
@@ -295,7 +292,6 @@ class Game(QObject):
     def finishInstall(self, process):
         self.processing = False
         self.installed = True
-        self.save()
         self.appendLog(process, finished=True)
 
     def startUninstall(self):
@@ -304,7 +300,6 @@ class Game(QObject):
     def finishUninstall(self, process):
         self.processing = False
         self.installed = False
-        self.save()
         self.appendLog(process, finished=True)
 
     def startUpdate(self):
@@ -313,7 +308,6 @@ class Game(QObject):
     def finishUpdate(self, process):
         self.processing = False
         self.hasUpdate = False
-        self.save()
         self.appendLog(process, finished=True)
 
     def appendLog(self, process, finished=False):
@@ -337,6 +331,3 @@ class Game(QObject):
             else:
                 self._log = self._log + log_data
         self.logChanged.emit()
-
-    def save(self):
-        setGame(self)
