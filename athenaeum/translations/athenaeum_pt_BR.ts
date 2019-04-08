@@ -1,8 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ja_JP">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>LibraryView</name>
+    <message>
+        <location filename="../LibraryView.qml" line="30"/>
+        <source>Search %L1 Games...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="45"/>
+        <source>Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="51"/>
+        <source>⋮</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="61"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="65"/>
+        <source>Check For Updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="69"/>
+        <source>Update All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="73"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="91"/>
+        <source>You have operations pending.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="108"/>
+        <source>Close Anyway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryView.qml" line="122"/>
+        <location filename="../LibraryView.qml" line="516"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../LibraryView.qml" line="174"/>
         <source>All Games (%L1)</source>
@@ -39,41 +90,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="45"/>
-        <source>Library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="30"/>
-        <source>Search %L1 Games...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="51"/>
-        <source>⋮</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="61"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="65"/>
-        <source>Check For Updates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="69"/>
-        <source>Update All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="73"/>
-        <source>Exit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../LibraryView.qml" line="402"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
@@ -101,22 +117,6 @@
     <message>
         <location filename="../LibraryView.qml" line="502"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="122"/>
-        <location filename="../LibraryView.qml" line="516"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="91"/>
-        <source>You have operations pending.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="108"/>
-        <source>Close Anyway</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

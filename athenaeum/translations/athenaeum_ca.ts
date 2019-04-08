@@ -263,5 +263,10 @@
         <source>Theme</source>
         <translation>Tema</translation>
     </message>
+    <message>
+        <location filename="../SettingsView.qml" line="149"/>
+        <source>Reset Database</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

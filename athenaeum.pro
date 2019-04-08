@@ -6,4 +6,6 @@ TRANSLATIONS = athenaeum/translations/athenaeum_la.ts \
                athenaeum/translations/athenaeum_sv.ts \
                athenaeum/translations/athenaeum_nb_NO.ts \
                athenaeum/translations/athenaeum_sr_Latn.ts \
-               athenaeum/translations/athenaeum_ca.ts
+               athenaeum/translations/athenaeum_ca.ts \
+               athenaeum/translations/athenaeum_pl.ts \
+               athenaeum/translations/athenaeum_pt_BR.ts
