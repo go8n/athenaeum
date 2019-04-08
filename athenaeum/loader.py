@@ -134,7 +134,7 @@ class Loader(QObject):
                     else:
                         created_date = datetime.now()
                     urls = self.getUrls(component.urls)
-                    urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + component.id))
+                    urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
 
                     game = Game(
                         id=component.id,
