@@ -38,7 +38,7 @@ def main():
     app = QApplication(sys.argv)
 
     app.setApplicationDisplayName('Athenaeum')
-    app.setWindowIcon(QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/athenaeum.png")))
+    app.setWindowIcon(QIcon.fromTheme('com.gitlab.librebob.Athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/com.gitlab.librebob.Athenaeum.png")))
     app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
@@ -95,7 +95,7 @@ def main():
     except Error as e:
         print('Error initializing notifications.');
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/athenaeum.png")),
+    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('com.gitlab.librebob.Athenaeum.png', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/com.gitlab.librebob.Athenaeum.png")),
     root=root, show=settings.showTrayIcon, parent=app)
 
     systemTrayIcon.playGame.connect(library.playGame)

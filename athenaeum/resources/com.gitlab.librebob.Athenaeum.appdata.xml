@@ -15,7 +15,9 @@
         </p>
     </description>
     <screenshots>
-        <screenshot type="default">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</screenshot>
+        <screenshot type="default">
+            <image type="source">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
+        </screenshot>
     </screenshots>
     <url type="homepage">https://gitlab.com/librebob/athenaeum</url>
     <url type="bugtracker">https://gitlab.com/librebob/athenaeum/issues</url>

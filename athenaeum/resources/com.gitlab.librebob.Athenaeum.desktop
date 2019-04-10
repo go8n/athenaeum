@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Name=Athenaeum
-Icon=athenaeum
+Icon=com.gitlab.librebob.Athenaeum
 Exec=athenaeum
 Terminal=false
 Categories=Game;PackageManager;
