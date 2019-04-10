@@ -2,7 +2,7 @@
 <component type="desktop">
     <id>com.gitlab.librebob.Athenaeum</id>
     ​<launchable type="desktop-id">com.gitlab.librebob.Athenaeum.desktop</launchable>
-    <metadata_licence>CC0</metadata_licence>
+    <metadata_licence>CC0-1.0</metadata_licence>
     <project_license>GPL-3.0+</project_license>
     <name>Athenaeum</name>
     <summary>A libre replacement for Steam</summary>
@@ -22,4 +22,4 @@
     <url type="homepage">https://gitlab.com/librebob/athenaeum</url>
     <url type="bugtracker">https://gitlab.com/librebob/athenaeum/issues</url>
     <url type="translate">https://hosted.weblate.org/projects/athenaeum/</url>
-<component>
+</component>
