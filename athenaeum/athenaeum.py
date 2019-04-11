@@ -5,6 +5,10 @@ from PyQt5.QtCore import QTranslator, QLocale, Qt, QVariant, QMetaType
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtWidgets import QApplication
 
+APP_NAME = 'com.gitlab.librebob.Athenaeum'
+APP_TITLE = 'athenaeum'
+APP_UPPER_TITLE = 'Athenaeum' 
+
 # Helpful snippet from kawaii-player https://github.com/kanishka-linux/kawaii-player/
 if getattr(sys, 'frozen', False):
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(sys.executable))
@@ -37,12 +41,12 @@ def main():
 
     app = QApplication(sys.argv)
 
-    app.setApplicationDisplayName('Athenaeum')
-    app.setWindowIcon(QIcon.fromTheme('com.gitlab.librebob.Athenaeum', QIcon(BASEDIR + "/resources/icons/hicolor/64x64/com.gitlab.librebob.Athenaeum.png")))
+    app.setApplicationDisplayName(APP_UPPER_TITLE)
+    app.setWindowIcon(QIcon.fromTheme(APP_NAME, QIcon(BASEDIR + "/resources/icons/hicolor/64x64/com.gitlab.librebob.Athenaeum.png")))
     app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
-    loaded = tr.load(QLocale.system(), "athenaeum", "_", BASEDIR + "/translations");
+    loaded = tr.load(QLocale.system(), APP_NAME, "_", BASEDIR + "/translations");
     if loaded:
         print('Loaded ' + QLocale.system().name() + ' translation.')
     else:
@@ -50,10 +54,10 @@ def main():
 
     app.installTranslator(tr);
 
-    qmlRegisterType(Game, 'Athenaeum', 1, 0, 'Game')
-    qmlRegisterType(Library, 'Athenaeum', 1, 0, 'Library')
-    qmlRegisterType(Loader, 'Athenaeum', 1, 0, 'Loader')
-    qmlRegisterType(Settings, 'Athenaeum', 1, 0, 'Settings')
+    qmlRegisterType(Game, APP_UPPER_TITLE, 1, 0, 'Game')
+    qmlRegisterType(Library, APP_UPPER_TITLE, 1, 0, 'Library')
+    qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
+    qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
     
     metaRepository = MetaRepository()
     settingRepository = SettingRepository()
@@ -90,12 +94,12 @@ def main():
     root.filter.connect(library.filterGames)
 
     try:
-        notify = Notify("Athenaeum")
+        notify = Notify(APP_UPPER_TITLE)
         root.notify.connect(notify.show_notifitcation)
     except Error as e:
         print('Error initializing notifications.');
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme('com.gitlab.librebob.Athenaeum.png', QIcon(BASEDIR + "/resources/icons/hicolor/32x32/com.gitlab.librebob.Athenaeum.png")),
+    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(APP_NAME, QIcon(BASEDIR + "/resources/icons/hicolor/32x32/com.gitlab.librebob.Athenaeum.png")),
     root=root, show=settings.showTrayIcon, parent=app)
 
     systemTrayIcon.playGame.connect(library.playGame)

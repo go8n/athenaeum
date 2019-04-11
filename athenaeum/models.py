@@ -5,7 +5,7 @@ import json
 import os
 
 
-db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/athenaeum/store.db'
+db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/com.gitlab.librebob.Athenaeum/store.db'
 try:
     db = SqliteDatabase(db_path)
 except Error as e:
