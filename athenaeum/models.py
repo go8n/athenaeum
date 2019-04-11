@@ -5,9 +5,12 @@ import json
 import os
 
 
-db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/com.gitlab.librebob.Athenaeum/store.db'
+db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/com.gitlab.librebob.Athenaeum'
+if not os.path.exists(db_path):
+    os.makedirs(db_path)
+
 try:
-    db = SqliteDatabase(db_path)
+    db = SqliteDatabase(db_path + '/store.db')
 except Error as e:
     sys.exit("Error creating database.")
 
