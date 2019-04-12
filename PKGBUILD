@@ -1,4 +1,4 @@
-# Maintainer: librebob librebob at protonmail dot com
+# Maintainer: librebob <librebob at protonmail dot com>
 pkgname=athenaeum-git
 _pkgdomain=com.gitlab.librebob.Athenaeum
 pkgver=v0.3.0.r0.668867a
