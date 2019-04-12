@@ -34,4 +34,6 @@ package() {
 		"$pkgdir/usr/share/applications/$_pkgdomain.desktop"
 	install -Dm644 "${pkgname%-git}/resources/$_pkgdomain.appdata.xml" \
     	"$pkgdir/usr/share/appdata/$_pkgdomain.appdata.xml"
+    sed -i 's%#!/usr/bin/python2%#!/usr/bin/python%g' \
+    	$pkgdir/usr/lib/python3.7/site-packages/athenaeum/appstream/{store.py,errors.py,utils.py,__init__.py,component.py}
 }
