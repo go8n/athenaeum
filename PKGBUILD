@@ -1,3 +1,4 @@
+# Maintainer: librebob librebob at protonmail dot com
 pkgname=athenaeum-git
 _pkgdomain=com.gitlab.librebob.Athenaeum
 pkgver=v0.3.0.r0.668867a
@@ -14,8 +15,8 @@ source=("git+https://gitlab.com/librebob/athenaeum.git")
 sha256sums=('SKIP')
 
 pkgver() {
-    cd "$srcdir/${pkgname%-git}"
-    printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+	cd "$srcdir/${pkgname%-git}"
+	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
 }
 
 build() {
@@ -33,7 +34,7 @@ package() {
 	install -Dm644 "${pkgname%-git}/resources/$_pkgdomain.desktop" \
 		"$pkgdir/usr/share/applications/$_pkgdomain.desktop"
 	install -Dm644 "${pkgname%-git}/resources/$_pkgdomain.appdata.xml" \
-    	"$pkgdir/usr/share/appdata/$_pkgdomain.appdata.xml"
-    sed -i 's%#!/usr/bin/python2%#!/usr/bin/python%g' \
-    	$pkgdir/usr/lib/python3.7/site-packages/athenaeum/appstream/{store.py,errors.py,utils.py,__init__.py,component.py}
+		"$pkgdir/usr/share/appdata/$_pkgdomain.appdata.xml"
+	sed -i 's%#!/usr/bin/python2%#!/usr/bin/python%g' \
+		$pkgdir/usr/lib/python3.7/site-packages/athenaeum/appstream/{store.py,errors.py,utils.py,__init__.py,component.py}
 }
