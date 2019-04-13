@@ -550,7 +550,7 @@ Page {
                     anchors.leftMargin: 40
                     color: "black"
                     height: 160
-                    visible: library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
+                    visible: library.currentGame.error || library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
 
                     Flickable {
                         id: testFlick
