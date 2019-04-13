@@ -126,23 +126,8 @@ class Library(QObject):
             self.currentGame = self._filter[index]
         except IndexError:
             print('Index does not exist.')
-    #
-    # @pyqtProperty(int, notify=errorChanged)
-    # def error(self):
-    #     return self._error
-    #
-    # @error.setter
-    # def error(self, error):
-    #     if error != self._error:
-    #         self._error = error
-    #         self.errorChanged.emit()
 
-    def processCleanup(self, process, index, action=''):
-        exit_code = process.exitCode()
-
-        if exit_code:
-            action = 'error'
-
+    def processCleanup(self, process, index, action=None):
         if action:
             self.displayNotification.emit(index, action)
 
@@ -152,65 +137,114 @@ class Library(QObject):
         idx = self.findById(game_id)
         if idx is not None:
             installProcess = QProcess(parent=self.parent())
-            installProcess.started.connect(self._games[idx].startInstall)
+            installProcess.started.connect(partial(self.installStarted, idx))
             installProcess.started.connect(self.updateFilters)
-            installProcess.finished.connect(partial(self.processCleanup, installProcess, idx, 'install'))
-            installProcess.finished.connect(partial(self._games[idx].finishInstall, installProcess))
-            installProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
+            installProcess.finished.connect(partial(self.installFinished, installProcess, idx))
             installProcess.finished.connect(self.updateFilters)
             installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
+            installProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, installProcess))
             if self._flatpak:
                 installProcess.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[idx].ref, '-y', '--user'])
             else:
                 installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
             self._processes.append(installProcess)
-
+            
+    def installStarted(self, index):
+        self._games[index].processing = True
+        
+    def installFinished(self, process, index):
+        self._games[index].processing = False
+        
+        if process.exitCode():
+            action = 'error'
+            self._games[index].error = True
+        else:
+            action = 'install'
+            self._games[index].error = False
+            self._games[index].installed = True
+            
+        self._games[index].appendLog(process, finished=True)
+        self._gameRepository.set(self._games[index])
+        self.processCleanup(process, index, action)
+        
     def uninstallGame(self, game_id):
-        print('uninstall')
         idx = self.findById(game_id)
         if idx is not None:
             print('uninstall')
             uninstallProcess = QProcess(parent=self.parent())
-            uninstallProcess.started.connect(self._games[idx].startUninstall)
+            uninstallProcess.started.connect(self._games[idx].uninstallStarted, idx)
             uninstallProcess.started.connect(self.updateFilters)
-            uninstallProcess.finished.connect(partial(self.processCleanup, uninstallProcess, idx, 'uninstall'))
-            uninstallProcess.finished.connect(partial(self._games[idx].finishUninstall, uninstallProcess))
-            uninstallProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
+            uninstallProcess.finished.connect(partial(self._games[idx].uninstallFinishd, uninstallProcess, idx))
             uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
+            uninstallProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, uninstallProcess))
             if self._flatpak:
                 uninstallProcess.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[idx].ref, '-y', '--user'])
             else:
                 uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
             self._processes.append(uninstallProcess)
+            
+    
+    def uninstallStarted(self, index):
+        self._games[index].processing = True
+
+    def uninstallFinishd(self, process, index):
+        self._games[index].processing = False
+        
+        if process.exitCode():
+            action = 'error'
+            self._games[index].error = True
+        else:
+            action = 'uninstall'
+            self._games[index].error = False
+            self._games[index].installed = False
+
+        self._games[index].appendLog(process, finished=True)
+        self._gameRepository.set(self._games[index])
+        self.processCleanup(process, index, action)
 
     def updateGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
             print('update')
             updateProcess = QProcess(parent=self.parent())
-            updateProcess.started.connect(self._games[idx].startUpdate)
+            updateProcess.started.connect(self.startUpdate, index)
             updateProcess.started.connect(self.updateFilters)
-            updateProcess.finished.connect(partial(self.processCleanup, updateProcess, idx, 'update'))
-            updateProcess.finished.connect(partial(self._games[idx].finishUpdate, updateProcess))
-            updateProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
+            updateProcess.finished.connect(partial(self.updateFinished, updateProcess, index))
             updateProcess.finished.connect(self.updateFilters)
             updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
+            updateProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, updateProcess))
             if self._flatpak:
                 updateProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[idx].ref, '-y', '--user'])
             else:
                 updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
             self._processes.append(updateProcess)
 
+    def updateStarted(self, index):
+        self._games[index].processing = True
+
+    def updateFinished(self, process, index):
+        self._games[index].processing = False
+        
+        if process.exitCode():
+            action = 'error'
+            self._games[index].error = True
+        else:
+            action = 'update'
+            self._games[index].error = False
+            self._games[index].hasUpdate = False
+        
+        self._games[index].appendLog(process, finished=True)
+        self._gameRepository.set(self._games[index])
+        self.processCleanup(process, index, action)
+
     def playGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
             playProcess = QProcess(parent=self.parent())
-            playProcess.started.connect(self._games[idx].startGame)
+            playProcess.started.connect(partial(self.startGame, idx))
             playProcess.started.connect(self.updateFilters)
-            playProcess.finished.connect(partial(self.processCleanup, playProcess, idx))
-            playProcess.finished.connect(partial(self._games[idx].stopGame, playProcess))
-            playProcess.finished.connect(partial(self._gameRepository.set, self._games[idx]))
+            playProcess.finished.connect(partial(self.stopGame, playProcess, idx))
             playProcess.finished.connect(self.updateFilters)
             playProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, playProcess))
             playProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, playProcess))
@@ -219,6 +253,17 @@ class Library(QObject):
             else:
                 playProcess.start('flatpak', ['run', self._games[idx].ref])
             self._processes.append(playProcess)
+    
+    def startGame(self, index):
+        self._games[index].playing = True
+        self._games[index].lastPlayedDate = datetime.now()
+    
+    def stopGame(self, process, index):
+        self._games[index].playing = False
+        self._games[index].lastPlayedDate = datetime.now()
+        self._games[index].appendLog(process, finished=True)
+        self._gameRepository.set(self._games[index])
+        self.processCleanup(process, index)
 
     def searchGames(self, query):
         if query:

@@ -34,6 +34,7 @@ class Game(QObject):
     processingChanged = pyqtSignal()
 
     logChanged = pyqtSignal()
+    errorChanged = pyqtSignal()
 
     def __init__(self,
             id='',
@@ -82,6 +83,7 @@ class Game(QObject):
         self._playing = False
         self._processing = False
         self._log = ''
+        self._error = False
 
     @pyqtProperty('QString', notify=idChanged)
     def id(self):
@@ -276,39 +278,16 @@ class Game(QObject):
         if log != self._log:
             self._log = log
             self.logChanged.emit()
-
-    def startGame(self):
-        self.playing = True
-        self.lastPlayedDate = datetime.now()
-
-    def stopGame(self, process):
-        self.playing = False
-        self.lastPlayedDate = datetime.now()
-        self.appendLog(process, finished=True)
-
-    def startInstall(self):
-        self.processing = True
-
-    def finishInstall(self, process):
-        self.processing = False
-        self.installed = True
-        self.appendLog(process, finished=True)
-
-    def startUninstall(self):
-        self.processing = True
-
-    def finishUninstall(self, process):
-        self.processing = False
-        self.installed = False
-        self.appendLog(process, finished=True)
-
-    def startUpdate(self):
-        self.processing = True
-
-    def finishUpdate(self, process):
-        self.processing = False
-        self.hasUpdate = False
-        self.appendLog(process, finished=True)
+    
+    @pyqtProperty(bool, notify=errorChanged)
+    def error(self):
+        return self._error
+    
+    @error.setter
+    def error(self, error):
+        if error != self._error:
+            self._error = error
+            self.errorChanged.emit()
 
     def appendLog(self, process, finished=False):
         output_data = str(process.readAllStandardOutput(), 'utf-8')
