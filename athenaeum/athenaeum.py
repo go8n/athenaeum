@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication
 
 APP_NAME = 'com.gitlab.librebob.Athenaeum'
 APP_TITLE = 'athenaeum'
-APP_UPPER_TITLE = 'Athenaeum' 
+APP_UPPER_TITLE = 'Athenaeum'
 
 # Helpful snippet from kawaii-player https://github.com/kanishka-linux/kawaii-player/
 if getattr(sys, 'frozen', False):
@@ -22,13 +22,14 @@ from settings import Settings
 from library import Library
 from loader import Loader
 from models import initDatabase, MetaRepository, SettingRepository, GameRepository
+from network import NetworkAccessManagerFactory
 from systemtrayicon import SystemTrayIcon
 
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
-    
+
     inFlatpak = False
     if os.path.isfile('/.flatpak-info'):
         inFlatpak = True
@@ -42,6 +43,7 @@ def main():
     app = QApplication(sys.argv)
 
     app.setApplicationDisplayName(APP_UPPER_TITLE)
+    app.setApplicationName(APP_NAME)
     app.setWindowIcon(QIcon.fromTheme(APP_NAME, QIcon(BASEDIR + "/resources/icons/hicolor/64x64/com.gitlab.librebob.Athenaeum.png")))
     app.setQuitOnLastWindowClosed(False)
 
@@ -58,7 +60,7 @@ def main():
     qmlRegisterType(Library, APP_UPPER_TITLE, 1, 0, 'Library')
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
-    
+
     metaRepository = MetaRepository()
     settingRepository = SettingRepository()
     gameRepository = GameRepository()
@@ -71,7 +73,10 @@ def main():
     loader.finished.connect(library.load)
     loader.gameLoaded.connect(library.appendGame)
 
+    networkAccessManagerFactory = NetworkAccessManagerFactory()
+
     engine = QQmlApplicationEngine(parent=app)
+    engine.setNetworkAccessManagerFactory(networkAccessManagerFactory)
     engine.rootContext().setContextProperty('settings', settings)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
