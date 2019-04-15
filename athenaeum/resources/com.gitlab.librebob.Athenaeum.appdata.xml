@@ -8,7 +8,7 @@
     <summary>A libre replacement for Steam</summary>
     <description>
         <p>
-            Athenaeum is a game laucher and manager designed as a libre replacement for Steam.
+            Athenaeum is a game launcher and manager designed as a libre replacement for Steam.
         </p>
         <p>
             It's built with PyQt5 and utilizes the flatpak application container system.
