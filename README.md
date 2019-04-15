@@ -15,15 +15,23 @@ Matrix Channel: [#athenaeum:matrix.org](https://riot.im/app/#/room/#athenaeum:ma
 * Uninstalling Games
 * Updates (Only monolithic atm, individual to come)
 
-## Getting Started
+## Installing Athenaeum
 
-### Arch Users
+### Any
 
-Download just the `PKGBUILD` and use that.
+Get it from flathub!
+
+https://flathub.org/apps/details/com.gitlab.librebob.Athenaeum
+
+### Arch
+
+Download just the `PKGBUILD` and use it to build the package. Once built install it with pacman.
 
 Or get it from the AUR https://aur.archlinux.org/packages/athenaeum-git/
 
-### Other Distros
+## Development
+
+### Getting Started
 
 Clone this repo.
 
@@ -70,18 +78,6 @@ python3-peewee
 python3-dateutil
 ```
 
-### Installing Athenaeum
-
-#### Arch
-
-Use the `PKGBUILD` to build it then use pacman to install it.
-
-Or get it from the AUR https://aur.archlinux.org/packages/athenaeum-git/
-
-#### Other
-
-Not currently supported, though you can probably do it with the `setup.py`
-
 ### Running Athenaeum
 
 Arch
@@ -111,7 +107,6 @@ Arch
 $ cd test
 $ python -m unittest
 ```
-
 
 ## Getting your game on Athenaeum
 
