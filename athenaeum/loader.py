@@ -49,7 +49,7 @@ class Loader(QObject):
             self.loadAppstream()
         else:
             self.runUpdateCommands()
-            
+
     def reset(self):
         eraseDatabase()
         initDatabase()
@@ -109,60 +109,66 @@ class Loader(QObject):
             self._updates_list = str(process.readAllStandardOutput(), 'utf-8')
             self.loadAppstream(process=True)
 
+    def acceptedGame(self, component=None):
+        return component.project_license and \
+            not [x for x in badLicenses if x in component.project_license] and \
+            'Game' in component.categories and \
+            not [x for x in badCategories if x in component.categories]
+
     def loadAppstream(self, process=None):
         stream = appstream.Store()
         stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
 
         for component in stream.get_components():
-            if component.project_license and not [x for x in badLicenses if x in component.project_license]:
-                if 'Game' in component.categories and not [x for x in badCategories if x in component.categories]:
-                    installed = False
-                    has_update = False
-                    last_played_date = None
-                    created_date = None
+            if self.acceptedGame(component):
+                installed = False
+                has_update = False
+                last_played_date = None
+                created_date = None
 
-                    if process:
-                        name = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
-                        installed = name in self._installed_list
-                        has_update = name.split('/')[0] in self._updates_list
+                if process:
+                    name = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
+                    installed = name in self._installed_list
+                    has_update = name.split('/')[0] in self._updates_list
 
-                    gr = self._gameRepository.get(component.id)
-                    if gr:
-                        if not process:
-                            installed = gr.installed
-                        if not process:
-                            has_update = gr.has_update
-                        last_played_date = gr.last_played_date
-                        created_date = gr.created_date
-                    else:
-                        created_date = datetime.now()
-                    urls = self.getUrls(component.urls)
-                    urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
+                gr = self._gameRepository.get(component.id)
+                if gr:
+                    if not process:
+                        installed = gr.installed
+                    if not process:
+                        has_update = gr.has_update
+                    last_played_date = gr.last_played_date
+                    created_date = gr.created_date
+                else:
+                    created_date = datetime.now()
+                urls = self.getUrls(component.urls)
+                urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
 
-                    game = Game(
-                        id=component.id,
-                        name=component.name,
-                        iconSmall=self.getIconSmall(component.icons),
-                        iconLarge=self.getIconLarge(component.icons),
-                        license=component.project_license,
-                        developerName=component.developer_name,
-                        summary=component.summary,
-                        description=component.description,
-                        screenshots=self.getScreenshots(component.screenshots),
-                        categories=component.categories,
-                        releases=self.getReleases(component.releases),
-                        urls=urls,
-                        ref=component.bundle['value'],
-                        installed=installed,
-                        hasUpdate=has_update,
-                        lastPlayedDate=last_played_date,
-                        createdDate=created_date
-                    )
+                game = Game(
+                    id=component.id,
+                    name=component.name,
+                    iconSmall=self.getIconSmall(component.icons),
+                    iconLarge=self.getIconLarge(component.icons),
+                    license=component.project_license,
+                    developerName=component.developer_name,
+                    summary=component.summary,
+                    description=component.description,
+                    screenshots=self.getScreenshots(component.screenshots),
+                    categories=component.categories,
+                    releases=self.getReleases(component.releases),
+                    urls=urls,
+                    ref=component.bundle['value'],
+                    installed=installed,
+                    hasUpdate=has_update,
+                    lastPlayedDate=last_played_date,
+                    createdDate=created_date
+                )
 
-                    if process:
-                        self._gameRepository.set(game=game)
+                if process:
+                    self._gameRepository.set(game=game)
 
-                    self.gameLoaded.emit(game)
+                self.gameLoaded.emit(game)
+
         self.finishLoading()
 
     def getIconSmall(self, icons):
