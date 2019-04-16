@@ -4,13 +4,17 @@ badLicenses = [
 ]
 
 badCategories = [
-    'Emulator'
+    'Emulator',
+    'PackageManager',
+    'System',
+    'Utility'
 ]
 
 nonFreeAssets = [
     'Sauerbraten',
     'OpenArena',
     'RuneLite',
+    'OpenSpades'
 ]
 
 engineClones = [
