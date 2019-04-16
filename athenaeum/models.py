@@ -72,7 +72,7 @@ class GameRepository():
 
 def createDatabase():
     try:
-        db = SqliteDatabase(db_path)
+        db = SqliteDatabase(db_path + '/store.db')
     except Error as e:
         sys.exit("Error creating database.")
 
@@ -82,4 +82,4 @@ def initDatabase():
 
 def eraseDatabase():
     db.close()
-    os.remove(db_path)
+    db.remove(db_path + '/store.db')
