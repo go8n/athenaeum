@@ -82,4 +82,4 @@ def initDatabase():
 
 def eraseDatabase():
     db.close()
-    db.remove(db_path + '/store.db')
+    os.remove(db_path + '/store.db')
