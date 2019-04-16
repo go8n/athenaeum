@@ -46,6 +46,7 @@ class Library(QObject):
             'processing': []
         }
         self._filterValue = ''
+        self._searchQuery = ''
         self._currentGame = Game()
         self._threads = []
         self._processes = []
@@ -267,6 +268,7 @@ class Library(QObject):
 
     def searchGames(self, query):
         if query:
+            self._searchQuery = query
             tmp = []
             query = query.lower()
             if self.filterValue == 'all':
@@ -279,16 +281,20 @@ class Library(QObject):
                         tmp.append(game)
             self.filter = tmp
         else:
+            self._searchQuery = ''
             self.filterGames(self.filterValue)
 
     def filterGames(self, filter):
         if filter not in self._filters.keys():
             filter = 'all'
             self.filterValue = filter
-            self.filter = self.games
+            self.filter = self._games
         else:
             self.filterValue = filter
             self.filter = self._filters[filter]
+            
+        if self._searchQuery:
+            self.searchGames(self._searchQuery)
 
         self._metaRepository.set(key='filter', value=filter)
 
