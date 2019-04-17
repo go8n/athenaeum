@@ -12,6 +12,4 @@ test:
     qml-module-qtquick-layouts
     qml-module-qtquick-controls2
     qml-module-qtquick-window2
-  - pip3 install
-    peewee
   - cd test; python3 -m unittest

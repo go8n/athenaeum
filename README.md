@@ -37,7 +37,7 @@ Clone this repo.
 
 ### Prerequisites
 
-Working list, in general you need python3, flatpak, qt5, pyqt5 and python-peewee.
+Working list, in general you need python3, flatpak and pyqt5.
 
 Ubuntu 18.04
 
@@ -45,7 +45,6 @@ Ubuntu 18.04
 flatpak
 python3-pyqt5
 python3-pyqt5.qtquick
-python3-peewee
 python3-dateutil
 qml-module-qtquick2
 qml-module-qtquick-layouts
@@ -57,7 +56,6 @@ Arch
 
 ```
 flatpak
-python-peewee
 python-dateutil
 python-pyqt5
 qt5-svg
@@ -69,7 +67,6 @@ Fedora 29 (Comes with a lot of the dependencies by default)
 ```
 python3-pip
 pip3 install pyqt5
-python3-peewee
 python3-dateutil
 ```
 
@@ -118,7 +115,6 @@ Make sure your game appdata.xml contains the `project_license` field with a Free
 * Python3
 * PyQt5
 * Qt5
-* PeeweeORM
 * Python-Appstream
 * LibreICONS
 

@@ -149,13 +149,13 @@ class Library(QObject):
             else:
                 installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
             self._processes.append(installProcess)
-            
+
     def installStarted(self, index):
         self._games[index].processing = True
-        
+
     def installFinished(self, process, index):
         self._games[index].processing = False
-        
+
         if process.exitCode():
             action = 'error'
             self._games[index].error = True
@@ -163,19 +163,19 @@ class Library(QObject):
             action = 'install'
             self._games[index].error = False
             self._games[index].installed = True
-            
+
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
-        
+
     def uninstallGame(self, game_id):
         idx = self.findById(game_id)
         if idx is not None:
             print('uninstall')
             uninstallProcess = QProcess(parent=self.parent())
-            uninstallProcess.started.connect(self._games[idx].uninstallStarted, idx)
+            uninstallProcess.started.connect(partial(self.uninstallStarted, idx))
             uninstallProcess.started.connect(self.updateFilters)
-            uninstallProcess.finished.connect(partial(self._games[idx].uninstallFinishd, uninstallProcess, idx))
+            uninstallProcess.finished.connect(partial(self.uninstallFinishd, uninstallProcess, idx))
             uninstallProcess.finished.connect(self.updateFilters)
             uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
             uninstallProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, uninstallProcess))
@@ -184,14 +184,13 @@ class Library(QObject):
             else:
                 uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
             self._processes.append(uninstallProcess)
-            
-    
+
     def uninstallStarted(self, index):
         self._games[index].processing = True
 
     def uninstallFinishd(self, process, index):
         self._games[index].processing = False
-        
+
         if process.exitCode():
             action = 'error'
             self._games[index].error = True
@@ -209,7 +208,7 @@ class Library(QObject):
         if idx is not None:
             print('update')
             updateProcess = QProcess(parent=self.parent())
-            updateProcess.started.connect(self.startUpdate, index)
+            updateProcess.started.connect(partial(self.startUpdate, index))
             updateProcess.started.connect(self.updateFilters)
             updateProcess.finished.connect(partial(self.updateFinished, updateProcess, index))
             updateProcess.finished.connect(self.updateFilters)
@@ -226,7 +225,7 @@ class Library(QObject):
 
     def updateFinished(self, process, index):
         self._games[index].processing = False
-        
+
         if process.exitCode():
             action = 'error'
             self._games[index].error = True
@@ -234,7 +233,7 @@ class Library(QObject):
             action = 'update'
             self._games[index].error = False
             self._games[index].hasUpdate = False
-        
+
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
@@ -254,11 +253,11 @@ class Library(QObject):
             else:
                 playProcess.start('flatpak', ['run', self._games[idx].ref])
             self._processes.append(playProcess)
-    
+
     def startGame(self, index):
         self._games[index].playing = True
         self._games[index].lastPlayedDate = datetime.now()
-    
+
     def stopGame(self, process, index):
         self._games[index].playing = False
         self._games[index].lastPlayedDate = datetime.now()
@@ -292,7 +291,7 @@ class Library(QObject):
         else:
             self.filterValue = filter
             self.filter = self._filters[filter]
-            
+
         if self._searchQuery:
             self.searchGames(self._searchQuery)
 
