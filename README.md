@@ -57,19 +57,14 @@ Arch
 
 ```
 flatpak
-python3
-pyqt5-common
-python-pyqt5
-python-sip-pyqt5
 python-peewee
 python-dateutil
-qt5-base
+python-pyqt5
 qt5-svg
 qt5-quickcontrols2
-qt5-declarative
 ```
 
-Fedora 29 (Comes with a lot of the depedancies by default)
+Fedora 29 (Comes with a lot of the dependencies by default)
 
 ```
 python3-pip
@@ -112,7 +107,7 @@ $ python -m unittest
 
 Athenaeum uses flatpak as its packaging system and pulls all data from flathub currently.
 
-The best way to get your game on Athenaeum is to create a flatpak config and submit it to the flathub github repositrory.
+The best way to get your game on Athenaeum is to create a flatpak config and submit it to the flathub github repository.
 
 https://github.com/flathub/flathub/wiki/App-Submission
 
