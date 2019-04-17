@@ -5,7 +5,6 @@ from functools import partial
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
 import appstream
-from models import createDatabase, initDatabase, eraseDatabase
 from game import Game, Screenshot, Release, Url
 from lists import badLicenses, badCategories, loadingMessages
 
@@ -26,9 +25,10 @@ class Loader(QObject):
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo', 'git':'https://github.com/flathub'}
 
 
-    def __init__(self, flatpak=False, metaRepository=None, gameRepository=None, *args, **kwargs):
+    def __init__(self, flatpak=False, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._flatpak = flatpak
+        self._db = db
         self._metaRepository = metaRepository
         self._gameRepository = gameRepository
         self._loading = True
@@ -51,9 +51,8 @@ class Loader(QObject):
             self.runUpdateCommands()
 
     def reset(self):
-        eraseDatabase()
-        initDatabase()
-        createDatabase()
+        self._db.eraseDatabase()
+        self._db.initDatabase()
         self.runUpdateCommands()
 
     def runUpdateCommands(self, proc_number=0):
@@ -134,11 +133,11 @@ class Loader(QObject):
                 gr = self._gameRepository.get(component.id)
                 if gr:
                     if not process:
-                        installed = gr.installed
+                        installed = gr['installed']
                     if not process:
-                        has_update = gr.has_update
-                    last_played_date = gr.last_played_date
-                    created_date = gr.created_date
+                        has_update = gr['has_update']
+                    last_played_date = gr['last_played_date']
+                    created_date = gr['created_date']
                 else:
                     created_date = datetime.now()
                 urls = self.getUrls(component.urls)

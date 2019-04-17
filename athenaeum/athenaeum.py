@@ -1,7 +1,7 @@
 import signal, os, sys
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QTranslator, QLocale, Qt, QVariant, QMetaType
+from PyQt5.QtCore import QTranslator, QLocale, Qt, QVariant, QMetaType, QStandardPaths
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtWidgets import QApplication
 
@@ -21,7 +21,7 @@ from game import Game
 from settings import Settings
 from library import Library
 from loader import Loader
-from models import initDatabase, MetaRepository, SettingRepository, GameRepository
+from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
 from systemtrayicon import SystemTrayIcon
 
@@ -34,8 +34,6 @@ def main():
     if os.path.isfile('/.flatpak-info'):
         inFlatpak = True
 
-    initDatabase()
-
     os.environ['QT_STYLE_OVERRIDE'] = ''
     os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
     #os.environ['QT_QPA_PLATFORM'] = 'wayland;xcb'
@@ -44,11 +42,11 @@ def main():
 
     app.setApplicationDisplayName(APP_UPPER_TITLE)
     app.setApplicationName(APP_NAME)
-    app.setWindowIcon(QIcon.fromTheme(APP_NAME, QIcon(BASEDIR + "/resources/icons/hicolor/64x64/com.gitlab.librebob.Athenaeum.png")))
+    app.setWindowIcon(QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/64x64/' + app.applicationName() + '.png')))
     app.setQuitOnLastWindowClosed(False)
 
     tr = QTranslator()
-    loaded = tr.load(QLocale.system(), APP_NAME, "_", BASEDIR + "/translations");
+    loaded = tr.load(QLocale.system(), app.applicationName(), "_", BASEDIR + "/translations");
     if loaded:
         print('Loaded ' + QLocale.system().name() + ' translation.')
     else:
@@ -61,12 +59,16 @@ def main():
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
 
-    metaRepository = MetaRepository()
-    settingRepository = SettingRepository()
-    gameRepository = GameRepository()
+    database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
+
+    database.initDatabase()
+
+    metaRepository = MetaRepository(db=database)
+    settingRepository = SettingRepository(db=database)
+    gameRepository = GameRepository(db=database)
 
     settings = Settings(parent=app, settingRepository=settingRepository)
-    loader = Loader(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
+    loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
     library = Library(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
 
     loader.started.connect(library.reset)
@@ -104,7 +106,7 @@ def main():
     except Error as e:
         print('Error initializing notifications.');
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(APP_NAME, QIcon(BASEDIR + "/resources/icons/hicolor/32x32/com.gitlab.librebob.Athenaeum.png")),
+    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/32x32/' + app.applicationName() + '.png')),
     root=root, show=settings.showTrayIcon, parent=app)
 
     systemTrayIcon.playGame.connect(library.playGame)

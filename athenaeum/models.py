@@ -1,85 +1,90 @@
-from peewee import *
-from PyQt5.QtCore import QStandardPaths
+import sqlite3
 import datetime
 import json
 import os
 
+class Database():
+    def __init__(self, dataPath=''):
+        self._connection = None
+        if not dataPath:
+            self._dbPath = ':memory:'
+        else:
+            self._dbPath = dataPath + '/store.db'
 
-db_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation) + '/com.gitlab.librebob.Athenaeum'
-if not os.path.exists(db_path):
-    os.makedirs(db_path)
+    def initDatabase(self):
+        self._connection = sqlite3.connect(self._dbPath, detect_types=sqlite3.PARSE_DECLTYPES)
+        self._connection.row_factory = sqlite3.Row
+        cursor = self._connection.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS "gamerecord" ("id" VARCHAR(255) NOT NULL PRIMARY KEY, "installed" INTEGER NOT NULL, "has_update" INTEGER NOT NULL, "created_date" TIMESTAMP NOT NULL, "modified_date" TIMESTAMP, "last_played_date" TIMESTAMP)');
+        cursor.execute('CREATE TABLE IF NOT EXISTS "metarecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS "settingsrecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
+        self._connection.commit()
 
-try:
-    db = SqliteDatabase(db_path + '/store.db')
-except Error as e:
-    sys.exit("Error creating database.")
+    def eraseDatabase(self):
+        self._connection.close()
+        os.remove(self._dbPath)
 
-class BaseModel(Model):
-    class Meta:
-        database = db
+    def queryAll(self, query, *args):
+        cursor = self._connection.cursor()
+        cursor.execute(query, args)
+        return cursor.fetchall()
 
-class GameRecord(BaseModel):
-    id = CharField(unique=True)
-    installed = BooleanField(default=False)
-    has_update = BooleanField(default=False)
-    created_date = DateTimeField()
-    modified_date = DateTimeField(default=datetime.datetime.now)
-    last_played_date = DateTimeField(null=True)
+    def queryOne(self, query, *args):
+        cursor = self._connection.cursor()
+        cursor.execute(query, args)
+        return cursor.fetchone()
 
-class MetaRecord(BaseModel):
-    key = CharField(unique=True)
-    value = TextField()
-
-class SettingsRecord(BaseModel):
-    key = CharField(unique=True)
-    value = TextField()
+    def execute(self, query, *args):
+        cursor = self._connection.cursor()
+        cursor.execute(query, args)
+        self._connection.commit()
 
 class MetaRepository():
+    def __init__(self, db=None):
+        self._db = db
+
     def get(self, key):
-        try:
-            return (MetaRecord.get(MetaRecord.key == key)).value
-        except DoesNotExist:
+        result = self._db.queryOne('SELECT * FROM metarecord WHERE key = ?', key)
+        if not result:
             return None
+        else:
+            return result['value']
 
     def set(self, key, value):
-        MetaRecord.insert(key=key, value=value).on_conflict(action='REPLACE').execute()
+        self._db.execute(
+            'INSERT OR REPLACE INTO metarecord (key, value) \
+            VALUES (?, ?)',
+            key, value
+        )
 
 class SettingRepository():
+    def __init__(self, db=None):
+        self._db = db
+
     def get(self, key):
-        try:
-            return json.loads((SettingsRecord.get(SettingsRecord.key == key)).value)
-        except DoesNotExist:
+        result = self._db.queryOne('SELECT * FROM settingsrecord WHERE key = ?', key)
+        if not result:
             return None
+        else:
+            return json.loads(result['value'])
 
     def set(self, key, value):
-        SettingsRecord.insert(key=key, value=json.dumps(value)).on_conflict(action='REPLACE').execute()
+        self._db.execute(
+            'INSERT OR REPLACE INTO settingsrecord (key, value) \
+            VALUES (?, ?)',
+            key, json.dumps(value)
+        )
 
 class GameRepository():
+    def __init__(self, db=None):
+        self._db = db
+
     def get(self, id):
-        try:
-            return GameRecord.get(GameRecord.id == id)
-        except DoesNotExist:
-            return None
+        return self._db.queryOne('SELECT * FROM gamerecord WHERE id = ?', id)
 
     def set(self, game):
-        GameRecord.insert(
-            id=game.id,
-            installed=game.installed,
-            has_update=game.hasUpdate,
-            created_date=game.createdDate,
-            last_played_date=game.lastPlayedDate
-        ).on_conflict(action='REPLACE').execute()
-
-def createDatabase():
-    try:
-        db = SqliteDatabase(db_path + '/store.db')
-    except Error as e:
-        sys.exit("Error creating database.")
-
-def initDatabase():
-    db.connect()
-    db.create_tables([GameRecord, MetaRecord, SettingsRecord], safe=True)
-
-def eraseDatabase():
-    db.close()
-    os.remove(db_path + '/store.db')
+        self._db.execute(
+            'INSERT OR REPLACE INTO gamerecord (id, installed, has_update, created_date, modified_date, last_played_date) \
+            VALUES (?, ?, ?, ?, ?, ?)',
+            game.id, game.installed, game.hasUpdate, game.createdDate, datetime.datetime.now(), game.lastPlayedDate
+        )
