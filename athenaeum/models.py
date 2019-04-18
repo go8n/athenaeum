@@ -9,6 +9,7 @@ class Database():
         if not dataPath:
             self._dbPath = ':memory:'
         else:
+            os.makedirs(dataPath, exist_ok=True)
             self._dbPath = dataPath + '/store.db'
 
     def initDatabase(self):
