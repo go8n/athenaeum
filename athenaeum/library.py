@@ -2,7 +2,7 @@ from functools import partial
 from datetime import datetime, timedelta
 import operator
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, pyqtSlot
 from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
@@ -13,6 +13,8 @@ class Library(QObject):
     filterChanged = pyqtSignal()
     filtersChanged = pyqtSignal(list)
     filterValueChanged = pyqtSignal()
+    searchValueChanged = pyqtSignal()
+    currentIndexChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
     errorChanged = pyqtSignal()
     displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
@@ -30,10 +32,10 @@ class Library(QObject):
         self.sortGames()
         self.updateFilters(True)
 
-        self.filterGames(self.filterValue or 'all')
+        self.filterGames()
         if not self.filter:
-            self.filterGames('all')
-        self.indexUpdated(0)
+            self.filterGames(override=True)
+        self.indexUpdated()
 
     def reset(self):
         self._games = []
@@ -46,17 +48,37 @@ class Library(QObject):
             'processing': []
         }
         self._filterValue = ''
-        self._searchQuery = ''
+        self._searchValue = ''
+        self._currentIndex = 0
         self._currentGame = Game()
         self._threads = []
         self._processes = []
         self._error = 0
 
+    @pyqtSlot(result=int)
+    def getIndexForCurrentGame(self):
+        for index, game in enumerate(self._filter):
+            if game.id == self._currentGame.id:
+                return index
+        return -1
+
+
     def findById(self, game_id):
-        for index, game in enumerate(self.games):
+        for index, game in enumerate(self._games):
             if game.id == game_id:
                 return index
         return None
+
+    @pyqtProperty(int, notify=currentIndexChanged)
+    def currentIndex(self):
+        return self._currentIndex
+
+    @currentIndex.setter
+    def currentIndex(self, game):
+        if game != self._currentIndex:
+            self._currentIndex = game
+            self.indexUpdated()
+            self.currentIndexChanged.emit()
 
     @pyqtProperty(Game, notify=currentGameChanged)
     def currentGame(self):
@@ -118,13 +140,23 @@ class Library(QObject):
             self._filterValue = filterValue
             self.filterValueChanged.emit()
 
+    @pyqtProperty('QString', notify=searchValueChanged)
+    def searchValue(self):
+        return self._searchValue
+
+    @searchValue.setter
+    def searchValue(self, searchValue):
+        if searchValue != self._searchValue:
+            self._searchValue = searchValue
+            self.searchValueChanged.emit()
+
     def appendGame(self, game):
         self._games.append(game)
         self.gamesChanged.emit()
 
-    def indexUpdated(self, index):
+    def indexUpdated(self):
         try:
-            self.currentGame = self._filter[index]
+            self.currentGame = self._filter[self.currentIndex]
         except IndexError:
             print('Index does not exist.')
 
@@ -265,11 +297,10 @@ class Library(QObject):
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index)
 
-    def searchGames(self, query):
-        if query:
-            self._searchQuery = query
+    def searchGames(self):
+        if self.searchValue:
             tmp = []
-            query = query.lower()
+            query = self.searchValue.lower()
             if self.filterValue == 'all':
                 for game in self._games:
                     if query in game.name.lower():
@@ -280,22 +311,16 @@ class Library(QObject):
                         tmp.append(game)
             self.filter = tmp
         else:
-            self._searchQuery = ''
-            self.filterGames(self.filterValue)
+            self.filterGames()
 
-    def filterGames(self, filter):
-        if filter not in self._filters.keys():
-            filter = 'all'
-            self.filterValue = filter
+    def filterGames(self, override=False):
+        if override or self.filterValue == 'all' or self.filterValue not in self._filters.keys():
+            self.filterValue = 'all'
             self.filter = self._games
         else:
-            self.filterValue = filter
-            self.filter = self._filters[filter]
+            self.filter = self._filters[self.filterValue]
 
-        if self._searchQuery:
-            self.searchGames(self._searchQuery)
-
-        self._metaRepository.set(key='filter', value=filter)
+        self._metaRepository.set(key='filter', value=self.filterValue)
 
     def updateFilters(self, new_load=False):
         filters = {
@@ -322,7 +347,8 @@ class Library(QObject):
                     filters['new'].append(game)
 
         self._filters = filters
-        self.filterGames(self.filterValue)
+        self.filterGames()
+        self.searchGames()
         self.filtersChanged.emit(self._filters['recent'][:5] or self._filters['installed'][:5])
 
     def sortGames(self, sort='az'):
