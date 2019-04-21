@@ -235,7 +235,7 @@ Page {
                     anchors.fill: parent
                     onClicked: {
                         listView.currentIndex = library.currentIndex = index
-
+                        window.indexUpdated()
                         listView.forceActiveFocus()
                     }
                     id: itemMouseArea

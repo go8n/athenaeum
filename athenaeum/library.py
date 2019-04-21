@@ -28,14 +28,10 @@ class Library(QObject):
 
     def load(self):
         self.filterValue = self._metaRepository.get('filter')
-
         self.sortGames()
-        self.updateFilters(True)
-
-        self.filterGames()
-        if not self.filter:
-            self.filterGames(override=True)
+        self.updateFilters(new_load=True)
         self.indexUpdated()
+        print('load')
 
     def reset(self):
         self._games = []
@@ -60,6 +56,9 @@ class Library(QObject):
         for index, game in enumerate(self._filter):
             if game.id == self._currentGame.id:
                 return index
+            
+        if not self._currentGame.id:
+            return 0
         return -1
 
 
@@ -77,7 +76,6 @@ class Library(QObject):
     def currentIndex(self, game):
         if game != self._currentIndex:
             self._currentIndex = game
-            self.indexUpdated()
             self.currentIndexChanged.emit()
 
     @pyqtProperty(Game, notify=currentGameChanged)

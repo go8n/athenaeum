@@ -12,6 +12,7 @@ ApplicationWindow {
     signal playGame(string id)
     signal search()
     signal filter()
+    signal indexUpdated()
     signal sort(string sort)
     signal updateAll()
     signal checkAll()

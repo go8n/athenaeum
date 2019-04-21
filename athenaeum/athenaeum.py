@@ -87,7 +87,7 @@ def main():
 
     root = engine.rootObjects()[0]
 
-    # root.indexUpdated.connect(library.indexUpdated)
+    root.indexUpdated.connect(library.indexUpdated)
     root.installGame.connect(library.installGame)
     root.uninstallGame.connect(library.uninstallGame)
     root.updateGame.connect(library.updateGame)
