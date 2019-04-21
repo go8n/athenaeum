@@ -6,13 +6,13 @@ import Athenaeum 1.0
 
 ApplicationWindow {
     id: window
+    signal indexUpdated(int index)
     signal installGame(string id)
     signal uninstallGame(string id)
     signal updateGame(string id)
     signal playGame(string id)
     signal search()
     signal filter()
-    signal indexUpdated()
     signal sort(string sort)
     signal updateAll()
     signal checkAll()

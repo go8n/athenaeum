@@ -14,7 +14,6 @@ class Library(QObject):
     filtersChanged = pyqtSignal(list)
     filterValueChanged = pyqtSignal()
     searchValueChanged = pyqtSignal()
-    currentIndexChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
     errorChanged = pyqtSignal()
     displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
@@ -30,8 +29,7 @@ class Library(QObject):
         self.filterValue = self._metaRepository.get('filter')
         self.sortGames()
         self.updateFilters(new_load=True)
-        self.indexUpdated()
-        print('load')
+        self.indexUpdated(0)
 
     def reset(self):
         self._games = []
@@ -45,7 +43,6 @@ class Library(QObject):
         }
         self._filterValue = ''
         self._searchValue = ''
-        self._currentIndex = 0
         self._currentGame = Game()
         self._threads = []
         self._processes = []
@@ -59,24 +56,14 @@ class Library(QObject):
             
         if not self._currentGame.id:
             return 0
+        
         return -1
-
 
     def findById(self, game_id):
         for index, game in enumerate(self._games):
             if game.id == game_id:
                 return index
         return None
-
-    @pyqtProperty(int, notify=currentIndexChanged)
-    def currentIndex(self):
-        return self._currentIndex
-
-    @currentIndex.setter
-    def currentIndex(self, game):
-        if game != self._currentIndex:
-            self._currentIndex = game
-            self.currentIndexChanged.emit()
 
     @pyqtProperty(Game, notify=currentGameChanged)
     def currentGame(self):
@@ -152,9 +139,9 @@ class Library(QObject):
         self._games.append(game)
         self.gamesChanged.emit()
 
-    def indexUpdated(self):
+    def indexUpdated(self, index):
         try:
-            self.currentGame = self._filter[self.currentIndex]
+            self.currentGame = self._filter[index]
         except IndexError:
             print('Index does not exist.')
 
@@ -165,19 +152,19 @@ class Library(QObject):
         self._processes.remove(process)
 
     def installGame(self, game_id):
-        idx = self.findById(game_id)
-        if idx is not None:
+        index = self.findById(game_id)
+        if index is not None:
             installProcess = QProcess(parent=self.parent())
-            installProcess.started.connect(partial(self.installStarted, idx))
+            installProcess.started.connect(partial(self.installStarted, index))
             installProcess.started.connect(self.updateFilters)
-            installProcess.finished.connect(partial(self.installFinished, installProcess, idx))
+            installProcess.finished.connect(partial(self.installFinished, installProcess, index))
             installProcess.finished.connect(self.updateFilters)
-            installProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, installProcess))
-            installProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, installProcess))
+            installProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, installProcess))
+            installProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, installProcess))
             if self._flatpak:
-                installProcess.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[idx].ref, '-y', '--user'])
+                installProcess.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[index].ref, '-y', '--user'])
             else:
-                installProcess.start('flatpak', ['install', 'flathub', self._games[idx].ref, '-y', '--user'])
+                installProcess.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
             self._processes.append(installProcess)
 
     def installStarted(self, index):
@@ -199,20 +186,20 @@ class Library(QObject):
         self.processCleanup(process, index, action)
 
     def uninstallGame(self, game_id):
-        idx = self.findById(game_id)
-        if idx is not None:
+        index = self.findById(game_id)
+        if index is not None:
             print('uninstall')
             uninstallProcess = QProcess(parent=self.parent())
-            uninstallProcess.started.connect(partial(self.uninstallStarted, idx))
+            uninstallProcess.started.connect(partial(self.uninstallStarted, index))
             uninstallProcess.started.connect(self.updateFilters)
-            uninstallProcess.finished.connect(partial(self.uninstallFinishd, uninstallProcess, idx))
+            uninstallProcess.finished.connect(partial(self.uninstallFinishd, uninstallProcess, index))
             uninstallProcess.finished.connect(self.updateFilters)
-            uninstallProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, uninstallProcess))
-            uninstallProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, uninstallProcess))
+            uninstallProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, uninstallProcess))
+            uninstallProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, uninstallProcess))
             if self._flatpak:
-                uninstallProcess.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[idx].ref, '-y', '--user'])
+                uninstallProcess.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[index].ref, '-y', '--user'])
             else:
-                uninstallProcess.start('flatpak', ['uninstall', self._games[idx].ref, '-y', '--user'])
+                uninstallProcess.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
             self._processes.append(uninstallProcess)
 
     def uninstallStarted(self, index):
@@ -234,20 +221,20 @@ class Library(QObject):
         self.processCleanup(process, index, action)
 
     def updateGame(self, game_id):
-        idx = self.findById(game_id)
-        if idx is not None:
+        index = self.findById(game_id)
+        if index is not None:
             print('update')
             updateProcess = QProcess(parent=self.parent())
             updateProcess.started.connect(partial(self.startUpdate, index))
             updateProcess.started.connect(self.updateFilters)
             updateProcess.finished.connect(partial(self.updateFinished, updateProcess, index))
             updateProcess.finished.connect(self.updateFilters)
-            updateProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, updateProcess))
-            updateProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, updateProcess))
+            updateProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, updateProcess))
+            updateProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, updateProcess))
             if self._flatpak:
-                updateProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[idx].ref, '-y', '--user'])
+                updateProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[index].ref, '-y', '--user'])
             else:
-                updateProcess.start('flatpak', ['update', self._games[idx].ref, '-y', '--user'])
+                updateProcess.start('flatpak', ['update', self._games[index].ref, '-y', '--user'])
             self._processes.append(updateProcess)
 
     def updateStarted(self, index):
@@ -269,19 +256,19 @@ class Library(QObject):
         self.processCleanup(process, index, action)
 
     def playGame(self, game_id):
-        idx = self.findById(game_id)
-        if idx is not None:
+        index = self.findById(game_id)
+        if index is not None:
             playProcess = QProcess(parent=self.parent())
-            playProcess.started.connect(partial(self.startGame, idx))
+            playProcess.started.connect(partial(self.startGame, index))
             playProcess.started.connect(self.updateFilters)
-            playProcess.finished.connect(partial(self.stopGame, playProcess, idx))
+            playProcess.finished.connect(partial(self.stopGame, playProcess, index))
             playProcess.finished.connect(self.updateFilters)
-            playProcess.readyReadStandardOutput.connect(partial(self._games[idx].appendLog, playProcess))
-            playProcess.readyReadStandardError.connect(partial(self._games[idx].appendLog, playProcess))
+            playProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, playProcess))
+            playProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, playProcess))
             if self._flatpak:
-                playProcess.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[idx].ref])
+                playProcess.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[index].ref])
             else:
-                playProcess.start('flatpak', ['run', self._games[idx].ref])
+                playProcess.start('flatpak', ['run', self._games[index].ref])
             self._processes.append(playProcess)
 
     def startGame(self, index):
@@ -351,6 +338,6 @@ class Library(QObject):
 
     def sortGames(self, sort='az'):
         if sort == 'za':
-            self._games.sort(key = lambda idx: operator.attrgetter('name')(idx).lower(), reverse=True)
+            self._games.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
         else:
-            self._games.sort(key = lambda idx: operator.attrgetter('name')(idx).lower())
+            self._games.sort(key = lambda index: operator.attrgetter('name')(index).lower())

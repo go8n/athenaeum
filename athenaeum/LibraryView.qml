@@ -213,12 +213,7 @@ Page {
         // focus: true
         clip:true
 
-        // onCurrentItemChanged: {
-        //     print('item changed')
-        //     //window.indexUpdated(listView.currentIndex)
-        // }
         onModelChanged: {
-            // currentIndex = library.currentIndex
             currentIndex = library.getIndexForCurrentGame()
         }
 
@@ -234,8 +229,8 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        listView.currentIndex = library.currentIndex = index
-                        window.indexUpdated()
+                        listView.currentIndex = index
+                        window.indexUpdated(index)
                         listView.forceActiveFocus()
                     }
                     id: itemMouseArea
