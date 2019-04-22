@@ -19,14 +19,11 @@ class Database():
         self._connection.row_factory = sqlite3.Row
         cursor = self._connection.cursor()
         cursor.execute('PRAGMA user_version')
-        print('before')
         if cursor.fetchone()['user_version'] is not self.VERSION:
-            print('is not')
             cursor.execute('DROP TABLE IF EXISTS "gamerecord"')
             cursor.execute('DROP TABLE IF EXISTS "metarecord"')
             cursor.execute('DROP TABLE IF EXISTS "settingsrecord"')
             cursor.execute( "PRAGMA user_version = {v:d}".format(v=self.VERSION) )
-        print('create tables')
         cursor.execute('CREATE TABLE IF NOT EXISTS "gamerecord" ("id" VARCHAR(255) NOT NULL PRIMARY KEY, "installed" INTEGER NOT NULL, "has_update" INTEGER NOT NULL, "created_date" TIMESTAMP NOT NULL, "modified_date" TIMESTAMP, "last_played_date" TIMESTAMP)');
         cursor.execute('CREATE TABLE IF NOT EXISTS "metarecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
         cursor.execute('CREATE TABLE IF NOT EXISTS "settingsrecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
