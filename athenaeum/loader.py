@@ -51,8 +51,8 @@ class Loader(QObject):
             self.runUpdateCommands()
 
     def reset(self):
-        self._db.eraseDatabase()
-        self._db.initDatabase()
+        self._db.erase()
+        self._db.init()
         self.runUpdateCommands()
 
     def runUpdateCommands(self, proc_number=0):

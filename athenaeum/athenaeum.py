@@ -61,7 +61,7 @@ def main():
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
 
-    database.initDatabase()
+    database.init()
 
     metaRepository = MetaRepository(db=database)
     settingRepository = SettingRepository(db=database)

@@ -4,6 +4,8 @@ import json
 import os
 
 class Database():
+    VERSION = 1
+    
     def __init__(self, dataPath=''):
         self._connection = None
         if not dataPath:
@@ -12,16 +14,25 @@ class Database():
             os.makedirs(dataPath, exist_ok=True)
             self._dbPath = dataPath + '/store.db'
 
-    def initDatabase(self):
+    def init(self):
         self._connection = sqlite3.connect(self._dbPath, detect_types=sqlite3.PARSE_DECLTYPES)
         self._connection.row_factory = sqlite3.Row
         cursor = self._connection.cursor()
+        cursor.execute('PRAGMA user_version')
+        print('before')
+        if cursor.fetchone()['user_version'] is not self.VERSION:
+            print('is not')
+            cursor.execute('DROP TABLE IF EXISTS "gamerecord"')
+            cursor.execute('DROP TABLE IF EXISTS "metarecord"')
+            cursor.execute('DROP TABLE IF EXISTS "settingsrecord"')
+            cursor.execute( "PRAGMA user_version = {v:d}".format(v=self.VERSION) )
+        print('create tables')
         cursor.execute('CREATE TABLE IF NOT EXISTS "gamerecord" ("id" VARCHAR(255) NOT NULL PRIMARY KEY, "installed" INTEGER NOT NULL, "has_update" INTEGER NOT NULL, "created_date" TIMESTAMP NOT NULL, "modified_date" TIMESTAMP, "last_played_date" TIMESTAMP)');
         cursor.execute('CREATE TABLE IF NOT EXISTS "metarecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
         cursor.execute('CREATE TABLE IF NOT EXISTS "settingsrecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
         self._connection.commit()
 
-    def eraseDatabase(self):
+    def erase(self):
         self._connection.close()
         os.remove(self._dbPath)
 
