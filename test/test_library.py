@@ -45,11 +45,13 @@ class TestGame(unittest.TestCase):
         l.appendGame(game.Game(name='Asparagus'))
 
         l.updateFilters()
-        l.searchGames('basket')
+        l.searchValue = 'basket'
+        l.searchGames()
 
         self.assertEqual('basketball', l.filter[0].name)
 
-        l.searchGames('chair')
+        l.searchValue = 'chair'
+        l.searchGames()
 
         self.assertEqual('chair', l.filter[0].name)
 

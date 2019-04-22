@@ -28,12 +28,9 @@ Page {
                 }
                 color: Material.foreground
                 placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
-
                 onTextChanged: {
-                    window.search(text)
-                }
-                onAccepted: {
-                    window.indexUpdated(0)
+                    library.searchValue = text
+                    window.search()
                 }
                 Keys.onEscapePressed: {
                     text = ''
@@ -84,61 +81,61 @@ Page {
                             dim: true
                             modal: true
                             contentItem: Column {
-                                    Text {
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        color: Material.foreground
-                                        font.pixelSize: 20
-                                        text: qsTr('You have operations pending.')
-                                    }
-                                    Row {
-                                        topPadding: 20
-                                        spacing: 20
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        Button {
-                                            MouseArea {
-                                                id: exitPopupMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                onClicked: {
-                                                    Qt.quit()
-                                                }
-                                            }
-                                            contentItem: Text {
-                                                color: Material.background
-                                                text: qsTr('Close Anyway')
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
-                                            }
-
-                                            background: Rectangle {
-                                                implicitWidth: 100
-                                                implicitHeight: 40
-                                                color: exitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                    text: qsTr('You have operations pending.')
+                                }
+                                Row {
+                                    topPadding: 20
+                                    spacing: 20
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    Button {
+                                        MouseArea {
+                                            id: exitPopupMouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            onClicked: {
+                                                Qt.quit()
                                             }
                                         }
-                                        Button {
-                                            contentItem: Text {
-                                                color: Material.background
-                                                text: qsTr('Cancel')
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
+                                        contentItem: Text {
+                                            color: Material.background
+                                            text: qsTr('Close Anyway')
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+
+                                        background: Rectangle {
+                                            implicitWidth: 100
+                                            implicitHeight: 40
+                                            color: exitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
+                                        }
+                                    }
+                                    Button {
+                                        contentItem: Text {
+                                            color: Material.background
+                                            text: qsTr('Cancel')
+                                            horizontalAlignment: Text.AlignHCenter
+                                            verticalAlignment: Text.AlignVCenter
+                                        }
+                                        MouseArea {
+                                            id: cancelExitPopupMouseArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            onClicked: {
+                                                confirmExit.close()
                                             }
-                                            MouseArea {
-                                                id: cancelExitPopupMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                onClicked: {
-                                                    confirmExit.close()
-                                                }
-                                            }
-                                            background: Rectangle {
-                                                implicitWidth: 100
-                                                implicitHeight: 40
-                                                color: cancelExitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                            }
+                                        }
+                                        background: Rectangle {
+                                            implicitWidth: 100
+                                            implicitHeight: 40
+                                            color: cancelExitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
                                         }
                                     }
                                 }
+                            }
                         }
                     }
                 }
@@ -183,7 +180,8 @@ Page {
             bottom: 0
         }
         onActivated: {
-            window.filter(getFilterKey(index))
+            library.filterValue = getFilterKey(index)
+            window.filter()
             searchField.text = ''
             function getFilterKey(index) {
                 switch(index) {
@@ -214,9 +212,11 @@ Page {
         keyNavigationEnabled: true
         // focus: true
         clip:true
-        onCurrentItemChanged:{
-            window.indexUpdated(listView.currentIndex)
+
+        onModelChanged: {
+            currentIndex = library.getIndexForCurrentGame()
         }
+
         delegate: Component {
             id: delegateComponent
             Rectangle {
@@ -230,6 +230,7 @@ Page {
                     anchors.fill: parent
                     onClicked: {
                         listView.currentIndex = index
+                        window.indexUpdated(index)
                         listView.forceActiveFocus()
                     }
                     id: itemMouseArea
