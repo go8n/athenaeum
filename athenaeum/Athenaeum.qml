@@ -27,6 +27,7 @@ ApplicationWindow {
 
     property color tr: 'transparent'
 
+    property Component browseView: BrowseView{}
     property Component libraryView: LibraryView{}
     property Component settingsView: SettingsView{}
 
@@ -38,7 +39,8 @@ ApplicationWindow {
         id: stackView
         anchors.fill: parent
         visible: !loader.loading
-        initialItem:  libraryView
+        // initialItem:  libraryView
+        initialItem:  browseView
     }
     Rectangle {
         anchors.fill: parent

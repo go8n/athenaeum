@@ -6,11 +6,6 @@ import Athenaeum 1.0
 
 Page {
     id: libraryView
-
-    background: Rectangle {
-        anchors.fill: parent
-        color: Material.background
-    }
     header: ToolBar {
         id: toolBar
         Rectangle {
