@@ -16,26 +16,6 @@ Page {
         Rectangle {
             anchors.fill: parent
             color: Material.background
-            TextField {
-                id: searchField
-                leftPadding: 10
-                rightPadding: 10
-                anchors.bottom: parent.bottom
-                width: listView.width
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                }
-                color: Material.foreground
-                placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
-                onTextChanged: {
-                    library.searchValue = text
-                    window.search()
-                }
-                Keys.onEscapePressed: {
-                    text = ''
-                }
-            }
             Label {
                 anchors.centerIn: parent
                 color: Material.foreground
@@ -50,7 +30,6 @@ Page {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                 }
-
                 onClicked: menu.open()
                 Menu {
                     id: menu
@@ -142,11 +121,33 @@ Page {
             }
         }
     }
+    /* Search Bar */
+    TextField {
+        id: searchField
+        leftPadding: 10
+        rightPadding: 10
+        anchors.top: parent.top
+        anchors.bottom: filterCombo.top
+        width: listView.width
+        // background: Rectangle {
+        //     anchors.fill: parent
+        //     color: Material.background
+        // }
+        color: Material.foreground
+        placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
+        onTextChanged: {
+            library.searchValue = text
+            window.search()
+        }
+        Keys.onEscapePressed: {
+            text = ''
+        }
+    }
     /* Game List */
     ComboBox {
         id: filterCombo
-        width: 200
-        anchors.top: parent.top
+        width: listView.width
+        anchors.top: searchField.bottom
         onModelChanged: {
             currentIndex = getFilterIndex(library.filterValue)
         }
