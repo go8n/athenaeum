@@ -33,3 +33,8 @@ loadingMessages = [
     'Planting mines...',
     'Evolving...'
 ]
+
+alwaysAccept = [
+    'org.freecol.FreeCol',
+    'org.freeciv.Freeciv'
+]

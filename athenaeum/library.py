@@ -75,9 +75,9 @@ class Library(QObject):
             self._currentGame = game
             self.currentGameChanged.emit()
 
-    @pyqtProperty(list, notify=gamesChanged)
+    @pyqtProperty(QQmlListProperty, notify=gamesChanged)
     def games(self):
-        return self._games
+        return QQmlListProperty(Game, self, self._games)
 
     @games.setter
     def games(self, games):

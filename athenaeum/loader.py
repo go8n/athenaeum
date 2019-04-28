@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QS
 
 import appstream
 from game import Game, Screenshot, Release, Url
-from lists import badLicenses, badCategories, loadingMessages
+from lists import alwaysAccept, badLicenses, badCategories, loadingMessages
 
 
 class Loader(QObject):
@@ -109,6 +109,9 @@ class Loader(QObject):
             self.loadAppstream(process=True)
 
     def acceptedGame(self, component=None):
+        if component.id in alwaysAccept:
+            return True
+        
         return component.project_license and \
             not [x for x in badLicenses if x in component.project_license] and \
             'Game' in component.categories and \
