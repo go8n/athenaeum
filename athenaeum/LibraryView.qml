@@ -302,10 +302,12 @@ Page {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         color: Material.background
-        ScrollView {
+        Flickable {
             anchors.fill: parent
             contentHeight: col.height
             contentWidth: parent.width
+            ScrollBar.vertical: ScrollBar { }
+            boundsBehavior: Flickable.StopAtBounds
             Column {
                 id: col
                 width: parent.width
