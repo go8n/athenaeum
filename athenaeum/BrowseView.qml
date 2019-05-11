@@ -5,123 +5,19 @@ import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Page {
-    id: browseView
-    header: ToolBar {
-        id: toolBar
-        Rectangle {
-            anchors.fill: parent
-            color: Material.background
-            Label {
-                anchors.centerIn: parent
-                color: Material.foreground
-                text: qsTr('Browse')
-            }
-            ToolButton {
-                height: parent.height
-                anchors.right: parent.right
-                contentItem: Text {
-                        text: qsTr("⋮")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: menu.open()
-                Menu {
-                    id: menu
-                    MenuItem {
-                        text: qsTr('Settings')
-                        onTriggered: stackView.push(settingsView)
-                    }
-                    MenuItem {
-                        text: qsTr('Check For Updates')
-                        onTriggered: window.checkAll()
-                    }
-                    MenuItem {
-                        text: qsTr('Update All')
-                        onTriggered: window.updateAll()
-                    }
-                    MenuItem {
-                        text: qsTr('Exit')
-                        onTriggered: library.processingCount > 0 ? confirmExit.open() : Qt.quit()
-                        Popup {
-                            id: confirmExit
-                             background: Rectangle {
-                                anchors.fill: parent
-                                color: Material.background
-                            }
-                            x: Math.round((parent.width - width) / 2)
-                            y: Math.round((parent.height - height) / 2)
-                            parent: stackView
-                            dim: true
-                            modal: true
-                            contentItem: Column {
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    color: Material.foreground
-                                    font.pixelSize: 20
-                                    text: qsTr('You have operations pending.')
-                                }
-                                Row {
-                                    topPadding: 20
-                                    spacing: 20
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    Button {
-                                        MouseArea {
-                                            id: exitPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                Qt.quit()
-                                            }
-                                        }
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Close Anyway')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: exitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                    Button {
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Cancel')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                        MouseArea {
-                                            id: cancelExitPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                confirmExit.close()
-                                            }
-                                        }
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: cancelExitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    header: NavigationBar {
+        activeView: 'browse'
     }
-    ScrollView {
+    
+    Flickable {
+        id: browseFront
         anchors.fill: parent
         contentHeight: column.height
         contentWidth: parent.width
-//         ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical: ScrollBar { }
+        boundsBehavior: Flickable.StopAtBounds
         Column {
+            spacing: 20
             id: column
             width: parent.width
             Rectangle {
@@ -150,15 +46,22 @@ Page {
                                 source: visible ? (library.currentGame.screenshots[0] ? library.currentGame.screenshots[0].sourceUrl : '') : ''
                             }
                             Rectangle {
-                                width: gameSearch.width
+                                width: newGames.width
                                 height: parent.height
                                 anchors.centerIn: parent
                                 color: tr
                                 Text {
-                                    
+                                    id: gameTitle
                                     text: library.currentGame.name
                                     color: Material.foreground
                                     font.pixelSize: 64
+                                    font.bold: true
+                                }
+                                Text {
+                                    anchors.top: gameTitle.bottom
+                                    text: library.currentGame.summary
+                                    color: Material.foreground
+                                    font.pixelSize: 24
                                 }
                                 Text {
                                     text: 'Popular Now'
@@ -174,7 +77,7 @@ Page {
                     }
                 }
                 Button {
-                    text: "‹"
+                    icon.source: 'icons/left.svg'
                     anchors.left: parent.left
                     height: parent.height
                     width: 60
@@ -186,7 +89,7 @@ Page {
                     }
                 }
                 Button {
-                    text: "›"
+                    icon.source: 'icons/right.svg'
                     anchors.right:parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
@@ -209,176 +112,141 @@ Page {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
+            
+            Text {
+                text: 'Recommended For You'
+                color: Material.foreground
+                width: parent.width - 400
+                font.pixelSize: 24
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            
+            ListView {
+                width: parent.width - 400
+                height: 100
+                anchors.horizontalCenter: parent.horizontalCenter
+                ScrollBar.horizontal: ScrollBar { 
+                    policy: ScrollBar.AlwaysOn
+                }
+                
+                boundsBehavior: Flickable.StopAtBounds
+                orientation: ListView.Horizontal
+                model: library.filter
+                clip: true
+
+                delegate: Component {
+                    Rectangle {
+                        width: 200
+                        height: parent.height
+                        color: Material.background
+                        border.color: Material.accent
+                        border.width: 1
+                        
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                changeView(gameView, null)
+                            }
+                        }
+
+                        Image {
+                            id: iconPr
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            width: 50
+                            height: 50
+                            anchors.margins: 5
+                            fillMode: Image.PreserveAspectFit
+                            source: iconLarge
+                        }
+
+                        Text {
+                            anchors.left: iconPr.right
+                            text: name
+                            color: Material.foreground
+                            font.pixelSize: 20
+                        }
+                        Text {
+                            anchors.top: iconPr.bottom
+                            text: 'Because you played: '
+                            color: Material.foreground
+                            font.pixelSize: 18
+                        }
+                    }
+                }
+            }
+            
+            Text {
+                text: 'New and Popular'
+                color: Material.foreground
+                width: parent.width - 400
+                font.pixelSize: 24
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
             Rectangle {
-                id: filters
-                width: parent.width
-                height: games.height
+                id: newGames
+                width: parent.width - 400
+                height: 400
                 color: Material.background
-                Rectangle {
-                    visible: false
-                    id: categories
-                    height: contentHeight
-                    width: 200
-//                     color: 'blue'
-                    anchors.left: parent.left
-                    
-                }
-                Flow {
-                    id: selectedTags
-                    
-                    anchors.left: categories.right
-                    anchors.right: tags.left
-//                     anchors.margins: 10
-                    topPadding: 20
-                    bottomPadding: 10
-                    spacing: 10
-                    
-                    Label { 
-                        text: "Strategy"; 
-                        color: Material.background 
-                        padding: 4
-                        rightPadding: 15
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.primary
-                            radius: 5
-                            Image {
-                                anchors.right: parent.right
-                                source: "icons/close.svg"
-                            }
-                        }
-                        
-                    }
-                    Label { 
-                        text: "FPS"; 
-                        color: Material.background 
-                        padding: 4
-                        rightPadding: 15
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.primary
-                            radius: 5
-                            Image {
-                                anchors.right: parent.right
-                                source: "icons/close.svg"
-                            }
-                        }
-                        
-                    }
-                    Label { 
-                        text: "2D"; 
-                        color: Material.background 
-                        padding: 4
-                        rightPadding: 15
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.primary
-                            radius: 5
-                            Image {
-                                anchors.right: parent.right
-                                source: "icons/close.svg"
-                            }
-                        }
-                        
-                    }
-                    Label { 
-                        text: "Online"; 
-                        color: Material.background 
-                        padding: 4
-                        rightPadding: 15
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.primary
-                            radius: 5
-                            Image {
-                                anchors.right: parent.right
-                                source: "icons/close.svg"
-                            }
-                        }
-                        
-                    }
-                }
-                Flow {
-                    id: searchBar
-                    anchors.left: categories.right
-                    anchors.right: tags.left
-                    anchors.top: selectedTags.bottom
-                    
-                    TextField {
-                        id: gameSearch
-                        bottomPadding: 10
-                        width: parent.width * 0.7
-                        placeholderText: qsTr('Search')
-                        onTextChanged: {
-                            library.searchValue = text
-                            window.search()
-                        }
-                        Keys.onEscapePressed: {
-                            text = ''
-                        }
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.background
-                        }
-                        Rectangle {
-                            color: Material.foreground
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: parent.bottom
-                        }
-                    }
-                    TextField {
-                        id: tagSearch
-                        width: parent.width * 0.3
-                        bottomPadding: 10
-                        leftPadding: 10
-                        placeholderText: 'Search tags'
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: Material.background
-                        }
-                        Rectangle {
-                            color: Material.foreground
-                            height: 1
-                            width: parent.width-10
-                            anchors.bottom: parent.bottom
-                            anchors.right: parent.right
-                        }
-                    }
-
-                }
+                anchors.horizontalCenter: parent.horizontalCenter
                 ListView {
-                    id: games
                     model: library.filter
-                    anchors.top: searchBar.bottom
-                    anchors.left: categories.right
-                    anchors.right: tags.left
-                    height: contentHeight
-                    anchors.topMargin: 10
-        //             keyNavigationEnabled: true
-                    // focus: true
-//                     clip:true
-//                     interactive: false
-
+                    id: newList
+                    anchors.left: parent.left
+                    anchors.right: previewGame.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    clip: true
+                    
                     delegate: Component {
-                        id: delegateComponent
                         Rectangle {
-                            
-                            height: 60
                             width: parent.width
-                            color: Material.background
-//                             color: Material.color(Material.Grey, Material.Shade800)
+                            height: 50
+                            color:  Material.background
                             Rectangle {
-                                id: gameIcon
+                                visible: itemMouseArea.containsMouse
+                                anchors.left: parent.left 
+                                width: 1
+                                height: parent.height
+                                color: Material.accent
+                            }
+                            Rectangle { 
+                                visible: itemMouseArea.containsMouse
+                                anchors.top: parent.top
+                                height: 1
+                                width: parent.width
+                                color: Material.accent
+                            }
+                            Rectangle { 
+                                visible: itemMouseArea.containsMouse
+                                anchors.bottom: parent.bottom
+                                height: 1
+                                width: parent.width
+                                color: Material.accent
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onEntered: {
+                                    window.indexUpdated(index)
+
+//                                     parent.color = Material.accent
+                                }
+                                onExited: {
+//                                     parent.color = Material.background
+                                }
+                                id: itemMouseArea
+                                hoverEnabled: true
+                            }
+                            
+                            Rectangle {
+                                id: iconPr
                                 anchors.left: parent.left
                                 anchors.top: parent.top
                                 anchors.bottom: parent.bottom
-//                                 anchors.margins: 5
                                 width: parent.height
                                 height: parent.height
                                 
                                 color: tr
-//                                 radius: 10
                                 Image {
                                     anchors.fill: parent
                                     anchors.margins: 5
@@ -387,86 +255,31 @@ Page {
                                 }
                             }
                             Text {
-                                id: gameName
-                                anchors.left: gameIcon.right
+                                anchors.left: iconPr.right
                                 text: name
-                                font.pixelSize: 18
-                                leftPadding: 10
-                                topPadding: 5
                                 color: Material.foreground
-                            }
-                            Text {
-                                anchors.left: gameIcon.right
-                                anchors.top: gameName.bottom
-                                text: installed ? 'Installed' : 'Not Installed'
-                                font.pixelSize: 14
-                                leftPadding: 10
-                                topPadding: 5
-                                color: Material.foreground
-                            }
-                            Rectangle {
-                                width: parent.width
-                                height: 2
-                                anchors.bottom: parent.bottom
-                                color: Material.primary
-                                opacity: 0.2
+                                font.pixelSize: 20
                             }
                         }
                     }
                 }
-                Column { 
-                    visible: false
-                    id: tags
-                    anchors.top: selectedTags.bottom
+                GridView {
+                    id: previewGame
+                    width: 200
                     anchors.right: parent.right
-                    
-                    Text {
-                        color: Material.foreground
-                        text: 'Filter by Tag'
-                        width: parent.width
-                        height: gameSearch.height
-//                         font.pixelSize: 24
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    model: library.currentGame.screenshots
+                    delegate: Image {
+                        fillMode: Image.PreserveAspectFit
+                        source: thumbUrl || ''
                     }
-
-                    ListView {
-                        height: 200
-                        width: 200
-                        id: tagsList
-                        clip:true
-                        ScrollBar.vertical: ScrollBar { }
-                        boundsBehavior: Flickable.StopAtBounds
-                        
-                        model: ListModel{
-                            ListElement { name:'Action'}
-                            ListElement { name:'Adventure'}
-                            ListElement { name:'Arcade'}
-                            ListElement { name:'Board'}
-                            ListElement { name:'Blocks'}
-                            ListElement { name:'Card'}
-                            ListElement { name:'Kids'}
-                            ListElement { name:'Logic'}
-                            ListElement { name:'RolePlaying'}
-                            ListElement { name:'Shooter'}
-                            ListElement { name:'Simulation'}
-                            ListElement { name:'Sports'}
-                            ListElement { name:'Strategy'}
-                        }
-                        
-                        delegate: Component {
-                            id: delegateCategory
-                            Rectangle { 
-                                height: 40
-                                width: parent.width
-                                color: Material.background
-                                CheckBox{
-                                text: name
-                                }
-                            }
-                        }
-                    }
-                
-
                 }
+            }
+            Rectangle {
+                height: 50
+                width: parent.width
+                color: tr
             }
         }
     }

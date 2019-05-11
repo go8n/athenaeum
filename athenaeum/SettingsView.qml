@@ -5,73 +5,12 @@ import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Page {
-    id: settingsView
-
     background: Rectangle {
         anchors.fill: parent
         color: Material.background
     }
-    header: ToolBar {
-        id: toolBar
-        RowLayout {
-            spacing: 0
-            anchors.fill: parent
-            ToolButton {
-                contentItem: Text {
-                        text: qsTr("‹")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
-                Layout.fillHeight: true
-                onClicked: stackView.pop()
-            }
-            Label {
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                }
-                color: Material.foreground
-                text: qsTr("Settings")
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-            ToolButton {
-                contentItem: Text {
-                        text: qsTr("⋮")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
-                Layout.fillHeight: true
-                onClicked: menu.open()
-                Menu {
-                    id: menu
-                    MenuItem {
-                        text: qsTr("Reset All")
-                    }
-                    MenuItem {
-                        text: qsTr('Exit')
-                        onTriggered: Qt.quit()
-                    }
-                }
-            }
-        }
+    header: NavigationBar {
+        activeView: 'settings'
     }
 
     Column {

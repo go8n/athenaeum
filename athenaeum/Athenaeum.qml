@@ -24,33 +24,59 @@ ApplicationWindow {
     visible: true
 
     property int theme: settings.theme == 'Dark' ? Material.Dark : settings.theme == 'Light' ? Material.Light: Material.System
-
     property color tr: 'transparent'
-
-    property Component browseView: BrowseView{}
-    property Component libraryView: LibraryView{}
-    property Component settingsView: SettingsView{}
-
     Material.theme: theme
     Material.accent: Material.LightBlue
     Material.primary: Material.Grey
+    
+    property var stack: [0]
+    property int stackIndex: 0
+    
+    property int browseView: 0
+    property int gameView: 1
+    property int searchView: 2
+    property int libraryView: 3
+    property int settingsView: 4
+    
+    function changeView(view, details) {
+        stack.splice(stackIndex + 1, stack.length - stackIndex - 1, view)
+        stackIndex = stack.length - 1
+        stackView.currentIndex = view
+    }
+   
+    function backward() {
+        stackIndex = stackIndex - 1
+        stackView.currentIndex = stack[stackIndex] 
+    }
 
-    StackView {
+    function forward() {
+        stackIndex = stackIndex + 1
+        stackView.currentIndex = stack[stackIndex]
+    }
+
+    StackLayout {
         id: stackView
         anchors.fill: parent
         visible: !loader.loading
-        // initialItem:  libraryView
-        initialItem:  browseView
+        currentIndex: 0
+        BrowseView {}
+        GameView {}
+        SearchView {}
+        LibraryView {}
+        SettingsView {}
     }
+
     Rectangle {
         anchors.fill: parent
         color: Material.background
         visible: loader.loading
+
         BusyIndicator {
             id: loadingIndicator
             anchors.centerIn: parent
             running: loader.loading && !loader.error
         }
+
         Text {
             id: loadingMessage
             anchors.top: loadingIndicator.bottom
