@@ -9,6 +9,8 @@ Page {
         activeView: 'search'
     }
     
+    property string search
+    
     Flickable {
     }
 }

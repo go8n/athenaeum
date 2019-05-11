@@ -9,6 +9,8 @@ Page {
         activeView: 'game'
     }
     
+    property Game game: library.currentGame
+    
     Flickable {
         anchors.fill: parent
         contentHeight: col.height
@@ -46,7 +48,7 @@ Page {
                         id: img
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
-                        source: library.currentGame.iconLarge
+                        source: game.iconLarge
                     }
                 }
                 Text {
@@ -59,7 +61,7 @@ Page {
                     leftPadding: 20
 
                     color: Material.foreground
-                    text: library.currentGame.name
+                    text: game.name
 
 
                     fontSizeMode: Text.VerticalFit
@@ -79,7 +81,7 @@ Page {
                     leftPadding: 20
 
                     color: Material.foreground
-                    text: library.currentGame.summary
+                    text: game.summary
 
                     fontSizeMode: Text.VerticalFit
                     font.pixelSize: 16
@@ -287,7 +289,7 @@ Page {
                 width: parent.width
                 clip: true
                 Rectangle {
-                    visible: library.currentGame.screenshots.length
+                    visible: game.screenshots.length
                     // width: parent.width
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -307,7 +309,7 @@ Page {
                         width: parent.width + 100
                         height: parent.height + 100
                         fillMode: Image.PreserveAspectCrop
-                        source:  visible ? (library.currentGame.screenshots[carousel.currentIndex] ? library.currentGame.screenshots[carousel.currentIndex].thumbUrl : '') : ''
+                        source:  visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].thumbUrl : '') : ''
                         opacity: 0.6
                     }
                     Image {
@@ -318,7 +320,7 @@ Page {
                         // width: parent.width
                         // anchors.fill:
                         height: 300
-                        source: visible ? (library.currentGame.screenshots[carousel.currentIndex] ? library.currentGame.screenshots[carousel.currentIndex].sourceUrl : '') : ''
+                        source: visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].sourceUrl : '') : ''
                         MouseArea {
                             anchors.centerIn: parent
                             width: parent.paintedWidth
@@ -366,7 +368,7 @@ Page {
                             width: contentWidth
                             height: parent.height
 
-                            model: library.currentGame.screenshots
+                            model: game.screenshots
                             orientation: ListView.Horizontal
                             spacing: 5
                             boundsBehavior: Flickable.StopAtBounds
@@ -409,7 +411,7 @@ Page {
 
                     /* Description */
                     Text {
-                        visible: library.currentGame.description
+                        visible: game.description
                         id: descHeading
                         width: parent.width
                         leftPadding: 50
@@ -422,7 +424,7 @@ Page {
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
-                        visible: library.currentGame.description
+                        visible: game.description
                         leftPadding: 50
                         rightPadding: 40
                         topPadding: 0
@@ -431,13 +433,13 @@ Page {
                         color: Material.foreground
                         textFormat: Text.RichText
                         font.pixelSize: 16
-                        text: library.currentGame.description
+                        text: game.description
                         wrapMode: Text.WordWrap
                     }
                     /* Releases */
                     Text {
                         id: releaseHeading
-                        visible: library.currentGame.releases.length
+                        visible: game.releases.length
                         leftPadding: 50
                         rightPadding: 40
                         topPadding: 10
@@ -449,8 +451,8 @@ Page {
                         wrapMode: Text.WrapAnywhere
                     }
                     ListView {
-                        visible: library.currentGame.releases.length
-                        model: library.currentGame.releases
+                        visible: game.releases.length
+                        model: game.releases
                         width: parent.width
                         height: contentHeight
                         spacing: 10
@@ -506,7 +508,7 @@ Page {
                         // anchors.left: desc.right
                         // anchors.right: parent.right
                         Text {
-                            visible: library.currentGame.developerName
+                            visible: game.developerName
                             leftPadding: 10
                             rightPadding: 50
                             topPadding: 10
@@ -527,7 +529,7 @@ Page {
                             }
                         }
                         Text {
-                            visible: library.currentGame.developerName
+                            visible: game.developerName
                             leftPadding: 10
                             rightPadding: 50
                             topPadding: 5
@@ -535,11 +537,11 @@ Page {
                             width: parent.width
                             color: Material.foreground
                             font.pixelSize: 12
-                            text: library.currentGame.developerName
+                            text: game.developerName
                             wrapMode: Text.WordWrap
                         }
                         Text {
-                            visible: library.currentGame.license
+                            visible: game.license
                             leftPadding: 10
                             rightPadding: 50
                             topPadding: 10
@@ -560,7 +562,7 @@ Page {
                             }
                         }
                         Text {
-                            visible: library.currentGame.license
+                            visible: game.license
                             leftPadding: 10
                             rightPadding: 50
                             topPadding: 5
@@ -568,7 +570,7 @@ Page {
                             width: parent.width
                             color: Material.foreground
                             font.pixelSize: 12
-                            text: library.currentGame.license
+                            text: game.license
                             wrapMode: Text.WordWrap
                         }
                         Text {
@@ -592,7 +594,7 @@ Page {
                             }
                         }
                         ListView {
-                            model: library.currentGame.urls
+                            model: game.urls
                             width: parent.width
                             height: contentHeight
                             id: linksList
@@ -672,7 +674,7 @@ Page {
                             }
                         }
                         ListView {
-                            model: library.currentGame.categories
+                            model: game.categories
                             width: parent.width
                             height: contentHeight
                             id: categoriesList
@@ -686,7 +688,7 @@ Page {
                                     width: parent.width
                                     color: Material.foreground
                                     font.pixelSize: 12
-                                    text: library.currentGame.categories[index]
+                                    text: game.categories[index]
                                     wrapMode: Text.WrapAnywhere
                                 }
                             }

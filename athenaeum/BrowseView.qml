@@ -145,7 +145,7 @@ Page {
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                changeView(gameView, null)
+                                changeView(gameView, id)
                             }
                         }
 

@@ -41,6 +41,19 @@ ApplicationWindow {
     function changeView(view, details) {
         stack.splice(stackIndex + 1, stack.length - stackIndex - 1, view)
         stackIndex = stack.length - 1
+        
+        if (details) {
+            switch (view) {
+                case gameView:
+                    gameViewId.game = library.getGameById(details)
+                    break;
+            
+                case searchView:
+                    searchViewId.search = details
+                    break;
+            }
+        }
+        
         stackView.currentIndex = view
     }
    
@@ -60,8 +73,8 @@ ApplicationWindow {
         visible: !loader.loading
         currentIndex: 0
         BrowseView {}
-        GameView {}
-        SearchView {}
+        GameView { id: gameViewId }
+        SearchView { id: searchViewId }
         LibraryView {}
         SettingsView {}
     }

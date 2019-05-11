@@ -48,6 +48,14 @@ class Library(QObject):
         self._processes = []
         self._error = 0
 
+    @pyqtSlot(str, result=Game)
+    def getGameById(self, gameId):
+        for game in self._games:
+            if game.id == gameId:
+                return game
+
+        return None
+
     @pyqtSlot(result=int)
     def getIndexForCurrentGame(self):
         for index, game in enumerate(self._filter):
