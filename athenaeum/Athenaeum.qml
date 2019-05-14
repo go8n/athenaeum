@@ -29,7 +29,7 @@ ApplicationWindow {
     Material.accent: Material.LightBlue
     Material.primary: Material.Grey
     
-    property var stack: [0]
+    property var stack: [[0,null]]
     property int stackIndex: 0
     
     property int browseView: 0
@@ -38,10 +38,29 @@ ApplicationWindow {
     property int libraryView: 3
     property int settingsView: 4
     
+    function debounce(func, wait, immediate) {
+        var timeout
+
+        return function executedFunction() {
+            var context = this
+            var args = arguments
+                
+            var later = function() {
+                timeout = null
+                if (!immediate) func.apply(context, args)
+            }
+
+            var callNow = immediate && !timeout
+            
+            clearTimeout(timeout)
+
+            timeout = setTimeout(later, wait)
+            
+            if (callNow) func.apply(context, args)
+        }
+    }
+    
     function changeView(view, details) {
-        stack.splice(stackIndex + 1, stack.length - stackIndex - 1, view)
-        stackIndex = stack.length - 1
-        
         if (details) {
             switch (view) {
                 case gameView:
@@ -51,20 +70,31 @@ ApplicationWindow {
                 case searchView:
                     searchViewId.search = details
                     break;
+                    
+                case libraryView:
+                    window.indexUpdated(library.findById(details))
+                    break;
             }
         }
         
         stackView.currentIndex = view
     }
+    
+    function enter(view, details) {
+        stack.splice(stackIndex + 1, stack.length - stackIndex - 1, [view, details])
+        stackIndex = stack.length - 1
+        
+        changeView(view, details)
+    }
    
     function backward() {
         stackIndex = stackIndex - 1
-        stackView.currentIndex = stack[stackIndex] 
+        changeView(stack[stackIndex][0], stack[stackIndex][1])
     }
 
     function forward() {
         stackIndex = stackIndex + 1
-        stackView.currentIndex = stack[stackIndex]
+        changeView(stack[stackIndex][0], stack[stackIndex][1])
     }
 
     StackLayout {

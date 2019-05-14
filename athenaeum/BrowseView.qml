@@ -43,7 +43,7 @@ Page {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 clip: true
-                                source: visible ? (library.currentGame.screenshots[0] ? library.currentGame.screenshots[0].sourceUrl : '') : ''
+                                source: library.games[0].screenshots[0] ? library.games[0].screenshots[0].sourceUrl : ''
                             }
                             Rectangle {
                                 width: newGames.width
@@ -52,14 +52,14 @@ Page {
                                 color: tr
                                 Text {
                                     id: gameTitle
-                                    text: library.currentGame.name
+                                    text: library.games[0].name
                                     color: Material.foreground
                                     font.pixelSize: 64
                                     font.bold: true
                                 }
                                 Text {
                                     anchors.top: gameTitle.bottom
-                                    text: library.currentGame.summary
+                                    text: library.games[0].summary
                                     color: Material.foreground
                                     font.pixelSize: 24
                                 }
@@ -123,7 +123,7 @@ Page {
             
             ListView {
                 width: parent.width - 400
-                height: 100
+                height: 120
                 anchors.horizontalCenter: parent.horizontalCenter
                 ScrollBar.horizontal: ScrollBar { 
                     policy: ScrollBar.AlwaysOn
@@ -133,19 +133,20 @@ Page {
                 orientation: ListView.Horizontal
                 model: library.filter
                 clip: true
+                spacing: 10
 
                 delegate: Component {
                     Rectangle {
                         width: 200
                         height: parent.height
                         color: Material.background
-                        border.color: Material.accent
-                        border.width: 1
+//                         border.color: Material.accent
+//                         border.width: 1
                         
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
-                                changeView(gameView, id)
+                                enter(gameView, id)
                             }
                         }
 
@@ -167,8 +168,24 @@ Page {
                             font.pixelSize: 20
                         }
                         Text {
+                            id: byp
                             anchors.top: iconPr.bottom
                             text: 'Because you played: '
+                            color: Material.foreground
+                            font.pixelSize: 18
+                        }
+                        Image {
+                            id: iconByp
+                            anchors.top: byp.bottom
+                            anchors.left: parent.left
+                            width: 25
+                            fillMode: Image.PreserveAspectFit
+                            source: library.currentGame.iconSmall
+                        }
+                        Text {
+                            anchors.top: byp.bottom
+                            anchors.left: iconByp.right
+                            text: library.currentGame.name
                             color: Material.foreground
                             font.pixelSize: 18
                         }
@@ -227,12 +244,10 @@ Page {
                             MouseArea {
                                 anchors.fill: parent
                                 onEntered: {
-                                    window.indexUpdated(index)
-
-//                                     parent.color = Material.accent
+//                                     window.indexUpdated(index)
                                 }
-                                onExited: {
-//                                     parent.color = Material.background
+                                onClicked: {
+                                    enter(gameView, id)
                                 }
                                 id: itemMouseArea
                                 hoverEnabled: true

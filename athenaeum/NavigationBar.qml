@@ -33,7 +33,7 @@ ToolBar {
             icon.source: 'icons/browse.svg'
             onClicked: {
                 if (activeView !== 'browse') {
-                    changeView(browseView, null)
+                    enter(browseView, null)
                 }
             }
         }
@@ -44,7 +44,7 @@ ToolBar {
             icon.source: 'icons/library.svg'
             onClicked: {
                 if (!highlighted){
-                    changeView(libraryView, null)
+                    enter(libraryView, null)
                 }
             }
         }
@@ -55,22 +55,52 @@ ToolBar {
             icon.source: 'icons/settings.svg'
             onClicked: {
                 if (!highlighted) {
-                    changeView(settingsView, null)
+                    enter(settingsView, null)
                 }
             }
         }
     }
+    
+    RowLayout {
+        visible: activeView === 'library'
+        anchors.right: menuButton.left
+        ToolButton {
+            id: tableButton
+            icon.source: 'icons/table.svg'
+            onClicked: {
+                visible = false
+            }
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Show games in a table view.")
+        }
+        ToolButton {
+            id: listButton
+            icon.source: 'icons/list.svg'
+            onClicked: {
+                visible = false
+            }
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Show games in a list view.")
+        }
+    }
+    RowLayout {
+        visible: activeView === 'settings'
+        anchors.right: menuButton.left
+        ToolButton {
+            icon.source: 'icons/reset.svg'
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Reset settings to defaults.")
+        }
+    }
 
     ToolButton {
-        visible: activeView === 'browse'
+        visible: activeView === 'browse' || activeView === 'game' || activeView === 'search'
         icon.source: 'icons/search.svg'
         anchors.right: searchField.left
         onClicked: {
             searchFieldShow1.start()
             searchFieldShow2.start()
             searchField.focus = true
-
-//             NumberAnimation { target: searchField; property: "opacity"; to: 1; duration: 250 }
         }
     }
     TextField {
@@ -78,20 +108,61 @@ ToolBar {
         visible: true
         width: 0
         opacity: 0
-        NumberAnimation { id: searchFieldShow1; target: searchField; property: 'width'; to: 150; duration: 250 }
+        NumberAnimation { id: searchFieldShow1; target: searchField; property: 'width'; to: 200; duration: 250 }
         NumberAnimation { id: searchFieldShow2; target: searchField; property: 'opacity'; to: 1; duration: 250 }
         NumberAnimation { id: searchFieldHide1; target: searchField; property: 'width'; to: 0; duration: 250 }
         NumberAnimation { id: searchFieldHide2; target: searchField; property: 'opacity'; to: 0; duration: 250 }
         onFocusChanged: {
-            searchFieldHide1.start()
-            searchFieldHide2.start()
+            if (!focus) {
+                searchFieldHide1.start()
+                searchFieldHide2.start()
+            }
         }
         placeholderText: qsTr('Search')
         anchors.right: menuButton.left
         color: Material.foreground
         
         onAccepted: {
-            changeView(searchView, null)
+            enter(searchView, null)
+        }
+        
+        onTextChanged: {
+            library.searchValue = text
+            window.search()
+            if(!resultsDropDown.opened) {
+                resultsDropDown.open()
+            }
+        }
+        Keys.onEscapePressed: {
+            text = ''
+            focus = false
+        }
+        
+        Menu {
+            focus: false
+            id: resultsDropDown
+            y: toolBar.height
+            height: resultsList.contentHeight
+
+            ListView {
+                id: resultsList
+//                 anchors.fill: parent
+                model: library.filter
+                boundsBehavior: Flickable.StopAtBounds
+                keyNavigationEnabled: true
+                height: contentHeight
+                clip:true
+                delegate: Row {
+                    Image {
+                        source: iconSmall
+                    }
+                    Text {
+                        text: name
+                        color: Material.foreground
+                    }
+                }
+
+            }
         }
     }
 
@@ -132,7 +203,7 @@ ToolBar {
                             spacing: 20
                             anchors.horizontalCenter: parent.horizontalCenter
                             Button {
-                                text:   qsTr('Close Anyway')
+                                text: qsTr('Close Anyway')
                                 onClicked: {
                                     Qt.quit()
                                 }

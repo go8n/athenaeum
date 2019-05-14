@@ -3,13 +3,13 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal
 
 class Url(QObject):
     typeChanged = pyqtSignal()
-    iconChanged = pyqtSignal()
+    urlIconChanged = pyqtSignal()
     urlChanged = pyqtSignal()
 
-    def __init__(self, type='', icon = '', url='', *args, **kwargs):
+    def __init__(self, type='', urlIcon = '', url='', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._type = type
-        self._icon = icon or self.findUrlIcon(type)
+        self._urlIcon = urlIcon or self.findUrlIcon(type)
         self._url = url
 
     def findUrlIcon(self, type):
@@ -40,15 +40,15 @@ class Url(QObject):
             self._type = type
             self.typeChanged.emit()
 
-    @pyqtProperty('QString', notify=iconChanged)
-    def icon(self):
-        return self._icon
+    @pyqtProperty('QString', notify=urlIconChanged)
+    def urlIcon(self):
+        return self._urlIcon
 
-    @icon.setter
-    def icon(self, icon):
-        if icon != self._icon:
-            self._icon = icon
-            self.iconChanged.emit()
+    @urlIcon.setter
+    def urlIcon(self, urlIcon):
+        if urlIcon != self._urlIcon:
+            self._urlIcon = urlIcon
+            self.urlIconChanged.emit()
 
     @pyqtProperty('QString', notify=urlChanged)
     def url(self):

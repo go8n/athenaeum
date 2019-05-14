@@ -99,10 +99,10 @@ Page {
                     leftPadding: 20
                     topPadding: 10
                     Button {
-                        visible: !library.currentGame.installed
-                        enabled: !library.currentGame.processing
+                        visible: !game.installed
+                        enabled: !game.processing
                         onClicked: {
-                            window.installGame(library.currentGame.id)
+                            window.installGame(game.id)
                         }
                         contentItem: Text {
                             enabled: !library.currentGame.processing
@@ -118,8 +118,9 @@ Page {
                         }
                     }
                     Button {
-                        visible:  library.currentGame.installed
-                        enabled: !library.currentGame.playing
+                        id: playButton
+                        visible: game.installed
+                        enabled: !game.playing
                         onClicked: {
                             window.playGame(library.currentGame.id)
                         }
@@ -136,14 +137,14 @@ Page {
                         }
                     }
                     Button {
-                        visible: library.currentGame.hasUpdate && library.currentGame.installed
-                        enabled: !library.currentGame.playing && !library.currentGame.processing
+                        visible: playButton.visible
+                        enabled: !game.playing && !game.processing
                         onClicked: {
-                            window.updateGame(library.currentGame.id)
+                            enter(libraryView, game.id)
                         }
                         contentItem: Text {
                             color: Material.background
-                            text: qsTr('Update')
+                            text: qsTr('View In Library')
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -151,101 +152,6 @@ Page {
                             implicitWidth: 100
                             implicitHeight: 40
                             color: Material.primary
-                        }
-                    }
-                    Button {
-                        contentItem: Text {
-                            color: Material.background
-                            text: qsTr('Uninstall')
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        visible: library.currentGame.installed
-                        enabled: !library.currentGame.processing
-                        MouseArea {
-                            id: uninstallMouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                uninstallPopup.open()
-                            }
-                        }
-                        Popup {
-                            id: uninstallPopup
-                            // parent: Overlay.overlay
-                            parent: stackView
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: Material.background
-                            }
-                            x: Math.round((parent.width - width) / 2)
-                            y: Math.round((parent.height - height) / 2)
-                            modal: true
-                            dim: true
-                            focus: true
-                            contentItem: Column {
-                                id: uninstallDialog
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    color: Material.foreground
-                                    font.pixelSize: 20
-                                    text: qsTr('Are you sure?')
-                                }
-                                Row {
-                                    topPadding: 20
-                                    spacing: 20
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    Button {
-                                        MouseArea {
-                                            id: uninstallPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                window.uninstallGame(library.currentGame.id)
-                                                uninstallPopup.close()
-                                            }
-                                        }
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Yes')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: uninstallPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                    Button {
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Cancel')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                        MouseArea {
-                                            id: cancelPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                uninstallPopup.close()
-                                            }
-                                        }
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: cancelPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 40
-                            color: uninstallMouseArea.containsMouse ? Material.color(Material.Pink) : Material.primary
                         }
                     }
                 }
@@ -616,7 +522,7 @@ Page {
                                     contentItem: Row {
                                         Image {
                                             width: 14
-                                            source: 'icons/' + icon
+                                            source: 'icons/' + urlIcon
                                             fillMode: Image.PreserveAspectFit
                                         }
                                         Text {

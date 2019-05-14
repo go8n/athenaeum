@@ -67,6 +67,7 @@ class Library(QObject):
         
         return -1
 
+    @pyqtSlot(str, result=int)
     def findById(self, game_id):
         for index, game in enumerate(self._games):
             if game.id == game_id:
