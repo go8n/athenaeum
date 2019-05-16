@@ -123,6 +123,7 @@ ToolBar {
         color: Material.foreground
         
         onAccepted: {
+            resultsDropDown.close()
             enter(searchView, text)
         }
         
@@ -158,6 +159,10 @@ ToolBar {
                     text: name
                     rightPadding: parent.width
                     font.capitalization: Font.MixedCase
+                    onClicked: {
+                        resultsDropDown.close()
+                        enter(gameView, id)
+                    }
                 }
             }
         }
