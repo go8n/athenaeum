@@ -12,5 +12,17 @@ Page {
     property string search
     
     Flickable {
+        anchors.fill: parent
+        contentHeight: mainCol.height
+        contentWidth: parent.width
+        ScrollBar.vertical: ScrollBar { }
+        boundsBehavior: Flickable.StopAtBounds
+        Column {
+            id: mainCol
+            TextField {
+                text: search
+                placeholderText: qsTr('Search')
+            }
+        }
     }
 }

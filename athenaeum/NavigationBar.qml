@@ -123,7 +123,7 @@ ToolBar {
         color: Material.foreground
         
         onAccepted: {
-            enter(searchView, null)
+            enter(searchView, text)
         }
         
         onTextChanged: {
@@ -143,25 +143,22 @@ ToolBar {
             id: resultsDropDown
             y: toolBar.height
             height: resultsList.contentHeight
+            topPadding: 0
+            bottomPadding: 0
 
             ListView {
                 id: resultsList
-//                 anchors.fill: parent
                 model: library.filter
                 boundsBehavior: Flickable.StopAtBounds
                 keyNavigationEnabled: true
                 height: contentHeight
-                clip:true
-                delegate: Row {
-                    Image {
-                        source: iconSmall
-                    }
-                    Text {
-                        text: name
-                        color: Material.foreground
-                    }
+                delegate: ToolButton {
+                    icon.source: iconSmall
+                    icon.color: '#00000000'
+                    text: name
+                    rightPadding: parent.width
+                    font.capitalization: Font.MixedCase
                 }
-
             }
         }
     }

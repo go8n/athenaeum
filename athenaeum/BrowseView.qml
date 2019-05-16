@@ -112,182 +112,184 @@ Page {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
-            
-            Text {
-                text: 'Recommended For You'
-                color: Material.foreground
-                width: parent.width - 400
-                font.pixelSize: 24
+            Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width - 400
+                height: recommendedHeading.height
+                color: Material.background
+                Text {
+                    id: recommendedHeading
+                    anchors.left: parent.left
+                    text: 'Recommended For You'
+                    color: Material.foreground
+                    font.pixelSize: 24
+                }
+                Button {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr('View More')
+                    
+                }
             }
             
-            ListView {
+            GridView {
+                id: gv
                 width: parent.width - 400
-                height: 120
+                height: contentHeight
                 anchors.horizontalCenter: parent.horizontalCenter
-                ScrollBar.horizontal: ScrollBar { 
-                    policy: ScrollBar.AlwaysOn
-                }
-                
                 boundsBehavior: Flickable.StopAtBounds
-                orientation: ListView.Horizontal
                 model: library.filter
-                clip: true
-                spacing: 10
-
-                delegate: Component {
-                    Rectangle {
-                        width: 200
-                        height: parent.height
-                        color: Material.background
-//                         border.color: Material.accent
-//                         border.width: 1
-                        
+                property int minWidth: 270
+//                 cellWidth: Math.round(width / minWidth) > Math.floor(width / maxWidth) ? width / Math.floor(width / minWidth) : maxWidth
+                cellWidth: width > minWidth ? width / Math.floor(width / minWidth) : width
+                cellHeight: 150
+                delegate: 
+                Rectangle {
+                        color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                        width: gv.cellWidth
+                        height: gv.cellHeight
+                        border.width: 5
+                        border.color: Material.background
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
                                 enter(gameView, id)
                             }
                         }
+                    Column {
+                        padding: 10
+                        width: parent.width
 
-                        Image {
-                            id: iconPr
-                            anchors.top: parent.top
-                            anchors.left: parent.left
-                            width: 50
-                            height: 50
-                            anchors.margins: 5
-                            fillMode: Image.PreserveAspectFit
-                            source: iconLarge
-                        }
+                        Row {
+                            padding: 5
+                            spacing: 5
+                            Image {
+                               
+                                id: iconPr
+                                width: 50
+                                height: 50
+                                fillMode: Image.PreserveAspectFit
+                                source: iconLarge
+                            }
 
-                        Text {
-                            anchors.left: iconPr.right
-                            text: name
-                            color: Material.foreground
-                            font.pixelSize: 20
+                            Text {
+                                text: name
+                                color: Material.foreground
+                                font.pixelSize: 20
+                            }
                         }
                         Text {
-                            id: byp
-                            anchors.top: iconPr.bottom
+                            padding: 5
                             text: 'Because you played: '
                             color: Material.foreground
                             font.pixelSize: 18
                         }
-                        Image {
-                            id: iconByp
-                            anchors.top: byp.bottom
-                            anchors.left: parent.left
-                            width: 25
-                            fillMode: Image.PreserveAspectFit
-                            source: library.currentGame.iconSmall
-                        }
-                        Text {
-                            anchors.top: byp.bottom
-                            anchors.left: iconByp.right
-                            text: library.currentGame.name
-                            color: Material.foreground
-                            font.pixelSize: 18
+                        Row {
+                            padding: 5
+                            spacing: 5
+                            Image {
+                                width: 25
+                                fillMode: Image.PreserveAspectFit
+                                source: library.currentGame.iconSmall
+                            }
+                            Text {
+                                text: library.currentGame.name
+                                color: Material.foreground
+                                font.pixelSize: 18
+                            }
                         }
                     }
                 }
             }
-            
-            Text {
-                text: 'New and Popular'
-                color: Material.foreground
-                width: parent.width - 400
-                font.pixelSize: 24
+            Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width - 400
+                height: newHeading.height
+                color: Material.background
+                Text {
+                    id: newHeading
+                    anchors.left: parent.left
+                    text: 'New and Popular'
+                    width: 200
+                    color: Material.foreground
+                    font.pixelSize: 24
+                }
+                Button {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr('View More')
+                    
+                }
             }
             Rectangle {
                 id: newGames
                 width: parent.width - 400
-                height: 400
-                color: Material.background
+                height: newList.height
+                color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
                 anchors.horizontalCenter: parent.horizontalCenter
                 ListView {
                     model: library.filter
                     id: newList
                     anchors.left: parent.left
                     anchors.right: previewGame.left
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    clip: true
-                    
+                    height: contentHeight
+                    boundsBehavior: Flickable.StopAtBounds
                     delegate: Component {
                         Rectangle {
                             width: parent.width
-                            height: 50
-                            color:  Material.background
-                            Rectangle {
-                                visible: itemMouseArea.containsMouse
-                                anchors.left: parent.left 
-                                width: 1
-                                height: parent.height
-                                color: Material.accent
-                            }
-                            Rectangle { 
-                                visible: itemMouseArea.containsMouse
-                                anchors.top: parent.top
-                                height: 1
-                                width: parent.width
-                                color: Material.accent
-                            }
-                            Rectangle { 
-                                visible: itemMouseArea.containsMouse
-                                anchors.bottom: parent.bottom
-                                height: 1
-                                width: parent.width
-                                color: Material.accent
-                            }
+                            height: 70
+                            color:   ListView.isCurrentItem ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100) : Material.background
                             MouseArea {
                                 anchors.fill: parent
                                 onEntered: {
-//                                     window.indexUpdated(index)
+                                    newList.currentIndex = index
                                 }
                                 onClicked: {
                                     enter(gameView, id)
                                 }
-                                id: itemMouseArea
                                 hoverEnabled: true
                             }
                             
-                            Rectangle {
-                                id: iconPr
-                                anchors.left: parent.left
-                                anchors.top: parent.top
-                                anchors.bottom: parent.bottom
-                                width: parent.height
-                                height: parent.height
-                                
-                                color: tr
+                            Row {
+                                padding: 10
+                                spacing: 5
                                 Image {
-                                    anchors.fill: parent
+                                    height: 50
+                                    width: 50
                                     anchors.margins: 5
                                     fillMode: Image.PreserveAspectFit
                                     source: iconLarge
                                 }
-                            }
-                            Text {
-                                anchors.left: iconPr.right
-                                text: name
-                                color: Material.foreground
-                                font.pixelSize: 20
+                                Text {
+                                    text: name
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                }
                             }
                         }
                     }
                 }
                 GridView {
                     id: previewGame
-                    width: 200
+                    width: 300
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    model: library.currentGame.screenshots
-                    delegate: Image {
-                        fillMode: Image.PreserveAspectFit
-                        source: thumbUrl || ''
+                    boundsBehavior: Flickable.StopAtBounds
+                    model: library.filter[newList.currentIndex].screenshots
+                    cellWidth: 150
+                    cellHeight: 150
+                    delegate: Rectangle { 
+                        width: previewGame.cellWidth
+                        height: previewGame.cellHeight
+                        color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                        Image {
+                            anchors.fill: parent
+                            anchors.margins: 5
+                            width: parent.width
+                            fillMode: Image.PreserveAspectCrop
+                            source: thumbUrl || ''
+                        }
                     }
                 }
             }

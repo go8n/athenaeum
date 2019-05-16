@@ -95,7 +95,7 @@ Page {
                     anchors.top: gameSummary.bottom
                     anchors.left: gameLogo.right
                     anchors.right: parent.right
-                    spacing: 5
+                    spacing: 10
                     leftPadding: 20
                     topPadding: 10
                     Button {
@@ -121,20 +121,13 @@ Page {
                         id: playButton
                         visible: game.installed
                         enabled: !game.playing
+                        highlighted: true
                         onClicked: {
                             window.playGame(library.currentGame.id)
                         }
-                        contentItem: Text {
-                            color: Material.background
-                            text: qsTr('Play')
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 40
-                            color: library.currentGame.playing ? Material.color(Material.LightGreen, Material.Shade400) : Material.accent
-                        }
+                        icon.source: 'icons/play.svg'
+                        text: qsTr('Play')
+
                     }
                     Button {
                         visible: playButton.visible
@@ -142,17 +135,8 @@ Page {
                         onClicked: {
                             enter(libraryView, game.id)
                         }
-                        contentItem: Text {
-                            color: Material.background
-                            text: qsTr('View In Library')
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 40
-                            color: Material.primary
-                        }
+                        text: qsTr('View In Library')
+                        icon.source: 'icons/library.svg'
                     }
                 }
             }

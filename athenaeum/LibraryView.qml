@@ -278,7 +278,7 @@ Page {
                         anchors.top: gameSummary.bottom
                         anchors.left: gameLogo.right
                         anchors.right: parent.right
-                        spacing: 5
+                        spacing: 10
                         leftPadding: 20
                         topPadding: 10
                         Button {
@@ -502,25 +502,31 @@ Page {
                         text: qsTr('14 Hours')
                         wrapMode: Text.WrapAnywhere
                     }
+                    
                     Text {
+                        visible: library.currentGame.developerName
                         color: Material.foreground
                         font.pixelSize: 24
                         text: qsTr('Developer')
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
+                        visible: library.currentGame.developerName
                         color: Material.foreground
                         font.pixelSize: 16
                         text: library.currentGame.developerName
-                        wrapMode: Text.WrapAnywhere
+                        wrapMode: Text.WordWrap
                     }
+                    
                     Text {
+                        visible: library.currentGame.license
                         color: Material.foreground
                         font.pixelSize: 24
                         text: qsTr('License')
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
+                        visible: library.currentGame.license
                         color: Material.foreground
                         font.pixelSize: 16
                         text: library.currentGame.license
@@ -528,14 +534,15 @@ Page {
                     }
                         
                     Text {
+                        visible: library.currentGame.urls.length
                         color: Material.foreground
                         font.pixelSize: 24
                         text: qsTr('Links')
                         wrapMode: Text.WrapAnywhere
                     }
                     ListView {
+                        visible: library.currentGame.urls.length
                         model: library.currentGame.urls
-    //                     anchors.horizontalCenter: parent.horizontalCenter
                         id: linksList
                         height: contentHeight
                         width: contentWidth
@@ -549,12 +556,15 @@ Page {
                                 }
                             }
                             icon.source: 'icons/' + urlIcon
-                            Component.onCompleted: {
-                                if (type === 'donation') {
-                                    icon.color = '#00000000'
-                                }
-                                contentItem.font.capitalization = Font.MixedCase
+                            topPadding: 0
+                            leftPadding: 0
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: tr
                             }
+
+                            icon.color: type === 'donation' ? '#00000000' : icon.color
+                            font.capitalization: Font.MixedCase
                             function getTitle(type) {
                                 switch(type) {
                                     case 'homepage':
@@ -576,10 +586,6 @@ Page {
                                 }
                             }
                             text: getTitle(type)
-//                             background: Rectangle {
-//                                 anchors.fill: parent
-//                                 color: tr
-//                             }
                         }
                     }
                     }

@@ -29,7 +29,7 @@ ApplicationWindow {
     Material.accent: Material.LightBlue
     Material.primary: Material.Grey
     
-    property var stack: [[0,null]]
+    property var stack: []
     property int stackIndex: 0
     
     property int browseView: 0
@@ -101,7 +101,9 @@ ApplicationWindow {
         id: stackView
         anchors.fill: parent
         visible: !loader.loading
-        currentIndex: 0
+        Component.onCompleted: {
+            enter(browseView, null)
+        }
         BrowseView {}
         GameView { id: gameViewId }
         SearchView { id: searchViewId }
