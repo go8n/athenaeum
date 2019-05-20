@@ -43,6 +43,7 @@ class Loader(QObject):
 
         self._installed_list = ''
         self._updates_list = ''
+        self._sizes_list = ''
 
     def load(self):
         if self._metaRepository.get(self.metaKey):
@@ -94,11 +95,18 @@ class Loader(QObject):
             else:
                 commandProcess.start('flatpak', ['list', '--user', '--app', '--columns=application'])
         if proc_number == 1:
+            commandProcess.finished.connect(partial(self.runListCommands, 2))
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
             if self._flatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--updates', '--user', '--app', '--columns=application'])
             else:
                 commandProcess.start('flatpak', ['remote-ls', '--updates', '--user', '--app', '--columns=application'])
+        if proc_number == 2:
+            commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
+            if self._flatpak:
+                commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--user', '--app', '--columns=application,download-size,installed-size'])
+            else:
+                commandProcess.start('flatpak', ['remote-ls', '--user', '--app', '--columns=application,download-size,installed-size'])
         self._processes.append(commandProcess)
 
     def loadListData(self, process, proc_number):
@@ -106,6 +114,8 @@ class Loader(QObject):
             self._installed_list = str(process.readAllStandardOutput(), 'utf-8')
         if proc_number == 1:
             self._updates_list = str(process.readAllStandardOutput(), 'utf-8')
+        if proc_number == 2:
+            self._sizes_list = str(process.readAllStandardOutput(), 'utf-8')
             self.loadAppstream(process=True)
 
     def acceptedGame(self, component=None):
@@ -120,6 +130,11 @@ class Loader(QObject):
     def loadAppstream(self, process=None):
         stream = appstream.Store()
         stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
+        
+        game_sizes = {}
+        for line in self._sizes_list.splitlines():
+            game_size = line.split('\t')
+            game_sizes[game_size[0]] = game_size
 
         for component in stream.get_components():
             if self.acceptedGame(component):
@@ -132,13 +147,17 @@ class Loader(QObject):
                     name = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
                     installed = name in self._installed_list
                     has_update = name.split('/')[0] in self._updates_list
+                    download_size = game_sizes[name][1]
+                    installed_size = game_sizes[name][2]
 
                 gr = self._gameRepository.get(component.id)
                 if gr:
                     if not process:
                         installed = gr['installed']
-                    if not process:
                         has_update = gr['has_update']
+                        download_size = gr['download_size']
+                        installed_size = gr['installed_size']
+                        
                     last_played_date = gr['last_played_date']
                     created_date = gr['created_date']
                 else:
@@ -163,7 +182,9 @@ class Loader(QObject):
                     installed=installed,
                     hasUpdate=has_update,
                     lastPlayedDate=last_played_date,
-                    createdDate=created_date
+                    createdDate=created_date,
+                    downloadSize=download_size,
+                    installedSize=installed_size
                 )
 
                 if process:

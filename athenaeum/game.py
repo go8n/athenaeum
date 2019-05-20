@@ -29,6 +29,8 @@ class Game(QObject):
     hasUpdateChanged = pyqtSignal()
     lastPlayedDateChanged = pyqtSignal()
     createdDateChanged = pyqtSignal()
+    downloadSizeChanged = pyqtSignal()
+    installedSizeChanged = pyqtSignal()
 
     playingChanged = pyqtSignal()
     processingChanged = pyqtSignal()
@@ -259,6 +261,24 @@ class Game(QObject):
     def createdDate(self, createdDate):
         self._createdDate = createdDate
         self.createdDateChanged.emit()
+
+    @pyqtProperty(str, notify=downloadSizeChanged)
+    def downloadSize(self):
+        return self._downloadSize
+
+    @downloadSize.setter
+    def downloadSize(self, downloadSize):
+        self._downloadSize = downloadSize
+        self.downloadSizeChanged.emit()
+
+    @pyqtProperty(str, notify=installedSizeChanged)
+    def installedSize(self):
+        return self._installedSize
+
+    @installedSize.setter
+    def installedSize(self, installedSize):
+        self._installedSize = installedSize
+        self.installedSizeChanged.emit()
 
     @pyqtProperty(bool, notify=processingChanged)
     def processing(self):

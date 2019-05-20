@@ -4,7 +4,7 @@ import json
 import os
 
 class Database():
-    VERSION = 1
+    VERSION = 2
     
     def __init__(self, dataPath=''):
         self._connection = None
@@ -24,7 +24,7 @@ class Database():
             cursor.execute('DROP TABLE IF EXISTS "metarecord"')
             cursor.execute('DROP TABLE IF EXISTS "settingsrecord"')
             cursor.execute( "PRAGMA user_version = {v:d}".format(v=self.VERSION) )
-        cursor.execute('CREATE TABLE IF NOT EXISTS "gamerecord" ("id" VARCHAR(255) NOT NULL PRIMARY KEY, "installed" INTEGER NOT NULL, "has_update" INTEGER NOT NULL, "created_date" TIMESTAMP NOT NULL, "modified_date" TIMESTAMP, "last_played_date" TIMESTAMP)');
+        cursor.execute('CREATE TABLE IF NOT EXISTS "gamerecord" ("id" VARCHAR(255) NOT NULL PRIMARY KEY, "installed" INTEGER NOT NULL, "has_update" INTEGER NOT NULL, "created_date" TIMESTAMP NOT NULL, "modified_date" TIMESTAMP, "last_played_date" TIMESTAMP, "download_size" TEXT, "installed_size" TEXT)');
         cursor.execute('CREATE TABLE IF NOT EXISTS "metarecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
         cursor.execute('CREATE TABLE IF NOT EXISTS "settingsrecord" ("key" VARCHAR(255) NOT NULL PRIMARY KEY, "value" TEXT NOT NULL)')
         self._connection.commit()
@@ -93,7 +93,7 @@ class GameRepository():
 
     def set(self, game):
         self._db.execute(
-            'INSERT OR REPLACE INTO gamerecord (id, installed, has_update, created_date, modified_date, last_played_date) \
-            VALUES (?, ?, ?, ?, ?, ?)',
-            game.id, game.installed, game.hasUpdate, game.createdDate, datetime.datetime.now(), game.lastPlayedDate
+            'INSERT OR REPLACE INTO gamerecord (id, installed, has_update, created_date, modified_date, last_played_date, download_size, installed_size) \
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            game.id, game.installed, game.hasUpdate, game.createdDate, datetime.datetime.now(), game.lastPlayedDate, game.downloadSize, game.installedSize
         )
