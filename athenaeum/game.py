@@ -172,8 +172,8 @@ class Game(QObject):
     @screenshots.setter
     def screenshots(self, screenshots):
         if screenshots != self._screenshots:
-            self.screenshots = screenshots
-            selfscreenshotsChanged.emit()
+            self._screenshots = screenshots
+            self.screenshotsChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=releasesChanged)
     def releases(self):
@@ -182,8 +182,8 @@ class Game(QObject):
     @releases.setter
     def releases(self, releases):
         if releases != self._releases:
-            self.releases = releases
-            selfreleasesChanged.emit()
+            self._releases = releases
+            self.releasesChanged.emit()
 
     @pyqtProperty(list, notify=categoriesChanged)
     def categories(self):
@@ -192,8 +192,8 @@ class Game(QObject):
     @categories.setter
     def categories(self, categories):
         if categories != self._categories:
-            self.categories = categories
-            selfcategoriesChanged.emit()
+            self._categories = categories
+            self.categoriesChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=urlsChanged)
     def urls(self):
@@ -202,8 +202,8 @@ class Game(QObject):
     @urls.setter
     def urls(self, urls):
         if urls != self._urls:
-            self.urls = urls
-            selfurlsChanged.emit()
+            self._urls = urls
+            self.urlsChanged.emit()
 
     @pyqtProperty('QString', notify=refChanged)
     def ref(self):

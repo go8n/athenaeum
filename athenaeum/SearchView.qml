@@ -9,7 +9,7 @@ Page {
         activeView: 'search'
     }
     
-    property string search
+    property string searchValue
     
     Flickable {
         anchors.fill: parent
@@ -27,13 +27,13 @@ Page {
                 anchors.top: parent.top
                 id: searchField
                 width: parent.width
-                text: search
+                text: searchValue
                 font.pixelSize: 24
                 placeholderText: qsTr('Search')
                 
                 onTextChanged: {
                     library.searchValue = text
-                    window.search()
+                    window.searchGames()
                 }
                 Keys.onEscapePressed: {
                     text = ''
@@ -156,21 +156,17 @@ Page {
                     font.pixelSize: 24
                     text: 'Tags'
                 }
-                CheckBox {
-                    checked: true
-                    text: qsTr("Action")
-                }
-                CheckBox {
-                    checked: true
-                    text: qsTr("Shooter")
-                }
-                CheckBox {
-                    checked: true
-                    text: qsTr("Roleplaying")
-                }
-                CheckBox {
-                    checked: true
-                    text: qsTr("Strategy")
+                ListView {
+                    id: tags
+                    height: 200
+                    clip: true
+                    width: parent.width
+                    model: search.tags
+                    delegate: CheckBox {
+                        text: search.tags[index]
+                    }
+                    ScrollBar.vertical: ScrollBar { }
+                    boundsBehavior: Flickable.StopAtBounds
                 }
                 Text {
                     color: Material.foreground

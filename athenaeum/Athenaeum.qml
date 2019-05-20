@@ -11,7 +11,7 @@ ApplicationWindow {
     signal uninstallGame(string id)
     signal updateGame(string id)
     signal playGame(string id)
-    signal search()
+    signal searchGames()
     signal filter()
     signal sort(string sort)
     signal updateAll()
@@ -68,7 +68,7 @@ ApplicationWindow {
                     break;
             
                 case searchView:
-                    searchViewId.search = details
+                    searchViewId.searchValue = details
                     break;
                     
                 case libraryView:

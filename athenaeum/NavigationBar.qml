@@ -129,7 +129,7 @@ ToolBar {
         
         onTextChanged: {
             library.searchValue = text
-            window.search()
+            window.searchGames()
             if(!resultsDropDown.opened) {
                 resultsDropDown.open()
             }

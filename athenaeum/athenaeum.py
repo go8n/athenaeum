@@ -18,8 +18,10 @@ sys.path.insert(0, BASEDIR)
 
 from notify import Notify
 from game import Game
+from gamemanager import GameManager
 from settings import Settings
 from library import Library
+from search import Search
 from loader import Loader
 from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
@@ -58,6 +60,7 @@ def main():
     qmlRegisterType(Library, APP_UPPER_TITLE, 1, 0, 'Library')
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
+    qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
 
@@ -69,7 +72,9 @@ def main():
 
     settings = Settings(parent=app, settingRepository=settingRepository)
     loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
+    gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
     library = Library(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
+    search = Search(parent=app)
 
     loader.started.connect(library.reset)
     loader.finished.connect(library.load)
@@ -82,6 +87,7 @@ def main():
     engine.rootContext().setContextProperty('settings', settings)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
+    engine.rootContext().setContextProperty('search', search)
 
     engine.load(BASEDIR + '/Athenaeum.qml')
 
@@ -97,7 +103,7 @@ def main():
     root.checkAll.connect(loader.runListCommands)
     root.resetDatabase.connect(loader.reset)
 
-    root.search.connect(library.searchGames)
+    root.searchGames.connect(library.searchGames)
     root.filter.connect(library.filterGames)
 
     try:

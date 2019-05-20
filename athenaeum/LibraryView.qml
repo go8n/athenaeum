@@ -24,7 +24,7 @@ Page {
         placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
         onTextChanged: {
             library.searchValue = text
-            window.search()
+            window.searchGames()
         }
         Keys.onEscapePressed: {
             text = ''
