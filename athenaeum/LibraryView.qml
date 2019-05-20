@@ -428,229 +428,165 @@ Page {
                         width: parent.width - 250
                         height: contentHeight || 20
                         spacing: 10
-                    Text {
-                        id: releaseHeading
-//                         visible: library.currentGame.releases.length
-
-//                         width: parent.width
-                        color: Material.foreground
-                        font.pixelSize: 24
-                        text: qsTr('Releases')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    Text {
-                        visible: !library.currentGame.releases.length
-                        text: qsTr('No release information available.')
-                        font.italic: true
-                        color: Material.foreground
-                    }
-                    ListView {
-                        visible: library.currentGame.releases.length
-                        model: library.currentGame.releases
-                        width: parent.width
-                        height: contentHeight
-                        spacing: 10
-                        delegate: Column {
+                        Text {
+                            id: releaseHeading
+                            color: Material.foreground
+                            font.pixelSize: 24
+                            text: qsTr('Releases')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: !library.currentGame.releases.length
+                            text: qsTr('No release information available.')
+                            font.italic: true
+                            color: Material.foreground
+                        }
+                        ListView {
+                            visible: library.currentGame.releases.length
+                            model: library.currentGame.releases
                             width: parent.width
-                            function formatTimestamp(ts) {
-                                var t = new Date( 0 );
-                                t.setSeconds(ts);
-                                return t.toLocaleDateString();
-                            }
-                            Flow {
+                            height: contentHeight
+                            spacing: 10
+                            delegate: Column {
                                 width: parent.width
-                                spacing: 10
-                                Text {
-                                    color: Material.foreground
-                                    font.pixelSize: 20
-                                    text: qsTr('Version %1').arg(version)
-                                    wrapMode: Text.WrapAnywhere
+                                function formatTimestamp(ts) {
+                                    var t = new Date( 0 );
+                                    t.setSeconds(ts);
+                                    return t.toLocaleDateString();
+                                }
+                                Flow {
+                                    width: parent.width
+                                    spacing: 10
+                                    Text {
+                                        color: Material.foreground
+                                        font.pixelSize: 20
+                                        text: qsTr('Version %1').arg(version)
+                                        wrapMode: Text.WrapAnywhere
+                                    }
+                                    Text {
+                                        color: Material.foreground
+                                        font.pixelSize: 20
+                                        text: formatTimestamp(timestamp)
+                                        wrapMode: Text.WrapAnywhere
+                                    }
                                 }
                                 Text {
+                                    topPadding: 10
+                                    bottomPadding: 10
+                                    width: parent.width
                                     color: Material.foreground
-                                    font.pixelSize: 20
-                                    text: formatTimestamp(timestamp)
+                                    font.pixelSize: 16
+                                    font.italic: description ? false : true
+                                    text: description || qsTr('No release description available.')
                                     wrapMode: Text.WrapAnywhere
                                 }
-                            }
-                            Text {
-                                topPadding: 10
-                                bottomPadding: 10
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 16
-                                font.italic: description ? false : true
-                                text: description || qsTr('No release description available.')
-                                wrapMode: Text.WrapAnywhere
                             }
                         }
-                    }
                     }
                     
                     Column {
                         width: 250
                         spacing: 10
-                    Text {
-                        color: Material.foreground
-                        font.pixelSize: 24
-                        text: qsTr('Hours Played')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    Text {
-                        color: Material.foreground
-                        font.pixelSize: 16
-                        text: qsTr('14 Hours')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    
-                    Text {
-                        visible: library.currentGame.developerName
-                        color: Material.foreground
-                        font.pixelSize: 24
-                        text: qsTr('Developer')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    Text {
-                        visible: library.currentGame.developerName
-                        color: Material.foreground
-                        font.pixelSize: 16
-                        text: library.currentGame.developerName
-                        wrapMode: Text.WordWrap
-                    }
-                    
-                    Text {
-                        visible: library.currentGame.license
-                        color: Material.foreground
-                        font.pixelSize: 24
-                        text: qsTr('License')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    Text {
-                        visible: library.currentGame.license
-                        color: Material.foreground
-                        font.pixelSize: 16
-                        text: library.currentGame.license
-                        wrapMode: Text.WrapAnywhere
-                    }
+                        Text {
+                            color: Material.foreground
+                            font.pixelSize: 24
+                            text: qsTr('Hours Played')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            color: Material.foreground
+                            font.pixelSize: 16
+                            text: qsTr('14 Hours')
+                            wrapMode: Text.WrapAnywhere
+                        }
                         
-                    Text {
-                        visible: library.currentGame.urls.length
-                        color: Material.foreground
-                        font.pixelSize: 24
-                        text: qsTr('Links')
-                        wrapMode: Text.WrapAnywhere
-                    }
-                    ListView {
-                        visible: library.currentGame.urls.length
-                        model: library.currentGame.urls
-                        id: linksList
-                        height: contentHeight
-                        width: contentWidth
-                        delegate: Button {
-                            MouseArea {
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    Qt.openUrlExternally(url)
+                        Text {
+                            visible: library.currentGame.developerName
+                            color: Material.foreground
+                            font.pixelSize: 24
+                            text: qsTr('Developer')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: library.currentGame.developerName
+                            color: Material.foreground
+                            font.pixelSize: 16
+                            text: library.currentGame.developerName
+                            wrapMode: Text.WordWrap
+                        }
+                        
+                        Text {
+                            visible: library.currentGame.license
+                            color: Material.foreground
+                            font.pixelSize: 24
+                            text: qsTr('License')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: library.currentGame.license
+                            color: Material.foreground
+                            font.pixelSize: 16
+                            text: library.currentGame.license
+                            wrapMode: Text.WrapAnywhere
+                        }
+                            
+                        Text {
+                            visible: library.currentGame.urls.length
+                            color: Material.foreground
+                            font.pixelSize: 24
+                            text: qsTr('Links')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        ListView {
+                            visible: library.currentGame.urls.length
+                            model: library.currentGame.urls
+                            id: linksList
+                            height: contentHeight
+                            width: contentWidth
+                            delegate: Button {
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        Qt.openUrlExternally(url)
+                                    }
                                 }
-                            }
-                            icon.source: 'icons/' + urlIcon
-                            topPadding: 0
-                            leftPadding: 0
-                            background: Rectangle {
-                                anchors.fill: parent
-                                color: tr
-                            }
+                                icon.source: 'icons/' + urlIcon
+                                topPadding: 0
+                                leftPadding: 0
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    color: tr
+                                }
 
-                            icon.color: type === 'donation' ? '#00000000' : icon.color
-                            font.capitalization: Font.MixedCase
-                            function getTitle(type) {
-                                switch(type) {
-                                    case 'homepage':
-                                        return qsTr('Homepage');
-                                    case 'bugtracker':
-                                        return qsTr('Bug Tracker');
-                                    case 'help':
-                                        return qsTr('Help');
-                                    case 'faq':
-                                        return qsTr('FAQ');
-                                    case 'donation':
-                                        return qsTr('Donate');
-                                    case 'translate':
-                                        return qsTr('Translation');
-                                    case 'unknown':
-                                        return qsTr('Unknown');
-                                    case 'manifest':
-                                        return qsTr('Manifest');
+                                icon.color: type === 'donation' ? '#00000000' : icon.color
+                                font.capitalization: Font.MixedCase
+                                function getTitle(type) {
+                                    switch(type) {
+                                        case 'homepage':
+                                            return qsTr('Homepage');
+                                        case 'bugtracker':
+                                            return qsTr('Bug Tracker');
+                                        case 'help':
+                                            return qsTr('Help');
+                                        case 'faq':
+                                            return qsTr('FAQ');
+                                        case 'donation':
+                                            return qsTr('Donate');
+                                        case 'translate':
+                                            return qsTr('Translation');
+                                        case 'unknown':
+                                            return qsTr('Unknown');
+                                        case 'manifest':
+                                            return qsTr('Manifest');
+                                    }
                                 }
+                                text: getTitle(type)
                             }
-                            text: getTitle(type)
                         }
                     }
-                    }
                 }
-
-//                     Grid {
-//                         id: lists
-//                         bottomPadding: 40
-//                         anchors.left: parent.left
-//                         anchors.right: parent.right
-//                         anchors.rightMargin: 40
-//                         anchors.leftMargin: 40
-//                         anchors.horizontalCenter: parent.horizontalCenter
-//                         columns: 4
-//                         spacing: 40
-//                         Column {
-//                             Text {
-//                                 visible: library.currentGame.developerName
-//                                 color: Material.foreground
-//                                 font.pixelSize: 16
-//                                 text: qsTr('Developer')
-//                             }
-//                             Text {
-//                                 visible: library.currentGame.developerName
-//                                 color: Material.foreground
-//                                 font.pixelSize: 12
-//                                 text: library.currentGame.developerName
-//                             }
-//                         }
-//                         Column {
-//                             Text {
-//                                 visible: library.currentGame.license
-//                                 color: Material.foreground
-//                                 font.pixelSize: 16
-//                                 text: qsTr('License')
-//                             }
-//                             Text {
-//                                 visible: library.currentGame.license
-//                                 color: Material.foreground
-//                                 font.pixelSize: 12
-//                                 text: library.currentGame.license
-//                             }
-//                         }
-//                         Column {
-//                             Text {
-//                                 color: Material.foreground
-//                                 font.pixelSize: 16
-//                                 text: qsTr('Categories')
-//                             }
-//                             ListView {
-//                                 model: library.currentGame.categories
-//                                 height: contentHeight
-//                                 width: parent.width
-//                                 id: categoriesList
-//                                 delegate: 
-//                                     Text {
-//                                         color: Material.foreground
-//                                         font.pixelSize: 12
-//                                         text: library.currentGame.categories[index]
-//                                     }
-//                                 
-//                             }
-//                         }
-//                     }
-                
             }
         }
     }

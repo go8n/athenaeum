@@ -43,7 +43,7 @@ Page {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 clip: true
-                                source: library.games[0].screenshots[0] ? library.games[0].screenshots[0].sourceUrl : ''
+                                source: library.games[0] ? library.games[0].screenshots[0] ? library.games[0].screenshots[0].sourceUrl : '' : ''
                             }
                             Rectangle {
                                 width: newGames.width
@@ -52,14 +52,14 @@ Page {
                                 color: tr
                                 Text {
                                     id: gameTitle
-                                    text: library.games[0].name
+                                    text: library.games[0] ? library.games[0].name : ''
                                     color: Material.foreground
                                     font.pixelSize: 64
                                     font.bold: true
                                 }
                                 Text {
                                     anchors.top: gameTitle.bottom
-                                    text: library.games[0].summary
+                                    text: library.games[0] ? library.games[0].summary : ''
                                     color: Material.foreground
                                     font.pixelSize: 24
                                 }
@@ -276,7 +276,7 @@ Page {
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     boundsBehavior: Flickable.StopAtBounds
-                    model: library.filter[newList.currentIndex].screenshots
+                    model: library.games[newList.currentIndex] ? library.filter[newList.currentIndex].screenshots : ''
                     cellWidth: 150
                     cellHeight: 150
                     delegate: Rectangle { 
