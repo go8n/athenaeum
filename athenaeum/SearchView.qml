@@ -19,7 +19,7 @@ Page {
         boundsBehavior: Flickable.StopAtBounds
         Rectangle {
             id: rec
-            width: parent.width - 400
+            width: parent.width - 300
             height: childrenRect.height
             anchors.horizontalCenter: parent.horizontalCenter
             color: tr
@@ -29,7 +29,7 @@ Page {
                 width: parent.width
                 text: searchValue
                 font.pixelSize: 24
-                placeholderText: qsTr('Search')
+                placeholderText: qsTr('Search games...')
                 
                 onTextChanged: {
                     library.searchValue = text
@@ -43,64 +43,32 @@ Page {
                 id: activeTags
                 anchors.top: searchField.bottom
                 anchors.right: filtersCol.left
-                 anchors.left: parent.left
-//                 padding: 10
-                spacing: 10
-                Button {
-                    text: 'Action'
-                    icon.source: 'icons/close.svg'
-                    font.capitalization: Font.MixedCase
-                    topPadding: 8
-                    bottomPadding: 8
-                    icon.color: Material.background
-                    icon.width: 15
-                    icon.height: 15
-                    Component.onCompleted: {
-                        contentItem.color = Material.background
-                    }
-                    background: Rectangle {
-                        color: Material.accent
-                        radius: 10
-                    }
-                } 
-                Button {
-                    text: 'Shooter'
-                    icon.source: 'icons/close.svg'
-                    font.capitalization: Font.MixedCase
-                    topPadding: 8
-                    bottomPadding: 8
-                    icon.color: Material.background
-                    icon.width: 15
-                    icon.height: 15
-                    Component.onCompleted: {
-                        contentItem.color = Material.background
-                    }
-                    background: Rectangle {
-                        color: Material.accent
-                        radius: 10
+                anchors.left: parent.left
+                spacing: 5
+                Repeater {
+                    model: search.activeTags
+                    Button {
+                        text: name
+                        icon.source: 'icons/close.svg'
+                        font.capitalization: Font.MixedCase
+                        topPadding: 8
+                        bottomPadding: 8
+                        
+                        icon.color: Material.background
+                        icon.width: 15
+                        icon.height: 15
+                        Component.onCompleted: {
+                            contentItem.color = Material.background
+                        }
+                        background: Rectangle {
+                            color: Material.accent
+                            radius: 10
+                        }
+                        onClicked: {
+                            active = false
+                        }
                     }
                 }
-                Button {
-                    text: 'Strategy'
-                    icon.source: 'icons/close.svg'
-                    font.capitalization: Font.MixedCase
-                    topPadding: 8
-                    bottomPadding: 8
-                    icon.color: Material.background
-                    icon.width: 15
-                    icon.height: 15
-                    Component.onCompleted: {
-                        contentItem.color = Material.background
-                    }
-                    background: Rectangle {
-                        color: Material.accent
-                        radius: 10
-                    }
-                }
-                
-                
-                
-                
             }
             ListView {
                 anchors.top: activeTags.bottom
@@ -116,7 +84,7 @@ Page {
                         height: 70
                         color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
                         border.color: Material.background
-                        border.width: 5
+                        border.width: 2.5
                         MouseArea {
                             anchors.fill: parent
                             onClicked: {
@@ -127,7 +95,7 @@ Page {
                         
                         Row {
                             padding: 10
-                            spacing: 5
+                            spacing: 10
                             Image {
                                 height: 50
                                 width: 50
@@ -135,10 +103,33 @@ Page {
                                 fillMode: Image.PreserveAspectFit
                                 source: iconLarge
                             }
-                            Text {
-                                text: name
-                                color: Material.foreground
-                                font.pixelSize: 20
+                            Column {
+                                Text {
+                                    text: name
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                }
+                                Row {
+                                    spacing: 5
+                                    Text {
+                                        text: 'Download ' + downloadSize
+                                        color: Material.primary
+                                        font.italic: true
+                                        font.pixelSize: 14
+                                    }
+                                    Text {
+                                      text: '|'   
+                                      color: Material.primary
+//                                         font.italic: true
+                                        font.pixelSize: 14
+                                    }
+                                    Text {
+                                        text: qsTr('Source: Flathub')
+                                        color: Material.primary
+                                        font.italic: true
+                                        font.pixelSize: 14
+                                    }
+                                }
                             }
                         }
                     }
@@ -151,40 +142,106 @@ Page {
                 anchors.right: parent.right
                 width: 200
                 padding: 10
+                spacing: 10
                 Text {
                     color: Material.foreground
                     font.pixelSize: 24
-                    text: 'Tags'
+                    text: 'Sort By'
                 }
-                ListView {
-                    id: tags
-                    height: 200
-                    clip: true
+                ComboBox {
                     width: parent.width
-                    model: search.tags
-                    delegate: CheckBox {
-                        text: search.tags[index]
+                    model: ["Relevance", "A-Z", "Z-A"]
+                }
+                Column {
+                    width: 200
+                    Text {
+                        color: Material.foreground
+                        font.pixelSize: 24
+                        text: qsTr('Tags')
                     }
-                    ScrollBar.vertical: ScrollBar { }
-                    boundsBehavior: Flickable.StopAtBounds
+                    TextField {
+                        id: tagSearch
+                        width: parent.width
+                        placeholderText: qsTr('Search tags...')
+                    }
+                    Rectangle {
+                        height: 200
+                        width: parent.width
+                        color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                    
+                        ListView {
+                            id: tags
+                            anchors.fill: parent
+                            clip: true
+                            model: search.tags
+                            spacing: 0
+                            
+                            delegate: CheckBox {
+                                text: name
+                                topPadding: 5
+                                bottomPadding: 5
+                                checked: active
+                                onCheckedChanged: {
+                                    active = checked
+                                    search.activeTagsChanged()
+                                }
+                            }
+                            ScrollBar.vertical: ScrollBar { 
+                                policy: ScrollBar.AlwaysOn
+                            }
+                            boundsBehavior: Flickable.StopAtBounds
+                            
+                        }
+                    }
                 }
                 Text {
                     color: Material.foreground
                     font.pixelSize: 24
                     text: 'Platform'
                 }
-                CheckBox {
-                    checked: true
-                    text: qsTr("GNU")
+                Rectangle {
+                    height: childrenRect.height
+                    width: parent.width
+                    color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                  
+                    ListView {
+                        id: platforms
+                        height: contentHeight
+                        width: parent.width
+                        model: search.platforms
+                        delegate: CheckBox {
+                            topPadding: 5
+                            bottomPadding: 5
+                            text: search.platforms[index]
+                            checked: true
+                            enabled: false
+                        }
+                    }
                 }
                 Text {
                     color: Material.foreground
                     font.pixelSize: 24
                     text: 'Repository'
                 }
-                CheckBox {
-                    checked: true
-                    text: qsTr("Flathub")
+                Rectangle {
+                    height: childrenRect.height
+                    width: parent.width
+                    color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                  
+                    ListView {
+                        id: repositories
+                        height: contentHeight
+                        width: parent.width
+                        model: search.repositories
+                        delegate: CheckBox {
+                            topPadding: 5
+                            bottomPadding: 5
+                            text: search.repositories[index]
+                            checked: true
+                            enabled: false
+                        }
+                        
+                    }
                 }
             }
         }

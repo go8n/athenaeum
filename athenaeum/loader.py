@@ -175,7 +175,7 @@ class Loader(QObject):
                     summary=component.summary,
                     description=component.description,
                     screenshots=self.getScreenshots(component.screenshots),
-                    categories=component.categories,
+                    categories=self.collateTags(self.cleanCategories(component.categories), component.keywords),
                     releases=self.getReleases(component.releases),
                     urls=urls,
                     ref=component.bundle['value'],
@@ -193,6 +193,17 @@ class Loader(QObject):
                 self.gameLoaded.emit(game)
 
         self.finishLoading()
+
+    def cleanCategories(self, categories):
+        transfer = []
+        for category in categories:
+            result = category.replace('Game', '')
+            if result:
+                transfer.append(result)
+        return transfer
+          
+    def collateTags(self, categories, keywords):
+        return categories + keywords
 
     def getIconSmall(self, icons):
         path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
