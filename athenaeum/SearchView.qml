@@ -32,8 +32,7 @@ Page {
                 placeholderText: qsTr('Search games...')
                 
                 onTextChanged: {
-                    library.searchValue = text
-                    window.searchGames()
+                    search.searchValue = text
                 }
                 Keys.onEscapePressed: {
                     text = ''
@@ -70,9 +69,17 @@ Page {
                     }
                 }
             }
+            Text {
+                visible: searchResults.model.length <= 0
+                anchors.top: activeTags.bottom
+                text: qsTr('No resoults found.')
+                color: Material.primary
+                font.italic: true
+                font.pixelSize: 16
+            }
             ListView {
                 anchors.top: activeTags.bottom
-                model: library.filter
+                model: search.searchResults
                 id: searchResults
                 anchors.left: parent.left
                 anchors.right: filtersCol.left
@@ -118,9 +125,8 @@ Page {
                                         font.pixelSize: 14
                                     }
                                     Text {
-                                      text: '|'   
-                                      color: Material.primary
-//                                         font.italic: true
+                                        text: '|'   
+                                        color: Material.primary
                                         font.pixelSize: 14
                                     }
                                     Text {
@@ -151,6 +157,9 @@ Page {
                 ComboBox {
                     width: parent.width
                     model: ["Relevance", "A-Z", "Z-A"]
+                    onActivated: {
+                        search.sortValue = currentIndex
+                    }
                 }
                 Column {
                     width: 200
@@ -183,7 +192,7 @@ Page {
                                 checked: active
                                 onCheckedChanged: {
                                     active = checked
-                                    search.activeTagsChanged()
+                                    search.searchQueryChanged()
                                 }
                             }
                             ScrollBar.vertical: ScrollBar { 

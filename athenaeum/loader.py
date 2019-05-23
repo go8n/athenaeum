@@ -175,7 +175,7 @@ class Loader(QObject):
                     summary=component.summary,
                     description=component.description,
                     screenshots=self.getScreenshots(component.screenshots),
-                    categories=self.collateTags(self.cleanCategories(component.categories), component.keywords),
+                    tags=self.collateTags(self.cleanCategories(component.categories), component.keywords),
                     releases=self.getReleases(component.releases),
                     urls=urls,
                     ref=component.bundle['value'],

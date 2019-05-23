@@ -74,11 +74,15 @@ def main():
     loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
     gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
     library = Library(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
-    search = Search(parent=app)
+    search = Search(parent=app, gameManager=gameManager)
 
     loader.started.connect(library.reset)
     loader.finished.connect(library.load)
     loader.gameLoaded.connect(library.appendGame)
+    
+    loader.started.connect(gameManager.reset)
+    loader.finished.connect(gameManager.load)
+    loader.gameLoaded.connect(gameManager.appendGame)
 
     networkAccessManagerFactory = NetworkAccessManagerFactory()
 

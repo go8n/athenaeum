@@ -11,7 +11,8 @@ class GameManager():
         self.reset()
         
     def load(self):
-        self.sortGames()
+        pass
+        #self.sortGames()
 
     def reset(self):
         self._games = []
@@ -21,13 +22,8 @@ class GameManager():
     def games(self):
         return self._games
 
-    def games(self, games):
-        if games != self._games:
-            self._games = games
-
     def appendGame(self, game):
         self._games.append(game)
-        self.gamesChanged.emit()
 
     def processCleanup(self, process, index, action=None):
         if action:

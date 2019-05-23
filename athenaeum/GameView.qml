@@ -9,7 +9,7 @@ Page {
         activeView: 'game'
     }
     
-    property Game game: library.currentGame
+    property Game game: library.games[0] ? library.games[0] : library.currentGame
     
     Flickable {
         anchors.fill: parent
@@ -543,46 +543,46 @@ Page {
                                 }
                             }
                         }
-                        Text {
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 10
-                            bottomPadding: 10
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 16
-                            text: qsTr('Categories')
-                            wrapMode: Text.WrapAnywhere
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                height:1
-                                color: tr
-                                border.color: Material.accent
-                                anchors.rightMargin: 40
-                            }
-                        }
-                        ListView {
-                            model: game.categories
-                            width: parent.width
-                            height: contentHeight
-                            id: categoriesList
-                            delegate: Column {
-                                width: parent.width
-                                Text {
-                                    leftPadding: 10
-                                    rightPadding: 50
-                                    topPadding: 5
-                                    bottomPadding: index+1 < categoriesList.count ? 0 : 5
-                                    width: parent.width
-                                    color: Material.foreground
-                                    font.pixelSize: 12
-                                    text: game.categories[index]
-                                    wrapMode: Text.WrapAnywhere
-                                }
-                            }
-                        }
+//                         Text {
+//                             leftPadding: 10
+//                             rightPadding: 50
+//                             topPadding: 10
+//                             bottomPadding: 10
+//                             width: parent.width
+//                             color: Material.foreground
+//                             font.pixelSize: 16
+//                             text: qsTr('Categories')
+//                             wrapMode: Text.WrapAnywhere
+//                             Rectangle {
+//                                 anchors.right: parent.right
+//                                 anchors.left: parent.left
+//                                 anchors.bottom: parent.bottom
+//                                 height:1
+//                                 color: tr
+//                                 border.color: Material.accent
+//                                 anchors.rightMargin: 40
+//                             }
+//                         }
+//                         ListView {
+//                             model: game.categories
+//                             width: parent.width
+//                             height: contentHeight
+//                             id: categoriesList
+//                             delegate: Column {
+//                                 width: parent.width
+//                                 Text {
+//                                     leftPadding: 10
+//                                     rightPadding: 50
+//                                     topPadding: 5
+//                                     bottomPadding: index+1 < categoriesList.count ? 0 : 5
+//                                     width: parent.width
+//                                     color: Material.foreground
+//                                     font.pixelSize: 12
+//                                     text: game.categories[index]
+//                                     wrapMode: Text.WrapAnywhere
+//                                 }
+//                             }
+//                         }
                     }
                 }
             }
