@@ -59,6 +59,9 @@ class Search(QObject):
         self._searchValue = ''
         self._searchTagsValue = ''
         self._sortValue = 0
+        
+    def load(self):
+        pass
     
     @pyqtProperty('QString', notify=searchTagsValueChanged)
     def searchTagsValue(self):

@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
+// import QtGraphicalEffects 1.3
 import Athenaeum 1.0
 
 Page {
@@ -24,26 +25,23 @@ Page {
                 id: highlight
                 height: 300
                 width: parent.width
-                color: 'red'
+                color: Material.background
                 
                 SwipeView {
                     id: swipeView
 
-                    currentIndex: 1
+//                     currentIndex: 1
                     anchors.fill: parent
-
-                    Item {
-                        id: firstPage
-                    }
-                    Item {
-                        id: secondPage
-                        Rectangle {
-                            anchors.fill: parent
+                    
+                    Repeater {
+                        model: browse.spotlight
+                        Item {
+                            id: secondPage
                             Image {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 clip: true
-                                source: library.games[0] ? library.games[0].screenshots[0] ? library.games[0].screenshots[0].sourceUrl : '' : ''
+                                source: game.screenshots[0] ? game.screenshots[0].sourceUrl : ''
                             }
                             Rectangle {
                                 width: newGames.width
@@ -52,28 +50,35 @@ Page {
                                 color: tr
                                 Text {
                                     id: gameTitle
-                                    text: library.games[0] ? library.games[0].name : ''
+                                    text: game.name
                                     color: Material.foreground
                                     font.pixelSize: 64
                                     font.bold: true
                                 }
                                 Text {
                                     anchors.top: gameTitle.bottom
-                                    text: library.games[0] ? library.games[0].summary : ''
+                                    text: game.summary
                                     color: Material.foreground
                                     font.pixelSize: 24
                                 }
                                 Text {
-                                    text: 'Popular Now'
+                                    id: ttext
+                                    text: title
                                     color: Material.foreground
                                     font.pixelSize: 42
                                     anchors.bottom: parent.bottom
                                 }
+//                                 DropShadow {
+//                                     anchors.fill: ttext
+//                                     horizontalOffset: 3
+//                                     verticalOffset: 3
+//                                     radius: 8.0
+//                                     samples: 5
+//                                     color: "#80000000"
+//                                     source: ttext
+//                                 }
                             }
                         }
-                    }
-                    Item {
-                        id: thirdPage
                     }
                 }
                 Button {
@@ -138,9 +143,8 @@ Page {
                 height: contentHeight
                 anchors.horizontalCenter: parent.horizontalCenter
                 boundsBehavior: Flickable.StopAtBounds
-                model: library.filter
+                model: browse.recommended
                 property int minWidth: 270
-//                 cellWidth: Math.round(width / minWidth) > Math.floor(width / maxWidth) ? width / Math.floor(width / minWidth) : maxWidth
                 cellWidth: width > minWidth ? width / Math.floor(width / minWidth) : width
                 cellHeight: 150
                 delegate: 
@@ -228,7 +232,7 @@ Page {
                 color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
                 anchors.horizontalCenter: parent.horizontalCenter
                 ListView {
-                    model: library.filter
+                    model: browse.new
                     id: newList
                     anchors.left: parent.left
                     anchors.right: previewGame.left
@@ -276,7 +280,7 @@ Page {
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     boundsBehavior: Flickable.StopAtBounds
-                    model: library.games[newList.currentIndex] ? library.filter[newList.currentIndex].screenshots : ''
+                    model: browse.new[newList.currentIndex] ? browse.new[newList.currentIndex].screenshots : ''
                     cellWidth: 150
                     cellHeight: 150
                     delegate: Rectangle { 

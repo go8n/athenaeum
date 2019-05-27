@@ -9,7 +9,7 @@ Page {
         activeView: 'game'
     }
     
-    property Game game: library.games[0] ? library.games[0] : library.currentGame
+    property Game game: Game {}
     
     Flickable {
         anchors.fill: parent
@@ -291,33 +291,40 @@ Page {
             }
             /* Body */
             Grid {
-                id: bodyGrid
+                anchors.left: parent.left
+                anchors.right: parent.right
                 columns: 2
-                width: parent.width
+                spacing: 20
+                /* Releases */
+                leftPadding: 40
+                rightPadding: 40
+                topPadding: 10
+                bottomPadding: 40
                 Column {
                     id: desc
                     width: parent.width - miscInfo.width
-                    anchors.bottomMargin: 40
+                    height: contentHeight || 20
+                    spacing: 10
 
                     /* Description */
                     Text {
                         visible: game.description
                         id: descHeading
                         width: parent.width
-                        leftPadding: 50
-                        rightPadding: 40
-                        topPadding: 10
-                        bottomPadding: 20
                         color: Material.foreground
                         font.pixelSize: 24
                         text: qsTr('Description')
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
+                        visible: !game.description
+                        text: qsTr('No description available.')
+                        font.italic: true
+                        color: Material.foreground
+                    }
+                    Text {
                         visible: game.description
-                        leftPadding: 50
-                        rightPadding: 40
-                        topPadding: 0
+                        topPadding: 10
                         bottomPadding: 10
                         width: parent.width
                         color: Material.foreground
@@ -329,16 +336,17 @@ Page {
                     /* Releases */
                     Text {
                         id: releaseHeading
-                        visible: game.releases.length
-                        leftPadding: 50
-                        rightPadding: 40
-                        topPadding: 10
-                        bottomPadding: 20
                         width: parent.width
                         color: Material.foreground
                         font.pixelSize: 24
                         text: qsTr('Releases')
                         wrapMode: Text.WrapAnywhere
+                    }
+                    Text {
+                        visible: !game.releases.length
+                        text: qsTr('No release information available.')
+                        font.italic: true
+                        color: Material.foreground
                     }
                     ListView {
                         visible: game.releases.length
@@ -356,7 +364,6 @@ Page {
                             Flow {
                                 width: parent.width
                                 spacing: 10
-                                leftPadding: 50
                                 Text {
                                     color: Material.foreground
                                     font.pixelSize: 20
@@ -371,218 +378,108 @@ Page {
                                 }
                             }
                             Text {
-                                leftPadding: 50
-                                rightPadding: 40
                                 topPadding: 10
                                 bottomPadding: 10
                                 width: parent.width
                                 color: Material.foreground
                                 font.pixelSize: 16
-                                text: description
+                                font.italic: description ? false : true
+                                text: description || qsTr('No release description available.')
                                 wrapMode: Text.WrapAnywhere
                             }
                         }
                     }
                 }
                 /* Links and Categories */
-                Rectangle {
-                    width: 200
+
+                Column {
                     id: miscInfo
-                    color: tr
-                    // height:  Math.max(libraryView.height - bodyGrid.y - 35 , Math.max(desc.height, lists.height))
-                    height: lists.height
-                    Column {
-                        id: lists
+                    width: 250
+                    spacing: 10
+                    Text {
+                        visible: game.developerName
+                        color: Material.foreground
+                        font.pixelSize: 20
+                        text: qsTr('Developer')
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    Text {
+                        visible: game.developerName
+                        color: Material.foreground
+                        font.pixelSize: 16
+                        text: game.developerName
+                        wrapMode: Text.WordWrap
+                    }
+                    Text {
+                        visible: game.license
+                        color: Material.foreground
+                        font.pixelSize: 20
+                        text: qsTr('License')
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    Text {
+                        visible: game.license
+                        color: Material.foreground
+                        font.pixelSize: 16
+                        text: game.license
                         width: parent.width
-                        bottomPadding: 40
-                        // anchors.left: desc.right
-                        // anchors.right: parent.right
-                        Text {
-                            visible: game.developerName
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 10
-                            bottomPadding: 10
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 16
-                            text: qsTr('Developer')
-                            wrapMode: Text.WrapAnywhere
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                height: 1
-                                color: tr
-                                border.color: Material.accent
-                                anchors.rightMargin: 40
-                            }
-                        }
-                        Text {
-                            visible: game.developerName
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 5
-                            bottomPadding: 5
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 12
-                            text: game.developerName
-                            wrapMode: Text.WordWrap
-                        }
-                        Text {
-                            visible: game.license
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 10
-                            bottomPadding: 10
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 16
-                            text: qsTr('License')
-                            wrapMode: Text.WrapAnywhere
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                height:1
-                                color: tr
-                                border.color: Material.accent
-                                anchors.rightMargin: 40
-                            }
-                        }
-                        Text {
-                            visible: game.license
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 5
-                            bottomPadding: 5
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 12
-                            text: game.license
-                            wrapMode: Text.WordWrap
-                        }
-                        Text {
-                            leftPadding: 10
-                            rightPadding: 50
-                            topPadding: 10
-                            bottomPadding: 10
-                            width: parent.width
-                            color: Material.foreground
-                            font.pixelSize: 16
-                            text: qsTr('Links')
-                            wrapMode: Text.WrapAnywhere
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-                                anchors.bottom: parent.bottom
-                                height:1
-                                color: tr
-                                border.color: Material.accent
-                                anchors.rightMargin: 40
-                            }
-                        }
-                        ListView {
-                            model: game.urls
-                            width: parent.width
-                            height: contentHeight
-                            id: linksList
-                            delegate: Column {
-                                width: parent.width
-                                Button {
-                                    leftPadding: 10
-                                    rightPadding: 50
-                                    topPadding: 5
-                                    // bottomPadding: index+1 < linksList.count ? 0 : 5
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            Qt.openUrlExternally(url)
-                                        }
-                                    }
-                                    contentItem: Row {
-                                        Image {
-                                            width: 14
-                                            source: 'icons/' + urlIcon
-                                            fillMode: Image.PreserveAspectFit
-                                        }
-                                        Text {
-                                            function getTitle(type) {
-                                                switch(type) {
-                                                    case 'homepage':
-                                                        return qsTr('Homepage');
-                                                    case 'bugtracker':
-                                                        return qsTr('Bug Tracker');
-                                                    case 'help':
-                                                        return qsTr('Help');
-                                                    case 'faq':
-                                                        return qsTr('FAQ');
-                                                    case 'donation':
-                                                        return qsTr('Donate');
-                                                    case 'translate':
-                                                        return qsTr('Translation');
-                                                    case 'unknown':
-                                                        return qsTr('Unknown');
-                                                    case 'manifest':
-                                                        return qsTr('Manifest');
-                                                }
-                                            }
-                                            leftPadding: 5
-                                            font.pixelSize: 12
-                                            text: getTitle(type)
-                                            color: Material.foreground
-                                        }
-                                    }
-                                    background: Rectangle {
-                                        anchors.fill: parent
-                                        color: tr
-                                    }
+                        wrapMode: Text.WrapAnywhere
+                    }
+                            
+                    Text {
+                        visible: game.urls.length
+                        color: Material.foreground
+                        font.pixelSize: 20
+                        text: qsTr('Links')
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    ListView {
+                        visible: game.urls.length
+                        model: game.urls
+                        id: linksList
+                        height: contentHeight
+                        width: contentWidth
+                        delegate: Button {
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    Qt.openUrlExternally(url)
                                 }
                             }
+                            icon.source: 'icons/' + urlIcon
+                            topPadding: 0
+                            leftPadding: 0
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: tr
+                            }
+
+                            icon.color: type === 'donation' ? '#00000000' : icon.color
+                            font.capitalization: Font.MixedCase
+                            function getTitle(type) {
+                                switch(type) {
+                                    case 'homepage':
+                                        return qsTr('Homepage');
+                                    case 'bugtracker':
+                                        return qsTr('Bug Tracker');
+                                    case 'help':
+                                        return qsTr('Help');
+                                    case 'faq':
+                                        return qsTr('FAQ');
+                                    case 'donation':
+                                        return qsTr('Donate');
+                                    case 'translate':
+                                        return qsTr('Translation');
+                                    case 'unknown':
+                                        return qsTr('Unknown');
+                                    case 'manifest':
+                                        return qsTr('Manifest');
+                                }
+                            }
+                            text: getTitle(type)
                         }
-//                         Text {
-//                             leftPadding: 10
-//                             rightPadding: 50
-//                             topPadding: 10
-//                             bottomPadding: 10
-//                             width: parent.width
-//                             color: Material.foreground
-//                             font.pixelSize: 16
-//                             text: qsTr('Categories')
-//                             wrapMode: Text.WrapAnywhere
-//                             Rectangle {
-//                                 anchors.right: parent.right
-//                                 anchors.left: parent.left
-//                                 anchors.bottom: parent.bottom
-//                                 height:1
-//                                 color: tr
-//                                 border.color: Material.accent
-//                                 anchors.rightMargin: 40
-//                             }
-//                         }
-//                         ListView {
-//                             model: game.categories
-//                             width: parent.width
-//                             height: contentHeight
-//                             id: categoriesList
-//                             delegate: Column {
-//                                 width: parent.width
-//                                 Text {
-//                                     leftPadding: 10
-//                                     rightPadding: 50
-//                                     topPadding: 5
-//                                     bottomPadding: index+1 < categoriesList.count ? 0 : 5
-//                                     width: parent.width
-//                                     color: Material.foreground
-//                                     font.pixelSize: 12
-//                                     text: game.categories[index]
-//                                     wrapMode: Text.WrapAnywhere
-//                                 }
-//                             }
-//                         }
                     }
                 }
             }

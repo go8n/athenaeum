@@ -42,21 +42,20 @@ Page {
         function getFilterIndex(key) {
             switch(key) {
                 case 'installed':
-                    return 1;
+                    return 0;
                 case 'recent':
-                    return 2;
+                    return 1;
                 case 'new':
-                    return 3;
+                    return 2;
                 case 'has_updates':
-                    return 4;
+                    return 3;
                 case 'processing':
-                    return 5;
+                    return 4;
                 default:
                     return 0;
             }
         }
         model: [
-            qsTr('All Games (%L1)').arg(library.games.length),
             qsTr('Installed (%L1)').arg(library.installedCount),
             qsTr('Recent (%L1)').arg(library.recentCount),
             qsTr('New (%L1)').arg(library.newCount),
@@ -73,18 +72,18 @@ Page {
             searchField.text = ''
             function getFilterKey(index) {
                 switch(index) {
-                    case 1:
+                    case 0:
                         return 'installed';
-                    case 2:
+                    case 1:
                         return 'recent';
-                    case 3:
+                    case 2:
                         return 'new';
-                    case 4:
+                    case 3:
                         return 'has_updates';
-                    case 5:
+                    case 4:
                         return 'processing';
                     default:
-                        return 'all';
+                        return 'installed';
                 }
             }
         }
@@ -489,7 +488,7 @@ Page {
                         spacing: 10
                         Text {
                             color: Material.foreground
-                            font.pixelSize: 24
+                            font.pixelSize: 20
                             text: qsTr('Hours Played')
                             wrapMode: Text.WrapAnywhere
                         }
@@ -503,7 +502,7 @@ Page {
                         Text {
                             visible: library.currentGame.developerName
                             color: Material.foreground
-                            font.pixelSize: 24
+                            font.pixelSize: 20
                             text: qsTr('Developer')
                             wrapMode: Text.WrapAnywhere
                         }
@@ -518,7 +517,7 @@ Page {
                         Text {
                             visible: library.currentGame.license
                             color: Material.foreground
-                            font.pixelSize: 24
+                            font.pixelSize: 20
                             text: qsTr('License')
                             wrapMode: Text.WrapAnywhere
                         }
@@ -533,7 +532,7 @@ Page {
                         Text {
                             visible: library.currentGame.urls.length
                             color: Material.foreground
-                            font.pixelSize: 24
+                            font.pixelSize: 20
                             text: qsTr('Links')
                             wrapMode: Text.WrapAnywhere
                         }
