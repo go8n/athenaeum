@@ -34,24 +34,41 @@ class Search(QObject):
     platformsChanged = pyqtSignal()
     repositoriesChanged = pyqtSignal()
     searchQueryChanged = pyqtSignal()
+    searchTagsValueChanged = pyqtSignal()
     
     def __init__(self, gameManager=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
         self._tags = [
-                Tag(name='Shooter'),
-                Tag(name='Arcade'),
                 Tag(name='Action'),
+                Tag(name='Adventure'),
+                Tag(name='Arcade'),
+                Tag(name='Board'),
+                Tag(name='Blocks'),
+                Tag(name='Card'),
+                Tag(name='Kids'),
+                Tag(name='Logic'),
                 Tag(name='RolePlaying'),
-                Tag(name='Strategy'),
-                Tag(name='Puzzle'),
-                Tag(name='FPS'),
-                Tag(name='Multiplayer')
+                Tag(name='Shooter'),
+                Tag(name='Simulation'),
+                Tag(name='Sports'),
+                Tag(name='Strategy')
             ]
         self._platforms = ['GNU']
         self._repositories = ['Flathub']
         self._searchValue = ''
+        self._searchTagsValue = ''
         self._sortValue = 0
+    
+    @pyqtProperty('QString', notify=searchTagsValueChanged)
+    def searchTagsValue(self):
+        return self._searchTagsValue
+    
+    @searchTagsValue.setter
+    def searchTagsValue(self, searchTagsValue):
+        if searchTagsValue != self._searchTagsValue:
+            self._searchTagsValue = searchTagsValue
+            self.searchTagsValueChanged.emit()
     
     @pyqtProperty('QString', notify=searchQueryChanged)
     def searchValue(self):
@@ -86,6 +103,10 @@ class Search(QObject):
     @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
     def activeTags(self):
         return QQmlListProperty(Tag, self, list(filter(lambda x: x.active, self._tags)))
+         
+    @pyqtProperty(QQmlListProperty, notify=searchTagsValueChanged)
+    def searchTags(self):
+        return QQmlListProperty(Tag, self, list(filter(lambda x: self.searchTagsValue.lower() in x.name.lower(), self._tags)))
 
     @pyqtProperty(list, notify=platformsChanged)
     def platforms(self):
@@ -100,7 +121,7 @@ class Search(QObject):
         return QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games())))
     
     def filterFunc(self, x):
-        if self.searchValue and self.searchValue not in x.name:
+        if self.searchValue and self.searchValue.lower() not in x.name.lower():
             return False
         
         if not set(map(lambda x: x.name, self.activeTags)).issubset(set(x.tags)):

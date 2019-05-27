@@ -119,7 +119,7 @@ Page {
                                 Row {
                                     spacing: 5
                                     Text {
-                                        text: 'Download ' + downloadSize
+                                        text: downloadSize
                                         color: Material.primary
                                         font.italic: true
                                         font.pixelSize: 14
@@ -130,7 +130,18 @@ Page {
                                         font.pixelSize: 14
                                     }
                                     Text {
-                                        text: qsTr('Source: Flathub')
+                                        text: qsTr('Flathub')
+                                        color: Material.primary
+                                        font.italic: true
+                                        font.pixelSize: 14
+                                    }
+                                    Text {
+                                        text: '|'   
+                                        color: Material.primary
+                                        font.pixelSize: 14
+                                    }
+                                    Text {
+                                        text: license
                                         color: Material.primary
                                         font.italic: true
                                         font.pixelSize: 14
@@ -172,6 +183,12 @@ Page {
                         id: tagSearch
                         width: parent.width
                         placeholderText: qsTr('Search tags...')
+                        onTextChanged: {
+                            search.searchTagsValue = text
+                        }
+                        Keys.onEscapePressed: {
+                            text = ''
+                        }
                     }
                     Rectangle {
                         height: 200
@@ -182,7 +199,7 @@ Page {
                             id: tags
                             anchors.fill: parent
                             clip: true
-                            model: search.tags
+                            model: search.searchTags
                             spacing: 0
                             
                             delegate: CheckBox {
