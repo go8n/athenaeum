@@ -1,40 +1,12 @@
 from functools import partial
 from datetime import datetime, timedelta
 import operator
+import random
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, pyqtSlot
 from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
-
-class SpotlightItem(QObject):
-    gameChanged = pyqtSignal()
-    titleChanged = pyqtSignal()
-    
-    def __init__(self, game=None, title='', *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._game = game
-        self._title = title
-        
-    @pyqtProperty(Game, notify=gameChanged)
-    def game(self):
-        return self._game
-
-    @game.setter
-    def game(self, game):
-        if game != self._game:
-            self._game = game
-            self.gameChanged.emit()
-        
-    @pyqtProperty('QString', notify=titleChanged)
-    def title(self):
-        return self._title
-
-    @title.setter
-    def title(self, title):
-        if title != self._title:
-            self._title = title
-            self.titleChanged.emit()
 
 class Browse(QObject):
     recommendedChanged = pyqtSignal()
@@ -45,14 +17,16 @@ class Browse(QObject):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
         self._spotlight = []
+        self._k = 0
         
     def load(self):
+        self._k = 6
         self.recommendedChanged.emit()
         self.newChanged.emit()
         self.spotlight = [
-            SpotlightItem(self.getGameById('net.supertuxkart.SuperTuxKart'), 'Online Multiplayer Now Here!'),
-            SpotlightItem(self.getGameById('com.play0ad.zeroad'), 'Popular Now!'),
-            SpotlightItem(self.getGameById('net.minetest.Minetest'), 'Now with Mod Manager!')
+            self.getGameById('net.supertuxkart.SuperTuxKart'),
+            self.getGameById('com.play0ad.zeroad'),
+            self.getGameById('net.minetest.Minetest')
         ]
     
     @pyqtSlot(str, result=Game)
@@ -74,9 +48,9 @@ class Browse(QObject):
         
     @pyqtProperty(QQmlListProperty, notify=recommendedChanged)
     def recommended(self):
-        return QQmlListProperty(Game, self, self._gameManager.games()[:6])
+        return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
          
     @pyqtProperty(QQmlListProperty, notify=newChanged)
     def new(self):
-        return QQmlListProperty(Game, self, self._gameManager.games()[-8:])
+        return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
          

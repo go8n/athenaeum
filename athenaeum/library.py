@@ -27,6 +27,7 @@ class Library(QObject):
     def load(self):
         self.filterValue = self._metaRepository.get('filter')
         self.updateFilters(new_load=True)
+        self.currentGame = self.filter[0] if len(self._filter) else Game()
 
     def reset(self):
         self._filter = []
@@ -170,7 +171,7 @@ class Library(QObject):
             if game.hasUpdate:
                 filters['has_updates'].append(game)
             if game.lastPlayedDate:
-                if (game.lastPlayedDate + timedelta(days=3)) > now:
+                if (game.lastPlayedDate + timedelta(days=15)) > now:
                     filters['recent'].append(game)
 
         self._filters = filters

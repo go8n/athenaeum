@@ -39,7 +39,7 @@ Page {
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 clip: true
-                                source: game.screenshots[0] ? game.screenshots[0].sourceUrl : ''
+                                source: screenshots[0] ? screenshots[0].sourceUrl : ''
                             }
                             Rectangle {
                                 width: newGames.width
@@ -48,33 +48,19 @@ Page {
                                 color: tr
                                 Text {
                                     id: gameTitle
-                                    text: game.name
+                                    text: name
                                     color: Material.foreground
                                     font.pixelSize: 64
                                     font.bold: true
                                 }
                                 Text {
                                     anchors.top: gameTitle.bottom
-                                    text: game.summary
+                                    text: summary
                                     color: Material.foreground
                                     font.pixelSize: 24
+                                    width: parent.width
+                                    wrapMode: Text.WordWrap
                                 }
-                                Text {
-                                    id: ttext
-                                    text: title
-                                    color: Material.foreground
-                                    font.pixelSize: 42
-                                    anchors.bottom: parent.bottom
-                                }
-//                                 DropShadow {
-//                                     anchors.fill: ttext
-//                                     horizontalOffset: 3
-//                                     verticalOffset: 3
-//                                     radius: 8.0
-//                                     samples: 5
-//                                     color: "#80000000"
-//                                     source: ttext
-//                                 }
                             }
                         }
                     }
@@ -127,12 +113,11 @@ Page {
                     color: Material.foreground
                     font.pixelSize: 24
                 }
-                Button {
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: qsTr('View More')
-                    
-                }
+//                 Button {
+//                     anchors.right: parent.right
+//                     anchors.verticalCenter: parent.verticalCenter
+//                     text: qsTr('View More')
+//                 }
             }
             
             GridView {
@@ -216,12 +201,11 @@ Page {
                     color: Material.foreground
                     font.pixelSize: 24
                 }
-                Button {
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: qsTr('View More')
-                    
-                }
+//                 Button {
+//                     anchors.right: parent.right
+//                     anchors.verticalCenter: parent.verticalCenter
+//                     text: qsTr('View More')
+//                 }
             }
             Rectangle {
                 id: newGames
@@ -278,7 +262,7 @@ Page {
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     boundsBehavior: Flickable.StopAtBounds
-                    model: browse.new[newList.currentIndex] ? browse.new[newList.currentIndex].screenshots : ''
+                    model: newList.model[newList.currentIndex] ? newList.model[newList.currentIndex].screenshots : ''
                     cellWidth: 150
                     cellHeight: 150
                     delegate: Rectangle { 

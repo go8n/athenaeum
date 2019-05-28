@@ -21,7 +21,7 @@ from game import Game
 from gamemanager import GameManager
 from settings import Settings
 from library import Library
-from browse import Browse, SpotlightItem
+from browse import Browse
 from search import Search
 from loader import Loader
 from models import Database, MetaRepository, SettingRepository, GameRepository
@@ -62,7 +62,6 @@ def main():
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
     qmlRegisterType(Browse, APP_UPPER_TITLE, 1, 0, 'Browse')
-    qmlRegisterType(SpotlightItem, APP_UPPER_TITLE, 1, 0, 'SpotlightItem')
     qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
