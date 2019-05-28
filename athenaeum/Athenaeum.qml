@@ -50,7 +50,7 @@ ApplicationWindow {
                     break;
                     
                 case libraryView:
-                    window.indexUpdated(library.findById(details))
+                    library.updateCurrentGame(details)
                     break;
             }
         }

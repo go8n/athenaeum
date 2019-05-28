@@ -27,22 +27,18 @@ class Library(QObject):
     def load(self):
         self.filterValue = self._metaRepository.get('filter')
         self.updateFilters(new_load=True)
-        self.indexUpdated(0)
 
     def reset(self):
         self._filter = []
         self._filters = {
             'installed': [],
             'recent': [],
-            'new': [],
             'has_updates': [],
             'processing': []
         }
         self._filterValue = ''
         self._searchValue = ''
         self._currentGame = Game()
-        self._processes = []
-        self._error = 0
 
     @pyqtSlot(result=int)
     def getIndexForCurrentGame(self):
@@ -54,6 +50,12 @@ class Library(QObject):
             return 0
         
         return -1
+
+    @pyqtSlot(str)
+    def updateCurrentGame(self, game_id):
+        for game in self._gameManager.games():
+            if game.id == game_id:
+                self.currentGame = game
 
     @pyqtSlot(str, result=int)
     def findById(self, game_id):
@@ -75,10 +77,6 @@ class Library(QObject):
     @pyqtProperty(int, notify=filtersChanged)
     def recentCount(self):
         return len(self._filters['recent'])
-
-    @pyqtProperty(int, notify=filtersChanged)
-    def newCount(self):
-        return len(self._filters['new'])
 
     @pyqtProperty(int, notify=filtersChanged)
     def hasUpdatesCount(self):
@@ -129,47 +127,36 @@ class Library(QObject):
             print('Index does not exist.')
 
     def installGame(self, game_id):
-        pass
+        self._gameManager.installGame(game_id)
 
     def uninstallGame(self, game_id):
-        pass
+        self._gameManager.uninstallGame(game_id)
 
     def updateGame(self, game_id):
-        pass
+        self._gameManager.updateGame(game_id)
 
     def playGame(self, game_id):
-        pass
+        self._gameManager.playGame(game_id)
 
     def searchGames(self):
         if self.searchValue:
             tmp = []
             query = self.searchValue.lower()
-            if self.filterValue == 'all':
-                for game in self._gameManager.games():
-                    if query in game.name.lower():
-                        tmp.append(game)
-            else:
-                for game in self._filters[self.filterValue]:
-                    if query in game.name.lower():
-                        tmp.append(game)
+            for game in self._filters[self.filterValue]:
+                if query in game.name.lower():
+                    tmp.append(game)
             self.filter = tmp
         else:
             self.filterGames()
 
-    def filterGames(self, override=False):
-        if override or self.filterValue == 'all' or self.filterValue not in self._filters.keys():
-            self.filterValue = 'all'
-            self.filter = self._gameManager.games()
-        else:
-            self.filter = self._filters[self.filterValue]
-
+    def filterGames(self):
+        self.filter = self._filters[self.filterValue]
         self._metaRepository.set(key='filter', value=self.filterValue)
 
     def updateFilters(self, new_load=False):
         filters = {
             'installed': [],
             'recent': [],
-            'new': [] if new_load else self._filters['new'],
             'has_updates': [],
             'processing': []
         }
@@ -185,9 +172,6 @@ class Library(QObject):
             if game.lastPlayedDate:
                 if (game.lastPlayedDate + timedelta(days=3)) > now:
                     filters['recent'].append(game)
-            if game.createdDate and new_load:
-                if (game.createdDate + timedelta(days=3)) > now:
-                    filters['new'].append(game)
 
         self._filters = filters
         self.filterGames()

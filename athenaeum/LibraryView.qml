@@ -45,12 +45,10 @@ Page {
                     return 0;
                 case 'recent':
                     return 1;
-                case 'new':
-                    return 2;
                 case 'has_updates':
-                    return 3;
+                    return 2;
                 case 'processing':
-                    return 4;
+                    return 3;
                 default:
                     return 0;
             }
@@ -58,7 +56,6 @@ Page {
         model: [
             qsTr('Installed (%L1)').arg(library.installedCount),
             qsTr('Recent (%L1)').arg(library.recentCount),
-            qsTr('New (%L1)').arg(library.newCount),
             qsTr('Has Updates (%L1)').arg(library.hasUpdatesCount),
             qsTr('Processing (%L1)').arg(library.processingCount)
         ]
@@ -77,10 +74,8 @@ Page {
                     case 1:
                         return 'recent';
                     case 2:
-                        return 'new';
-                    case 3:
                         return 'has_updates';
-                    case 4:
+                    case 3:
                         return 'processing';
                     default:
                         return 'installed';
@@ -486,18 +481,18 @@ Page {
                     Column {
                         width: 250
                         spacing: 10
-                        Text {
-                            color: Material.foreground
-                            font.pixelSize: 20
-                            text: qsTr('Hours Played')
-                            wrapMode: Text.WrapAnywhere
-                        }
-                        Text {
-                            color: Material.foreground
-                            font.pixelSize: 16
-                            text: qsTr('14 Hours')
-                            wrapMode: Text.WrapAnywhere
-                        }
+//                         Text {
+//                             color: Material.foreground
+//                             font.pixelSize: 20
+//                             text: qsTr('Hours Played')
+//                             wrapMode: Text.WrapAnywhere
+//                         }
+//                         Text {
+//                             color: Material.foreground
+//                             font.pixelSize: 16
+//                             text: qsTr('14 Hours')
+//                             wrapMode: Text.WrapAnywhere
+//                         }
                         
                         Text {
                             visible: library.currentGame.developerName

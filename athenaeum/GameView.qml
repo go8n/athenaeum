@@ -102,20 +102,11 @@ Page {
                         visible: !game.installed
                         enabled: !game.processing
                         onClicked: {
-                            window.installGame(game.id)
+                            window.addGame(game.id)
                         }
-                        contentItem: Text {
-                            enabled: !library.currentGame.processing
-                            color: Material.background
-                            text: qsTr('Install')
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        background: Rectangle {
-                            implicitWidth: 100
-                            implicitHeight: 40
-                            color: library.currentGame.processing ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                        }
+                        icon.source: 'icons/add.svg'
+                        text: qsTr('Add To Library')
+                          
                     }
                     Button {
                         id: playButton
@@ -123,7 +114,7 @@ Page {
                         enabled: !game.playing
                         highlighted: true
                         onClicked: {
-                            window.playGame(library.currentGame.id)
+                            window.playGame(game.id)
                         }
                         icon.source: 'icons/play.svg'
                         text: qsTr('Play')
@@ -137,40 +128,6 @@ Page {
                         }
                         text: qsTr('View In Library')
                         icon.source: 'icons/library.svg'
-                    }
-                }
-            }
-            /* Logs */
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.rightMargin: 40
-                anchors.leftMargin: 40
-                color: "black"
-                height: 160
-                visible: library.currentGame.error || library.currentGame.processing || (settings.alwaysShowLogs && library.currentGame.installed)
-
-                Flickable {
-                    id: testFlick
-                    anchors.fill: parent
-
-                    // ScrollBar.vertical: ScrollBar {
-                    //     policy: ScrollBar.AlwaysOn }
-                    clip: true
-                    boundsBehavior: Flickable.StopAtBounds
-
-                    TextArea {
-                        id: ta
-                        onContentHeightChanged: {
-                            testFlick.contentY = (contentHeight <= 150 ? 0 : contentHeight - 150)
-                        }
-                        color: "white"
-                        readOnly: true
-                        text: library.currentGame.log
-                        background: Rectangle {
-                            anchors.fill: parent
-                            color: "black"
-                        }
                     }
                 }
             }
@@ -391,7 +348,6 @@ Page {
                     }
                 }
                 /* Links and Categories */
-
                 Column {
                     id: miscInfo
                     width: 250

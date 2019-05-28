@@ -61,7 +61,7 @@ class Search(QObject):
         self._sortValue = 0
         
     def load(self):
-        pass
+        self.searchQueryChanged.emit()
     
     @pyqtProperty('QString', notify=searchTagsValueChanged)
     def searchTagsValue(self):
@@ -120,8 +120,12 @@ class Search(QObject):
         return self._repositories
     
     @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
-    def searchResults(self):
+    def results(self):
         return QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games())))
+    
+    @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
+    def resultsShort(self):
+        return QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games()))[:5] if self.searchValue else [])
     
     def filterFunc(self, x):
         if self.searchValue and self.searchValue.lower() not in x.name.lower():

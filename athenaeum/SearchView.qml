@@ -79,7 +79,7 @@ Page {
             }
             ListView {
                 anchors.top: activeTags.bottom
-                model: search.searchResults
+                model: search.results
                 id: searchResults
                 anchors.left: parent.left
                 anchors.right: filtersCol.left

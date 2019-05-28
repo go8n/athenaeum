@@ -128,8 +128,7 @@ ToolBar {
         }
         
         onTextChanged: {
-            library.searchValue = text
-            window.searchGames()
+            search.searchValue = text
             if(!resultsDropDown.opened) {
                 resultsDropDown.open()
             }
@@ -149,7 +148,7 @@ ToolBar {
 
             ListView {
                 id: resultsList
-                model: library.filter
+                model: search.resultsShort
                 boundsBehavior: Flickable.StopAtBounds
                 keyNavigationEnabled: true
                 height: contentHeight

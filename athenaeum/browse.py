@@ -78,5 +78,5 @@ class Browse(QObject):
          
     @pyqtProperty(QQmlListProperty, notify=newChanged)
     def new(self):
-        return QQmlListProperty(Game, self, self._gameManager.games()[-6:])
+        return QQmlListProperty(Game, self, self._gameManager.games()[-8:])
          

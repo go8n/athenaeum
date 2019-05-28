@@ -37,6 +37,13 @@ class GameManager(QObject):
         if action:
             self.displayNotification.emit(index, action)
         self._processes.remove(process)
+        
+    @pyqtSlot(str, result=int)
+    def findById(self, game_id):
+        for index, game in enumerate(self._games):
+            if game.id == game_id:
+                return index
+        return None
 
     def installGame(self, game_id):
         index = self.findById(game_id)

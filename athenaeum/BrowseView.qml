@@ -29,8 +29,6 @@ Page {
                 
                 SwipeView {
                     id: swipeView
-
-//                     currentIndex: 1
                     anchors.fill: parent
                     
                     Repeater {
