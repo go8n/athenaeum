@@ -135,6 +135,7 @@ Page {
             Column {
                 width: parent.width
                 clip: true
+                visible: game.screenshots.length
                 Rectangle {
                     visible: game.screenshots.length
                     // width: parent.width
