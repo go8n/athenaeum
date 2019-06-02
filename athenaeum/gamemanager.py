@@ -11,6 +11,7 @@ from game import Game
 
 class GameManager(QObject):
     ready = pyqtSignal()
+    displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
     
     def __init__(self, flatpak=False, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,11 +33,6 @@ class GameManager(QObject):
 
     def appendGame(self, game):
         self._games.append(game)
-
-    def processCleanup(self, process, index, action=None):
-        if action:
-            self.displayNotification.emit(index, action)
-        self._processes.remove(process)
         
     @pyqtSlot(str, result=int)
     def findById(self, game_id):
@@ -44,6 +40,15 @@ class GameManager(QObject):
             if game.id == game_id:
                 return index
         return None
+        
+    @pyqtSlot(int, result=Game)
+    def findByIndex(self, index):
+        return self._games[index]
+
+    def processCleanup(self, process, index, action=None):
+        if action:
+            self.displayNotification.emit(index, action)
+        self._processes.remove(process)
 
     def installGame(self, game_id):
         index = self.findById(game_id)

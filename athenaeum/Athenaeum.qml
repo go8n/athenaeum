@@ -143,4 +143,26 @@ ApplicationWindow {
             }
         }
     }
+    
+    Connections {
+        target: gameManager
+        function getMessage(action) {
+            switch(action) {
+                case 'install':
+                    return qsTr('Installed successfully.');
+                case 'uninstall':
+                    return qsTr('Uninstalled successfully.');
+                case 'update':
+                    return qsTr('Updated successfully.');
+                case 'error':
+                    return qsTr('An error occurred.');
+            }
+        }
+        onDisplayNotification: {
+            var foundGame = gameManager.findByIndex(index)
+            if (settings.notificationsEnabled) {
+                window.notify(foundGame.name, getMessage(action), foundGame.iconLarge)
+            }
+        }
+    }
 }

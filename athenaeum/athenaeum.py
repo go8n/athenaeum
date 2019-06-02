@@ -57,6 +57,7 @@ def main():
 
     app.installTranslator(tr);
 
+    qmlRegisterType(GameManager, APP_UPPER_TITLE, 1, 0, 'GameManager')
     qmlRegisterType(Game, APP_UPPER_TITLE, 1, 0, 'Game')
     qmlRegisterType(Library, APP_UPPER_TITLE, 1, 0, 'Library')
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
@@ -95,6 +96,7 @@ def main():
     engine.rootContext().setContextProperty('library', library)
     engine.rootContext().setContextProperty('browse', browse)
     engine.rootContext().setContextProperty('search', search)
+    engine.rootContext().setContextProperty('gameManager', gameManager)
 
     engine.load(BASEDIR + '/Athenaeum.qml')
 
