@@ -355,21 +355,12 @@ Page {
                             }
                         }
                         Button {
-                            visible:  playButton.visible
                             onClicked: {
                                 enter(gameView, library.currentGame.id)
                             }
                             icon.source: 'icons/browse.svg'
                             text: qsTr('View In Store')
                         }
-//                         Button {
-//                             visible:  playButton.visible
-//                             onClicked: {
-//                                 enter(gameView, library.currentGame.id)
-//                             }
-//                             icon.source: 'icons/link.svg'
-//                             text: qsTr('Links')
-//                         }
                     }
                 }
 
@@ -420,7 +411,6 @@ Page {
                     topPadding: 10
                     Column {
                         width: parent.width - 250
-                        height: contentHeight || 20
                         spacing: 10
                         Text {
                             id: releaseHeading
@@ -581,26 +571,6 @@ Page {
                         }
                     }
                 }
-            }
-        }
-    }
-    Connections {
-        target: library
-        function getMessage(action) {
-            switch(action) {
-                case 'install':
-                    return qsTr('Installed successfully.');
-                case 'uninstall':
-                    return qsTr('Uninstalled successfully.');
-                case 'update':
-                    return qsTr('Updated successfully.');
-                case 'error':
-                    return qsTr('An error occurred.');
-            }
-        }
-        onDisplayNotification: {
-            if (settings.notificationsEnabled) {
-                window.notify(library.games[index].name, getMessage(action), library.games[index].iconLarge)
             }
         }
     }

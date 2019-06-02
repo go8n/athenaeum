@@ -21,6 +21,7 @@ Page {
             id: col
             width: parent.width
             spacing: 40
+            
             /* Header */
             Rectangle {
                 anchors.left: parent.left
@@ -102,14 +103,13 @@ Page {
                         visible: !game.installed
                         enabled: !game.processing
                         onClicked: {
-                            window.addGame(game.id)
+                            window.installGame(game.id)
                         }
-                        icon.source: 'icons/add.svg'
-                        text: qsTr('Add To Library')
+                        icon.source: 'icons/download.svg'
+                        text: qsTr('Install')
                           
                     }
                     Button {
-                        id: playButton
                         visible: game.installed
                         enabled: !game.playing
                         highlighted: true
@@ -121,8 +121,7 @@ Page {
 
                     }
                     Button {
-                        visible: playButton.visible
-                        enabled: !game.playing && !game.processing
+                        visible: game.installed || game.processing
                         onClicked: {
                             enter(libraryView, game.id)
                         }
@@ -256,12 +255,13 @@ Page {
                 /* Releases */
                 leftPadding: 40
                 rightPadding: 40
-                topPadding: 10
                 bottomPadding: 40
+                topPadding: 10
+                
                 Column {
                     id: desc
                     width: parent.width - miscInfo.width
-                    height: contentHeight || 20
+//                     height: contentHeight || 20
                     spacing: 10
 
                     /* Description */
@@ -353,6 +353,7 @@ Page {
                     id: miscInfo
                     width: 250
                     spacing: 10
+
                     Text {
                         visible: game.developerName
                         color: Material.foreground
