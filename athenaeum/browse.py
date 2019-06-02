@@ -16,18 +16,13 @@ class Browse(QObject):
     def __init__(self, gameManager=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
-        self._spotlight = []
         self._k = 0
         
     def load(self):
         self._k = 6
         self.recommendedChanged.emit()
         self.newChanged.emit()
-        self.spotlight = [
-            self.getGameById('net.supertuxkart.SuperTuxKart'),
-            self.getGameById('com.play0ad.zeroad'),
-            self.getGameById('net.minetest.Minetest')
-        ]
+        self.spotlightChanged.emit()
     
     @pyqtSlot(str, result=Game)
     def getGameById(self, gameId):
@@ -38,13 +33,7 @@ class Browse(QObject):
     
     @pyqtProperty(QQmlListProperty, notify=spotlightChanged)
     def spotlight(self):
-        return QQmlListProperty(Game, self, self._spotlight)
-
-    @spotlight.setter
-    def spotlight(self, spotlight):
-        if spotlight != self._spotlight:
-            self._spotlight = spotlight
-            self.spotlightChanged.emit()
+        return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
         
     @pyqtProperty(QQmlListProperty, notify=recommendedChanged)
     def recommended(self):
