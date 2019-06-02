@@ -36,5 +36,11 @@ loadingMessages = [
 
 alwaysAccept = [
     'org.freecol.FreeCol',
-    'org.freeciv.Freeciv'
+    'org.freeciv.Freeciv',
+    'io.github.EndlessSky.endless-sky'
+]
+
+alwaysDeny = [
+    'com.moonlight_stream.Moonlight',
+    'org.gnome.Games'
 ]
