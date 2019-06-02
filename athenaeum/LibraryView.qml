@@ -5,148 +5,36 @@ import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Page {
-    id: libraryView
-
-    background: Rectangle {
-        anchors.fill: parent
-        color: Material.background
+    header: NavigationBar {
+        activeView: 'library'
     }
-    header: ToolBar {
-        id: toolBar
-        Rectangle {
-            anchors.fill: parent
-            color: Material.background
-            TextField {
-                id: searchField
-                leftPadding: 10
-                rightPadding: 10
-                anchors.bottom: parent.bottom
-                width: listView.width
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                }
-                color: Material.foreground
-                placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
-                onTextChanged: {
-                    library.searchValue = text
-                    window.search()
-                }
-                Keys.onEscapePressed: {
-                    text = ''
-                }
-            }
-            Label {
-                anchors.centerIn: parent
-                color: Material.foreground
-                text: qsTr('Library')
-            }
-            ToolButton {
-                height: parent.height
-                anchors.right: parent.right
-                contentItem: Text {
-                        text: qsTr("⋮")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-
-                onClicked: menu.open()
-                Menu {
-                    id: menu
-                    MenuItem {
-                        text: qsTr('Settings')
-                        onTriggered: stackView.push(settingsView)
-                    }
-                    MenuItem {
-                        text: qsTr('Check For Updates')
-                        onTriggered: window.checkAll()
-                    }
-                    MenuItem {
-                        text: qsTr('Update All')
-                        onTriggered: window.updateAll()
-                    }
-                    MenuItem {
-                        text: qsTr('Exit')
-                        onTriggered: library.processingCount > 0 ? confirmExit.open() : Qt.quit()
-                        Popup {
-                            id: confirmExit
-                             background: Rectangle {
-                                anchors.fill: parent
-                                color: Material.background
-                            }
-                            x: Math.round((parent.width - width) / 2)
-                            y: Math.round((parent.height - height) / 2)
-                            parent: stackView
-                            dim: true
-                            modal: true
-                            contentItem: Column {
-                                Text {
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    color: Material.foreground
-                                    font.pixelSize: 20
-                                    text: qsTr('You have operations pending.')
-                                }
-                                Row {
-                                    topPadding: 20
-                                    spacing: 20
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    Button {
-                                        MouseArea {
-                                            id: exitPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                Qt.quit()
-                                            }
-                                        }
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Close Anyway')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: exitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                    Button {
-                                        contentItem: Text {
-                                            color: Material.background
-                                            text: qsTr('Cancel')
-                                            horizontalAlignment: Text.AlignHCenter
-                                            verticalAlignment: Text.AlignVCenter
-                                        }
-                                        MouseArea {
-                                            id: cancelExitPopupMouseArea
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            onClicked: {
-                                                confirmExit.close()
-                                            }
-                                        }
-                                        background: Rectangle {
-                                            implicitWidth: 100
-                                            implicitHeight: 40
-                                            color: cancelExitPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    /* Search Bar */
+    TextField {
+        id: searchField
+        leftPadding: 10
+        rightPadding: 10
+        anchors.top: parent.top
+        anchors.bottom: filterCombo.top
+        width: listView.width
+        // background: Rectangle {
+        //     anchors.fill: parent
+        //     color: Material.background
+        // }
+        color: Material.foreground
+        placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
+        onTextChanged: {
+            library.searchValue = text
+            window.searchGames()
+        }
+        Keys.onEscapePressed: {
+            text = ''
         }
     }
     /* Game List */
     ComboBox {
         id: filterCombo
-        width: 200
-        anchors.top: parent.top
+        width: listView.width
+        anchors.top: searchField.bottom
         onModelChanged: {
             currentIndex = getFilterIndex(library.filterValue)
         }
@@ -154,24 +42,20 @@ Page {
         function getFilterIndex(key) {
             switch(key) {
                 case 'installed':
-                    return 1;
+                    return 0;
                 case 'recent':
-                    return 2;
-                case 'new':
-                    return 3;
+                    return 1;
                 case 'has_updates':
-                    return 4;
+                    return 2;
                 case 'processing':
-                    return 5;
+                    return 3;
                 default:
                     return 0;
             }
         }
         model: [
-            qsTr('All Games (%L1)').arg(library.games.length),
             qsTr('Installed (%L1)').arg(library.installedCount),
             qsTr('Recent (%L1)').arg(library.recentCount),
-            qsTr('New (%L1)').arg(library.newCount),
             qsTr('Has Updates (%L1)').arg(library.hasUpdatesCount),
             qsTr('Processing (%L1)').arg(library.processingCount)
         ]
@@ -185,18 +69,16 @@ Page {
             searchField.text = ''
             function getFilterKey(index) {
                 switch(index) {
-                    case 1:
+                    case 0:
                         return 'installed';
-                    case 2:
+                    case 1:
                         return 'recent';
-                    case 3:
-                        return 'new';
-                    case 4:
+                    case 2:
                         return 'has_updates';
-                    case 5:
+                    case 3:
                         return 'processing';
                     default:
-                        return 'all';
+                        return 'installed';
                 }
             }
         }
@@ -306,10 +188,12 @@ Page {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         color: Material.background
-        ScrollView {
+        Flickable {
             anchors.fill: parent
             contentHeight: col.height
             contentWidth: parent.width
+            ScrollBar.vertical: ScrollBar { }
+            boundsBehavior: Flickable.StopAtBounds
             Column {
                 id: col
                 width: parent.width
@@ -322,7 +206,7 @@ Page {
                     anchors.leftMargin: 40
 
                     color: Material.background
-                    height: childrenRect.height + 40
+                    height: childrenRect.height
 
                     Rectangle {
                         anchors.top: parent.top
@@ -388,7 +272,7 @@ Page {
                         anchors.top: gameSummary.bottom
                         anchors.left: gameLogo.right
                         anchors.right: parent.right
-                        spacing: 5
+                        spacing: 10
                         leftPadding: 20
                         topPadding: 10
                         Button {
@@ -397,36 +281,21 @@ Page {
                             onClicked: {
                                 window.installGame(library.currentGame.id)
                             }
-                            contentItem: Text {
-                                enabled: !library.currentGame.processing
-                                color: Material.background
-                                text: qsTr('Install')
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: library.currentGame.processing ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                            }
+                            icon.source: 'icons/download.svg'
+                            text: qsTr('Install')
                         }
                         Button {
+                            id: playButton
                             visible:  library.currentGame.installed
                             enabled: !library.currentGame.playing
                             onClicked: {
                                 window.playGame(library.currentGame.id)
                             }
-                            contentItem: Text {
-                                color: Material.background
-                                text: qsTr('Play')
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: library.currentGame.playing ? Material.color(Material.LightGreen, Material.Shade400) : Material.accent
-                            }
+                            highlighted: true
+//                             background.color= 'lightgreen'
+                            icon.source: 'icons/play.svg'
+                            text: qsTr('Play')
+
                         }
                         Button {
                             visible: library.currentGame.hasUpdate && library.currentGame.installed
@@ -434,25 +303,11 @@ Page {
                             onClicked: {
                                 window.updateGame(library.currentGame.id)
                             }
-                            contentItem: Text {
-                                color: Material.background
-                                text: qsTr('Update')
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: Material.primary
-                            }
+                            text: qsTr('Update')
                         }
                         Button {
-                            contentItem: Text {
-                                color: Material.background
-                                text: qsTr('Uninstall')
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
+                            text: qsTr('Uninstall')
+                            icon.source: 'icons/trash.svg'
                             visible: library.currentGame.installed
                             enabled: !library.currentGame.processing
                             MouseArea {
@@ -465,19 +320,14 @@ Page {
                             }
                             Popup {
                                 id: uninstallPopup
-                                // parent: Overlay.overlay
                                 parent: stackView
-                                background: Rectangle {
-                                    anchors.fill: parent
-                                    color: Material.background
-                                }
                                 x: Math.round((parent.width - width) / 2)
                                 y: Math.round((parent.height - height) / 2)
                                 modal: true
                                 dim: true
                                 focus: true
                                 contentItem: Column {
-                                    id: uninstallDialog
+                                    spacing: 20
                                     Text {
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         color: Material.foreground
@@ -485,64 +335,36 @@ Page {
                                         text: qsTr('Are you sure?')
                                     }
                                     Row {
-                                        topPadding: 20
                                         spacing: 20
                                         anchors.horizontalCenter: parent.horizontalCenter
                                         Button {
-                                            MouseArea {
-                                                id: uninstallPopupMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                onClicked: {
-                                                    window.uninstallGame(library.currentGame.id)
-                                                    uninstallPopup.close()
-                                                }
+                                            onClicked: {
+                                                window.uninstallGame(library.currentGame.id)
+                                                uninstallPopup.close()
                                             }
-                                            contentItem: Text {
-                                                color: Material.background
-                                                text: qsTr('Yes')
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
-                                            }
-
-                                            background: Rectangle {
-                                                implicitWidth: 100
-                                                implicitHeight: 40
-                                                color: uninstallPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
-                                            }
+                                            text: qsTr('Yes')
                                         }
                                         Button {
-                                            contentItem: Text {
-                                                color: Material.background
-                                                text: qsTr('Cancel')
-                                                horizontalAlignment: Text.AlignHCenter
-                                                verticalAlignment: Text.AlignVCenter
-                                            }
-                                            MouseArea {
-                                                id: cancelPopupMouseArea
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                onClicked: {
-                                                    uninstallPopup.close()
-                                                }
-                                            }
-                                            background: Rectangle {
-                                                implicitWidth: 100
-                                                implicitHeight: 40
-                                                color: cancelPopupMouseArea.containsMouse ? Material.color(Material.Grey, theme == Material.Dark ? Material.Shade600 : Material.Shade400) : Material.primary
+                                            text: qsTr('Cancel')
+                                            onClicked: {
+                                                uninstallPopup.close()
                                             }
                                         }
                                     }
                                 }
                             }
-                            background: Rectangle {
-                                implicitWidth: 100
-                                implicitHeight: 40
-                                color: uninstallMouseArea.containsMouse ? Material.color(Material.Pink) : Material.primary
+                        }
+                        Button {
+                            onClicked: {
+                                enter(gameView, library.currentGame.id)
                             }
+                            icon.source: 'icons/browse.svg'
+                            text: qsTr('View In Store')
                         }
                     }
                 }
+
+
                 /* Logs */
                 Rectangle {
                     anchors.left: parent.left
@@ -577,171 +399,31 @@ Page {
                         }
                     }
                 }
-                /* Screenshots */
-                Column {
-                    width: parent.width
-                    clip: true
-                    Rectangle {
-                        visible: library.currentGame.screenshots.length
-                        // width: parent.width
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.rightMargin: 40
-                        anchors.leftMargin: 40
-                        clip: true
-                        // height: childrenRect.height > 300 ? 300 : childrenRect.height
-                        height: 300 + carousel.height
-                        color: "black"
-                        BusyIndicator {
-                            id: previewLoadingIndicator
-                            anchors.centerIn: parent
-                            running: largeView.progress != 1.0
-                        }
-                        Image {
-                            anchors.centerIn: parent
-                            width: parent.width + 100
-                            height: parent.height + 100
-                            fillMode: Image.PreserveAspectCrop
-                            source:  visible ? (library.currentGame.screenshots[carousel.currentIndex] ? library.currentGame.screenshots[carousel.currentIndex].thumbUrl : '') : ''
-                            opacity: 0.6
-                        }
-                        Image {
-                            id: largeView
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            fillMode: Image.PreserveAspectFit
-                            // width: parent.width
-                            // anchors.fill:
-                            height: 300
-                            source: visible ? (library.currentGame.screenshots[carousel.currentIndex] ? library.currentGame.screenshots[carousel.currentIndex].sourceUrl : '') : ''
-                            MouseArea {
-                                anchors.centerIn: parent
-                                width: parent.paintedWidth
-                                height: parent.paintedHeight
-                                onClicked: {
-                                    fullscreenPreview.open()
-                                }
-                            }
-                        }
-                        Popup {
-                            id: fullscreenPreview
-                            // parent: Overlay.overlay
-                            x: Math.round((stackView.width - width) / 2)
-                            y: Math.round((stackView.height - height) / 2)
-                            parent: stackView
-                            width: stackView.width
-                            height: stackView.height
-                            dim: true
-                            modal: true
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    fullscreenPreview.close()
-                                }
-                            }
-                            background: Image {
-                                id: bgImage
-                                fillMode: Image.PreserveAspectFit
-                                anchors.centerIn: parent
-                                width: sourceSize.width > parent.width ? parent.width : sourceSize.width
-                                height: parent.height
-                                source: largeView.source
-                            }
-                        }
-                        Rectangle {
-                            width: parent.width
-                            height: 50
-                            anchors.bottom: parent.bottom
-                            opacity: 0.7
-                            color: "black"
-                            ListView {
-                                id: carousel
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                clip: true
-                                width: contentWidth
-                                height: parent.height
-
-                                model: library.currentGame.screenshots
-                                orientation: ListView.Horizontal
-                                spacing: 5
-                                boundsBehavior: Flickable.StopAtBounds
-                                // ScrollBar.horizontal: ScrollBar { }
-                                delegate: Rectangle {
-                                    height: parent.height
-                                    width: 100
-                                    color: Material.background
-                                    Image {
-                                        anchors.fill: parent
-                                        anchors.margins: 1
-                                        // height: parent.height
-                                        // width: parent.width
-                                        fillMode: Image.PreserveAspectFit
-                                        source: thumbUrl
-                                    }
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: {
-                                            carousel.currentIndex = index
-                                        }
-                                        hoverEnabled: true
-                                        id: thumbMouseArea
-                                    }
-                                    border.color: ListView.isCurrentItem ? Material.accent : thumbMouseArea.containsMouse ? Material.foreground : Material.primary
-                                }
-                            }
-                        }
-                    }
-                }
                 /* Body */
                 Grid {
-                    id: bodyGrid
+                    anchors.left: parent.left
+                    anchors.right: parent.right
                     columns: 2
-                    width: parent.width
+                    spacing: 20
+                    /* Releases */
+                    leftPadding: 40
+                    rightPadding: 40
+                    topPadding: 10
                     Column {
-                        id: desc
-                        width: parent.width - miscInfo.width
-                        anchors.bottomMargin: 40
-
-                        /* Description */
-                        Text {
-                            visible: library.currentGame.description
-                            id: descHeading
-                            width: parent.width
-                            leftPadding: 50
-                            rightPadding: 40
-                            topPadding: 10
-                            bottomPadding: 20
-                            color: Material.foreground
-                            font.pixelSize: 24
-                            text: qsTr('Description')
-                            wrapMode: Text.WrapAnywhere
-                        }
-                        Text {
-                            visible: library.currentGame.description
-                            leftPadding: 50
-                            rightPadding: 40
-                            topPadding: 0
-                            bottomPadding: 10
-                            width: parent.width
-                            color: Material.foreground
-                            textFormat: Text.RichText
-                            font.pixelSize: 16
-                            text: library.currentGame.description
-                            wrapMode: Text.WordWrap
-                        }
-                        /* Releases */
+                        width: parent.width - 250
+                        spacing: 10
                         Text {
                             id: releaseHeading
-                            visible: library.currentGame.releases.length
-                            leftPadding: 50
-                            rightPadding: 40
-                            topPadding: 10
-                            bottomPadding: 20
-                            width: parent.width
                             color: Material.foreground
                             font.pixelSize: 24
                             text: qsTr('Releases')
                             wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: !library.currentGame.releases.length
+                            text: qsTr('No release information available.')
+                            font.italic: true
+                            color: Material.foreground
                         }
                         ListView {
                             visible: library.currentGame.releases.length
@@ -759,7 +441,6 @@ Page {
                                 Flow {
                                     width: parent.width
                                     spacing: 10
-                                    leftPadding: 50
                                     Text {
                                         color: Material.foreground
                                         font.pixelSize: 20
@@ -774,241 +455,122 @@ Page {
                                     }
                                 }
                                 Text {
-                                    leftPadding: 50
-                                    rightPadding: 40
                                     topPadding: 10
                                     bottomPadding: 10
                                     width: parent.width
                                     color: Material.foreground
                                     font.pixelSize: 16
-                                    text: description
+                                    font.italic: description ? false : true
+                                    text: description || qsTr('No release description available.')
                                     wrapMode: Text.WrapAnywhere
                                 }
                             }
                         }
                     }
-                    /* Links and Categories */
-                    Rectangle {
-                        width: 200
-                        id: miscInfo
-                        color: tr
-                        // height:  Math.max(libraryView.height - bodyGrid.y - 35 , Math.max(desc.height, lists.height))
-                        height: lists.height
-                        Column {
-                            id: lists
-                            width: parent.width
-                            bottomPadding: 40
-                            // anchors.left: desc.right
-                            // anchors.right: parent.right
-                            Text {
-                                visible: library.currentGame.developerName
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 10
-                                bottomPadding: 10
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 16
-                                text: qsTr('Developer')
-                                wrapMode: Text.WrapAnywhere
-                                Rectangle {
-                                    anchors.right: parent.right
-                                    anchors.left: parent.left
-                                    anchors.bottom: parent.bottom
-                                    height: 1
-                                    color: tr
-                                    border.color: Material.accent
-                                    anchors.rightMargin: 40
-                                }
-                            }
-                            Text {
-                                visible: library.currentGame.developerName
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 5
-                                bottomPadding: 5
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 12
-                                text: library.currentGame.developerName
-                                wrapMode: Text.WordWrap
-                            }
-                            Text {
-                                visible: library.currentGame.license
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 10
-                                bottomPadding: 10
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 16
-                                text: qsTr('License')
-                                wrapMode: Text.WrapAnywhere
-                                Rectangle {
-                                    anchors.right: parent.right
-                                    anchors.left: parent.left
-                                    anchors.bottom: parent.bottom
-                                    height:1
-                                    color: tr
-                                    border.color: Material.accent
-                                    anchors.rightMargin: 40
-                                }
-                            }
-                            Text {
-                                visible: library.currentGame.license
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 5
-                                bottomPadding: 5
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 12
-                                text: library.currentGame.license
-                                wrapMode: Text.WordWrap
-                            }
-                            Text {
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 10
-                                bottomPadding: 10
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 16
-                                text: qsTr('Links')
-                                wrapMode: Text.WrapAnywhere
-                                Rectangle {
-                                    anchors.right: parent.right
-                                    anchors.left: parent.left
-                                    anchors.bottom: parent.bottom
-                                    height:1
-                                    color: tr
-                                    border.color: Material.accent
-                                    anchors.rightMargin: 40
-                                }
-                            }
-                            ListView {
-                                model: library.currentGame.urls
-                                width: parent.width
-                                height: contentHeight
-                                id: linksList
-                                delegate: Column {
-                                    width: parent.width
-                                    Button {
-                                        leftPadding: 10
-                                        rightPadding: 50
-                                        topPadding: 5
-                                        // bottomPadding: index+1 < linksList.count ? 0 : 5
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            cursorShape: Qt.PointingHandCursor
-                                            onClicked: {
-                                                Qt.openUrlExternally(url)
-                                            }
-                                        }
-                                        contentItem: Row {
-                                            Image {
-                                                width: 14
-                                                source: 'icons/' + icon
-                                                fillMode: Image.PreserveAspectFit
-                                            }
-                                            Text {
-                                                function getTitle(type) {
-                                                    switch(type) {
-                                                        case 'homepage':
-                                                            return qsTr('Homepage');
-                                                        case 'bugtracker':
-                                                            return qsTr('Bug Tracker');
-                                                        case 'help':
-                                                            return qsTr('Help');
-                                                        case 'faq':
-                                                            return qsTr('FAQ');
-                                                        case 'donation':
-                                                            return qsTr('Donate');
-                                                        case 'translate':
-                                                            return qsTr('Translation');
-                                                        case 'unknown':
-                                                            return qsTr('Unknown');
-                                                        case 'manifest':
-                                                            return qsTr('Manifest');
-                                                    }
-                                                }
-                                                leftPadding: 5
-                                                font.pixelSize: 12
-                                                text: getTitle(type)
-                                                color: Material.foreground
-                                            }
-                                        }
-                                        background: Rectangle {
-                                            anchors.fill: parent
-                                            color: tr
-                                        }
+                    
+                    Column {
+                        width: 250
+                        spacing: 10
+//                         Text {
+//                             color: Material.foreground
+//                             font.pixelSize: 20
+//                             text: qsTr('Hours Played')
+//                             wrapMode: Text.WrapAnywhere
+//                         }
+//                         Text {
+//                             color: Material.foreground
+//                             font.pixelSize: 16
+//                             text: qsTr('14 Hours')
+//                             wrapMode: Text.WrapAnywhere
+//                         }
+                        
+                        Text {
+                            visible: library.currentGame.developerName
+                            color: Material.foreground
+                            font.pixelSize: 20
+                            text: qsTr('Developer')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: library.currentGame.developerName
+                            color: Material.foreground
+                            font.pixelSize: 16
+                            text: library.currentGame.developerName
+                            wrapMode: Text.WordWrap
+                        }
+                        
+                        Text {
+                            visible: library.currentGame.license
+                            color: Material.foreground
+                            font.pixelSize: 20
+                            text: qsTr('License')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        Text {
+                            visible: library.currentGame.license
+                            color: Material.foreground
+                            font.pixelSize: 16
+                            text: library.currentGame.license
+                            wrapMode: Text.WrapAnywhere
+                        }
+                            
+                        Text {
+                            visible: library.currentGame.urls.length
+                            color: Material.foreground
+                            font.pixelSize: 20
+                            text: qsTr('Links')
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        ListView {
+                            visible: library.currentGame.urls.length
+                            model: library.currentGame.urls
+                            id: linksList
+                            height: contentHeight
+                            width: contentWidth
+                            delegate: Button {
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        Qt.openUrlExternally(url)
                                     }
                                 }
-                            }
-                            Text {
-                                leftPadding: 10
-                                rightPadding: 50
-                                topPadding: 10
-                                bottomPadding: 10
-                                width: parent.width
-                                color: Material.foreground
-                                font.pixelSize: 16
-                                text: qsTr('Categories')
-                                wrapMode: Text.WrapAnywhere
-                                Rectangle {
-                                    anchors.right: parent.right
-                                    anchors.left: parent.left
-                                    anchors.bottom: parent.bottom
-                                    height:1
+                                icon.source: 'icons/' + urlIcon
+                                topPadding: 0
+                                leftPadding: 0
+                                background: Rectangle {
+                                    anchors.fill: parent
                                     color: tr
-                                    border.color: Material.accent
-                                    anchors.rightMargin: 40
                                 }
-                            }
-                            ListView {
-                                model: library.currentGame.categories
-                                width: parent.width
-                                height: contentHeight
-                                id: categoriesList
-                                delegate: Column {
-                                    width: parent.width
-                                    Text {
-                                        leftPadding: 10
-                                        rightPadding: 50
-                                        topPadding: 5
-                                        bottomPadding: index+1 < categoriesList.count ? 0 : 5
-                                        width: parent.width
-                                        color: Material.foreground
-                                        font.pixelSize: 12
-                                        text: library.currentGame.categories[index]
-                                        wrapMode: Text.WrapAnywhere
+
+                                icon.color: type === 'donation' ? '#00000000' : icon.color
+                                font.capitalization: Font.MixedCase
+                                function getTitle(type) {
+                                    switch(type) {
+                                        case 'homepage':
+                                            return qsTr('Homepage');
+                                        case 'bugtracker':
+                                            return qsTr('Bug Tracker');
+                                        case 'help':
+                                            return qsTr('Help');
+                                        case 'faq':
+                                            return qsTr('FAQ');
+                                        case 'donation':
+                                            return qsTr('Donate');
+                                        case 'translate':
+                                            return qsTr('Translation');
+                                        case 'unknown':
+                                            return qsTr('Unknown');
+                                        case 'manifest':
+                                            return qsTr('Manifest');
                                     }
                                 }
+                                text: getTitle(type)
                             }
                         }
                     }
                 }
-            }
-        }
-    }
-    Connections {
-        target: library
-        function getMessage(action) {
-            switch(action) {
-                case 'install':
-                    return qsTr('Installed successfully.');
-                case 'uninstall':
-                    return qsTr('Uninstalled successfully.');
-                case 'update':
-                    return qsTr('Updated successfully.');
-                case 'error':
-                    return qsTr('An error occurred.');
-            }
-        }
-        onDisplayNotification: {
-            if (settings.notificationsEnabled) {
-                window.notify(library.games[index].name, getMessage(action), library.games[index].iconLarge)
             }
         }
     }

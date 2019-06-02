@@ -18,8 +18,11 @@ sys.path.insert(0, BASEDIR)
 
 from notify import Notify
 from game import Game
+from gamemanager import GameManager
 from settings import Settings
 from library import Library
+from browse import Browse
+from search import Search
 from loader import Loader
 from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
@@ -54,13 +57,15 @@ def main():
 
     app.installTranslator(tr);
 
+    qmlRegisterType(GameManager, APP_UPPER_TITLE, 1, 0, 'GameManager')
     qmlRegisterType(Game, APP_UPPER_TITLE, 1, 0, 'Game')
     qmlRegisterType(Library, APP_UPPER_TITLE, 1, 0, 'Library')
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
+    qmlRegisterType(Browse, APP_UPPER_TITLE, 1, 0, 'Browse')
+    qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
-
     database.init()
 
     metaRepository = MetaRepository(db=database)
@@ -69,11 +74,18 @@ def main():
 
     settings = Settings(parent=app, settingRepository=settingRepository)
     loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
-    library = Library(parent=app, flatpak=inFlatpak, metaRepository=metaRepository, gameRepository=gameRepository)
-
-    loader.started.connect(library.reset)
-    loader.finished.connect(library.load)
-    loader.gameLoaded.connect(library.appendGame)
+    gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
+    library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)
+    browse = Browse(parent=app, gameManager=gameManager)
+    search = Search(parent=app, gameManager=gameManager)
+    
+    loader.started.connect(gameManager.reset)
+    loader.finished.connect(gameManager.load)
+    loader.gameLoaded.connect(gameManager.appendGame)
+    
+    gameManager.ready.connect(library.load)
+    gameManager.ready.connect(browse.load)
+    gameManager.ready.connect(search.load)
 
     networkAccessManagerFactory = NetworkAccessManagerFactory()
 
@@ -82,6 +94,9 @@ def main():
     engine.rootContext().setContextProperty('settings', settings)
     engine.rootContext().setContextProperty('loader', loader)
     engine.rootContext().setContextProperty('library', library)
+    engine.rootContext().setContextProperty('browse', browse)
+    engine.rootContext().setContextProperty('search', search)
+    engine.rootContext().setContextProperty('gameManager', gameManager)
 
     engine.load(BASEDIR + '/Athenaeum.qml')
 
@@ -97,7 +112,7 @@ def main():
     root.checkAll.connect(loader.runListCommands)
     root.resetDatabase.connect(loader.reset)
 
-    root.search.connect(library.searchGames)
+    root.searchGames.connect(library.searchGames)
     root.filter.connect(library.filterGames)
 
     try:

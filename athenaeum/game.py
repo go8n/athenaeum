@@ -20,7 +20,7 @@ class Game(QObject):
     descriptionChanged = pyqtSignal()
     screenshotsChanged = pyqtSignal()
     releasesChanged = pyqtSignal()
-    categoriesChanged = pyqtSignal()
+    tagsChanged = pyqtSignal()
     urlsChanged = pyqtSignal()
 
     refChanged = pyqtSignal()
@@ -29,6 +29,8 @@ class Game(QObject):
     hasUpdateChanged = pyqtSignal()
     lastPlayedDateChanged = pyqtSignal()
     createdDateChanged = pyqtSignal()
+    downloadSizeChanged = pyqtSignal()
+    installedSizeChanged = pyqtSignal()
 
     playingChanged = pyqtSignal()
     processingChanged = pyqtSignal()
@@ -47,7 +49,7 @@ class Game(QObject):
             description='',
             screenshots=[],
             releases=[],
-            categories=[],
+            tags=[],
             urls=[],
             ref='',
             installed=False,
@@ -69,7 +71,7 @@ class Game(QObject):
         self._description = description
         self._screenshots = screenshots
         self._releases = releases
-        self._categories = categories
+        self._tags = tags
         self._urls = urls
 
         self._ref = ref
@@ -172,8 +174,8 @@ class Game(QObject):
     @screenshots.setter
     def screenshots(self, screenshots):
         if screenshots != self._screenshots:
-            self.screenshots = screenshots
-            selfscreenshotsChanged.emit()
+            self._screenshots = screenshots
+            self.screenshotsChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=releasesChanged)
     def releases(self):
@@ -182,18 +184,18 @@ class Game(QObject):
     @releases.setter
     def releases(self, releases):
         if releases != self._releases:
-            self.releases = releases
-            selfreleasesChanged.emit()
+            self._releases = releases
+            self.releasesChanged.emit()
 
-    @pyqtProperty(list, notify=categoriesChanged)
-    def categories(self):
-        return self._categories
+    @pyqtProperty(list, notify=tagsChanged)
+    def tags(self):
+        return self._tags
 
-    @categories.setter
-    def categories(self, categories):
-        if categories != self._categories:
-            self.categories = categories
-            selfcategoriesChanged.emit()
+    @tags.setter
+    def tags(self, tags):
+        if tags != self._tags:
+            self._tags = tags
+            self.tagsChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=urlsChanged)
     def urls(self):
@@ -202,8 +204,8 @@ class Game(QObject):
     @urls.setter
     def urls(self, urls):
         if urls != self._urls:
-            self.urls = urls
-            selfurlsChanged.emit()
+            self._urls = urls
+            self.urlsChanged.emit()
 
     @pyqtProperty('QString', notify=refChanged)
     def ref(self):
@@ -259,6 +261,24 @@ class Game(QObject):
     def createdDate(self, createdDate):
         self._createdDate = createdDate
         self.createdDateChanged.emit()
+
+    @pyqtProperty(str, notify=downloadSizeChanged)
+    def downloadSize(self):
+        return self._downloadSize
+
+    @downloadSize.setter
+    def downloadSize(self, downloadSize):
+        self._downloadSize = downloadSize
+        self.downloadSizeChanged.emit()
+
+    @pyqtProperty(str, notify=installedSizeChanged)
+    def installedSize(self):
+        return self._installedSize
+
+    @installedSize.setter
+    def installedSize(self, installedSize):
+        self._installedSize = installedSize
+        self.installedSizeChanged.emit()
 
     @pyqtProperty(bool, notify=processingChanged)
     def processing(self):

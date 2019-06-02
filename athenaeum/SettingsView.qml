@@ -5,119 +5,39 @@ import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Page {
-    id: settingsView
-
     background: Rectangle {
         anchors.fill: parent
         color: Material.background
     }
-    header: ToolBar {
-        id: toolBar
-        RowLayout {
-            spacing: 0
-            anchors.fill: parent
-            ToolButton {
-                contentItem: Text {
-                        text: qsTr("‹")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
-                Layout.fillHeight: true
-                onClicked: stackView.pop()
-            }
-            Label {
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                }
-                color: Material.foreground
-                text: qsTr("Settings")
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignHCenter
-                verticalAlignment: Qt.AlignVCenter
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-            ToolButton {
-                contentItem: Text {
-                        text: qsTr("⋮")
-                        color: Material.foreground
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                }
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: Material.background
-                    implicitWidth: 40
-                    implicitHeight: 40
-                }
-                Layout.fillHeight: true
-                onClicked: menu.open()
-                Menu {
-                    id: menu
-                    MenuItem {
-                        text: qsTr("Reset All")
-                    }
-                    MenuItem {
-                        text: qsTr('Exit')
-                        onTriggered: Qt.quit()
-                    }
-                }
-            }
-        }
+    header: NavigationBar {
+        activeView: 'settings'
     }
 
     Column {
         padding: 40
-        Row {
-            CheckBox {
-                checked: settings.showTrayIcon
-                onClicked: {
-                    settings.showTrayIcon = checked
-                }
-            }
-            Text {
-                height: parent.height
-                verticalAlignment: Qt.AlignVCenter
-                color: Material.foreground
-                text: qsTr("Show Tray Icon")
+
+        CheckBox {
+            checked: settings.showTrayIcon
+            text: qsTr("Show Tray Icon")
+            onClicked: {
+                settings.showTrayIcon = checked
             }
         }
-        Row {
-            CheckBox {
-                checked: settings.alwaysShowLogs
-                onClicked: {
-                    settings.alwaysShowLogs = checked
-                }
-            }
-            Text {
-                height: parent.height
-                verticalAlignment: Qt.AlignVCenter
-                color: Material.foreground
-                text: qsTr("Always Show Logs")
+        CheckBox {
+            checked: settings.alwaysShowLogs
+            text: qsTr("Always Show Logs")
+            onClicked: {
+                settings.alwaysShowLogs = checked
             }
         }
-        Row {
-            CheckBox {
-                checked: settings.notificationsEnabled
-                onClicked: {
-                    settings.notificationsEnabled = checked
-                }
-            }
-            Text {
-                height: parent.height
-                verticalAlignment: Qt.AlignVCenter
-                color: Material.foreground
-                text: qsTr("Notifications Enabled")
+        CheckBox {
+            checked: settings.notificationsEnabled
+            text: qsTr("Notifications Enabled")
+            onClicked: {
+                settings.notificationsEnabled = checked
             }
         }
+
         Row {
             Text {
                 height: parent.height
