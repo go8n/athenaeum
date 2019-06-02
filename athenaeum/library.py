@@ -16,7 +16,6 @@ class Library(QObject):
     searchValueChanged = pyqtSignal()
     currentGameChanged = pyqtSignal()
     errorChanged = pyqtSignal()
-    displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
 
     def __init__(self, gameManager=None, metaRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
