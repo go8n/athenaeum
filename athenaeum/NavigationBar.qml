@@ -112,10 +112,14 @@ ToolBar {
         NumberAnimation { id: searchFieldShow2; target: searchField; property: 'opacity'; to: 1; duration: 250 }
         NumberAnimation { id: searchFieldHide1; target: searchField; property: 'width'; to: 0; duration: 250 }
         NumberAnimation { id: searchFieldHide2; target: searchField; property: 'opacity'; to: 0; duration: 250 }
+        function hideSearchBar() {
+            text = ''
+            searchFieldHide1.start()
+            searchFieldHide2.start()
+        }
         onFocusChanged: {
             if (!focus) {
-                searchFieldHide1.start()
-                searchFieldHide2.start()
+                hideSearchBar()
             }
         }
         placeholderText: qsTr('Search')
@@ -125,6 +129,7 @@ ToolBar {
         onAccepted: {
             resultsDropDown.close()
             enter(searchView, text)
+            hideSearchBar()
         }
         
         onTextChanged: {
@@ -134,7 +139,6 @@ ToolBar {
             }
         }
         Keys.onEscapePressed: {
-            text = ''
             focus = false
         }
         
