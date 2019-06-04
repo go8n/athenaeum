@@ -50,6 +50,7 @@ qml-module-qtquick2
 qml-module-qtquick-layouts
 qml-module-qtquick-controls2
 qml-module-qtquick-window2
+qml-module-qtgraphicaleffects
 ```
 
 Arch
@@ -60,6 +61,7 @@ python-dateutil
 python-pyqt5
 qt5-svg
 qt5-quickcontrols2
+qt5-graphicaleffects
 ```
 
 Fedora 29 (Comes with a lot of the dependencies by default)
