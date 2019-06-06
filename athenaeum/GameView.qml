@@ -10,6 +10,9 @@ Page {
     }
     
     property Game game: Game {}
+    onGameChanged: {
+        similarGrid.model = recommender.findSimilarGames(game.id)   
+    }
     
     Flickable {
         anchors.fill: parent
@@ -261,7 +264,6 @@ Page {
                 Column {
                     id: desc
                     width: parent.width - miscInfo.width
-//                     height: contentHeight || 20
                     spacing: 10
 
                     /* Description */
@@ -290,6 +292,54 @@ Page {
                         font.pixelSize: 16
                         text: game.description
                         wrapMode: Text.WordWrap
+                    }
+                    /* Similar */
+                    Text {
+                        id: similarHeading
+                        visible: similarGrid.model ? similarGrid.model.length : false
+                        width: parent.width
+                        color: Material.foreground
+                        font.pixelSize: 24
+                        text: qsTr('Similar Games')
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    Flow {
+                        id: similarFlow
+                        width: parent.width
+                        spacing: 10
+                        Repeater {
+                            id: similarGrid
+                            delegate: Rectangle {
+                                width: 220
+                                height: 70
+                                color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        enter(gameView, similarGrid.model[index].id)
+                                    }
+                                }
+                                Row {
+                                    anchors.fill: parent
+                                    spacing: 10
+                                    padding: 10
+                                    Image {
+                                        height: 50
+                                        width: 50
+//                                         anchors.margins: 5
+                                        fillMode: Image.PreserveAspectFit
+                                        source: similarGrid.model[index].iconLarge
+                                    }
+                                    Column {
+                                        Text {
+                                            color: Material.foreground
+                                            text: similarGrid.model[index].name
+                                            font.pixelSize: 20
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     /* Releases */
                     Text {

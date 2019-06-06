@@ -16,16 +16,17 @@ else:
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
 sys.path.insert(0, BASEDIR)
 
-from notify import Notify
+from browse import Browse
 from game import Game
 from gamemanager import GameManager
-from settings import Settings
 from library import Library
-from browse import Browse
-from search import Search
 from loader import Loader
 from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
+from notify import Notify
+from recommender import Recommender
+from search import Search
+from settings import Settings
 from systemtrayicon import SystemTrayIcon
 
 
@@ -63,6 +64,7 @@ def main():
     qmlRegisterType(Loader, APP_UPPER_TITLE, 1, 0, 'Loader')
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
     qmlRegisterType(Browse, APP_UPPER_TITLE, 1, 0, 'Browse')
+    qmlRegisterType(Recommender, APP_UPPER_TITLE, 1, 0, 'Recommender')
     qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
@@ -77,6 +79,7 @@ def main():
     gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
     library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)
     browse = Browse(parent=app, gameManager=gameManager)
+    recommender = Recommender(parent=app, gameManager=gameManager)
     search = Search(parent=app, gameManager=gameManager)
     
     loader.started.connect(gameManager.reset)
@@ -85,6 +88,7 @@ def main():
     
     gameManager.ready.connect(library.load)
     gameManager.ready.connect(browse.load)
+    gameManager.ready.connect(recommender.load)
     gameManager.ready.connect(search.load)
 
     networkAccessManagerFactory = NetworkAccessManagerFactory()
@@ -97,6 +101,7 @@ def main():
     engine.rootContext().setContextProperty('browse', browse)
     engine.rootContext().setContextProperty('search', search)
     engine.rootContext().setContextProperty('gameManager', gameManager)
+    engine.rootContext().setContextProperty('recommender', recommender)
 
     engine.load(BASEDIR + '/Athenaeum.qml')
 
