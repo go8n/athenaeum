@@ -40,6 +40,12 @@ class GameManager(QObject):
             if game.id == game_id:
                 return index
         return None
+    
+    def getGameById(self, id):
+        for game in self._games:
+            if game.id == id:
+                return game
+        return None
         
     @pyqtSlot(int, result=Game)
     def findByIndex(self, index):
