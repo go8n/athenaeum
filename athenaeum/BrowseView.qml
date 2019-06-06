@@ -34,13 +34,18 @@ Page {
                     Repeater {
                         model: browse.spotlight
                         Item {
-                            id: secondPage
                             Image {
                                 id: spotlightImage
                                 anchors.fill: parent
                                 fillMode: Image.PreserveAspectCrop
                                 clip: true
                                 source: screenshots[0] ? screenshots[0].sourceUrl : ''
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    enter(gameView, id)
+                                }
                             }
                             Rectangle {
                                 anchors.top: parent.top
