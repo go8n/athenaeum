@@ -346,7 +346,7 @@ class Component(object):
         self.reviews = []
         self.screenshots = []
         self.kudos = []
-        self.keywords = []
+        self.keywords = {}
         self.categories = []
         self.custom = {}
         self.bundle = {}
@@ -612,9 +612,15 @@ class Component(object):
             # <keywords>
             elif c1.tag == 'keywords':
                 for c2 in c1:
+                    key = 'en'
                     if not c2.tag == 'keyword':
                         continue
-                    self.keywords.append(c2.text)
+                    if '{http://www.w3.org/XML/1998/namespace}lang' in c2.attrib:
+                        key = c2.attrib['{http://www.w3.org/XML/1998/namespace}lang']
+                    try:
+                        self.keywords[key].append(c2.text)
+                    except:
+                        self.keywords[key] = [c2.text]
 
             # <categories>
             elif c1.tag == 'categories':

@@ -166,7 +166,7 @@ class Loader(QObject):
                     created_date = datetime.now()
                 urls = self.getUrls(component.urls)
                 urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
-
+                
                 game = Game(
                     id=component.id,
                     name=component.name,
@@ -205,7 +205,10 @@ class Loader(QObject):
         return transfer
           
     def collateTags(self, categories, keywords):
-        return categories + keywords
+        if keywords:
+            return categories + keywords['en']
+        else:
+            return categories
 
     def getIconSmall(self, icons):
         path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
