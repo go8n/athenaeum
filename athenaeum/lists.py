@@ -43,4 +43,6 @@ alwaysAccept = [
 alwaysDeny = [
     'com.moonlight_stream.Moonlight',
     'org.gnome.Games'
+    'com.gitlab.coringao.cavestory-nx',
+    'org.sauerbraten.Sauerbraten'
 ]
