@@ -136,40 +136,78 @@ Page {
             /* Screenshots */
             Column {
                 width: parent.width
-                clip: true
                 visible: game.screenshots.length
                 Rectangle {
-                    visible: game.screenshots.length
-                    // width: parent.width
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.rightMargin: 40
                     anchors.leftMargin: 40
                     clip: true
-                    // height: childrenRect.height > 300 ? 300 : childrenRect.height
-                    height: 300 + carousel.height
+                    height: 300
                     color: "black"
+                    
+                    Image {
+                        anchors.left: screenshotsList.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.top: parent.top
+                        fillMode: Image.PreserveAspectCrop
+                        source:  visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].thumbUrl : '') : ''
+                        opacity: 0.6
+                    }
+                    
+                    Rectangle {
+                        id: screenshotsList
+                        width: 100
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        color: "black"
+                        opacity: 0.5
+                        ListView {
+                            id: carousel
+                            anchors.fill: parent
+                            clip: true
+                            model: game.screenshots
+                            spacing: 5
+                            boundsBehavior: Flickable.StopAtBounds
+                            ScrollBar.vertical: ScrollBar { }
+                            delegate: Rectangle {
+                                height: 60
+                                width: parent.width
+                                color: Material.primary
+                                Image {
+                                    anchors.fill: parent
+                                    anchors.margins: 1
+                                    fillMode: Image.PreserveAspectFit
+                                    source: thumbUrl
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        carousel.currentIndex = index
+                                    }
+                                    hoverEnabled: true
+                                    id: thumbMouseArea
+                                }
+                                border.color: ListView.isCurrentItem ? Material.accent : thumbMouseArea.containsMouse ? Material.foreground : Material.primary
+                            }
+                        }
+                    }
+                    
                     BusyIndicator {
                         id: previewLoadingIndicator
                         anchors.centerIn: parent
                         running: largeView.progress != 1.0
                     }
-                    Image {
-                        anchors.centerIn: parent
-                        width: parent.width + 100
-                        height: parent.height + 100
-                        fillMode: Image.PreserveAspectCrop
-                        source:  visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].thumbUrl : '') : ''
-                        opacity: 0.6
-                    }
+
                     Image {
                         id: largeView
-                        anchors.left: parent.left
+                        anchors.left: screenshotsList.left
                         anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.top: parent.top
                         fillMode: Image.PreserveAspectFit
-                        // width: parent.width
-                        // anchors.fill:
-                        height: 300
                         source: visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].sourceUrl : '') : ''
                         MouseArea {
                             anchors.centerIn: parent
@@ -182,7 +220,6 @@ Page {
                     }
                     Popup {
                         id: fullscreenPreview
-                        // parent: Overlay.overlay
                         x: Math.round((stackView.width - width) / 2)
                         y: Math.round((stackView.height - height) / 2)
                         parent: stackView
@@ -203,48 +240,6 @@ Page {
                             width: sourceSize.width > parent.width ? parent.width : sourceSize.width
                             height: parent.height
                             source: largeView.source
-                        }
-                    }
-                    Rectangle {
-                        width: parent.width
-                        height: 50
-                        anchors.bottom: parent.bottom
-                        opacity: 0.7
-                        color: "black"
-                        ListView {
-                            id: carousel
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            clip: true
-                            width: contentWidth
-                            height: parent.height
-
-                            model: game.screenshots
-                            orientation: ListView.Horizontal
-                            spacing: 5
-                            boundsBehavior: Flickable.StopAtBounds
-                            // ScrollBar.horizontal: ScrollBar { }
-                            delegate: Rectangle {
-                                height: parent.height
-                                width: 100
-                                color: Material.background
-                                Image {
-                                    anchors.fill: parent
-                                    anchors.margins: 1
-                                    // height: parent.height
-                                    // width: parent.width
-                                    fillMode: Image.PreserveAspectFit
-                                    source: thumbUrl
-                                }
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        carousel.currentIndex = index
-                                    }
-                                    hoverEnabled: true
-                                    id: thumbMouseArea
-                                }
-                                border.color: ListView.isCurrentItem ? Material.accent : thumbMouseArea.containsMouse ? Material.foreground : Material.primary
-                            }
                         }
                     }
                 }
