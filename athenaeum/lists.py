@@ -11,16 +11,12 @@ badCategories = [
 ]
 
 nonFreeAssets = [
-    'Sauerbraten',
-    'OpenArena',
-    'RuneLite',
-    'OpenSpades'
+    'jp.yvt.OpenSpades',
+    'net.openra.OpenRA',
 ]
 
 engineClones = [
-    'OpenRA',
-    'OpenMW',
-    'ScummVM'
+    'org.openmw.OpenMW',
 ]
 
 loadingMessages = [
@@ -37,12 +33,17 @@ loadingMessages = [
 alwaysAccept = [
     'org.freecol.FreeCol',
     'org.freeciv.Freeciv',
-    'io.github.EndlessSky.endless-sky'
+    'io.github.EndlessSky.endless-sky',
+    'org.frozen_bubble.frozen-bubble',
+    'org.kde.ksudoku',
 ]
 
 alwaysDeny = [
     'com.moonlight_stream.Moonlight',
     'org.gnome.Games',
+    'org.ppsspp.PPSSPP',
+    'org.scummvm.ScummVM',
     'com.gitlab.coringao.cavestory-nx',
-    'org.sauerbraten.Sauerbraten'
+    'org.sauerbraten.Sauerbraten',
+    'net.runelite.RuneLite',
 ]
