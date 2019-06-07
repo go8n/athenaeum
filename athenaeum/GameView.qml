@@ -152,21 +152,26 @@ Page {
                         anchors.bottom: parent.bottom
                         anchors.top: parent.top
                         fillMode: Image.PreserveAspectCrop
-                        source:  visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].thumbUrl : '') : ''
+                        source:  visible ? (game.screenshots[screenshotsList.currentIndex] ? game.screenshots[screenshotsList.currentIndex].thumbUrl : '') : ''
                         opacity: 0.6
                     }
                     
                     Rectangle {
-                        id: screenshotsList
+                        id: screenshotsListBackground
                         width: 100
                         anchors.top: parent.top
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         color: "black"
                         opacity: 0.5
-                        ListView {
-                            id: carousel
-                            anchors.fill: parent
+                    }
+                    
+                    ListView {
+                            id: screenshotsList
+                            width: 100
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
                             clip: true
                             model: game.screenshots
                             spacing: 5
@@ -181,11 +186,12 @@ Page {
                                     anchors.margins: 1
                                     fillMode: Image.PreserveAspectFit
                                     source: thumbUrl
+                                    opacity: 1.0
                                 }
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        carousel.currentIndex = index
+                                        screenshotsList.currentIndex = index
                                     }
                                     hoverEnabled: true
                                     id: thumbMouseArea
@@ -193,7 +199,6 @@ Page {
                                 border.color: ListView.isCurrentItem ? Material.accent : thumbMouseArea.containsMouse ? Material.foreground : Material.primary
                             }
                         }
-                    }
                     
                     BusyIndicator {
                         id: previewLoadingIndicator
@@ -208,7 +213,7 @@ Page {
                         anchors.bottom: parent.bottom
                         anchors.top: parent.top
                         fillMode: Image.PreserveAspectFit
-                        source: visible ? (game.screenshots[carousel.currentIndex] ? game.screenshots[carousel.currentIndex].sourceUrl : '') : ''
+                        source: visible ? (game.screenshots[screenshotsList.currentIndex] ? game.screenshots[screenshotsList.currentIndex].sourceUrl : '') : ''
                         MouseArea {
                             anchors.centerIn: parent
                             width: parent.paintedWidth

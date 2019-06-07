@@ -74,8 +74,8 @@ Page {
                                     anchors.fill: gameTitle
                                     horizontalOffset: 3
                                     verticalOffset: 3
-                                    radius: 10.0
-                                    samples: 17
+                                    radius: 8.0
+                                    samples: 18
                                     color: "#80000000"
                                     source: gameTitle
                                 }
@@ -83,8 +83,8 @@ Page {
                                     anchors.fill: gameSummary
                                     horizontalOffset: 3
                                     verticalOffset: 3
-                                    radius: 10.0
-                                    samples: 17
+                                    radius: 8.0
+                                    samples: 18
                                     color: "#80000000"
                                     source: gameSummary
                                 }
