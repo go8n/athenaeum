@@ -10,6 +10,7 @@ from stemming.porter import stem
 from numpy import dot, isnan
 from numpy.linalg import norm
 
+
 class Recommender(QObject):
     def __init__(self, gameManager=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
