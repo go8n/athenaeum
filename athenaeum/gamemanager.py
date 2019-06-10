@@ -56,24 +56,25 @@ class GameManager(QObject):
             self.displayNotification.emit(index, action)
         self._processes.remove(process)
 
-    def installGame(self, game_id):
+    def installGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findById(game_id)
         if index is not None:
-            installProcess = QProcess(parent=self.parent())
-            installProcess.started.connect(partial(self.installStarted, index))
-            installProcess.finished.connect(partial(self.installFinished, installProcess, index))
-            installProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, installProcess))
-            installProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, installProcess))
+            process = QProcess(parent=self.parent())
+            process.started.connect(partial(self.installStarted, index, startedCallback))
+            process.finished.connect(partial(self.installFinished, process, index, finishedCallback))
+            process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
+            process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
             if self._flatpak:
-                installProcess.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[index].ref, '-y', '--user'])
+                process.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[index].ref, '-y', '--user'])
             else:
-                installProcess.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
-            self._processes.append(installProcess)
+                process.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
+            self._processes.append(process)
 
-    def installStarted(self, index):
+    def installStarted(self, index, startedCallback=None):
         self._games[index].processing = True
+        if startedCallback: startedCallback()
 
-    def installFinished(self, process, index):
+    def installFinished(self, process, index, finishedCallback=None):
         self._games[index].processing = False
 
         if process.exitCode():
@@ -87,26 +88,27 @@ class GameManager(QObject):
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
+        if finishedCallback: finishedCallback()
 
-    def uninstallGame(self, game_id):
+    def uninstallGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findById(game_id)
         if index is not None:
-            print('uninstall')
-            uninstallProcess = QProcess(parent=self.parent())
-            uninstallProcess.started.connect(partial(self.uninstallStarted, index))
-            uninstallProcess.finished.connect(partial(self.uninstallFinishd, uninstallProcess, index))
-            uninstallProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, uninstallProcess))
-            uninstallProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, uninstallProcess))
+            process = QProcess(parent=self.parent())
+            process.started.connect(partial(self.uninstallStarted, index, startedCallback))
+            process.finished.connect(partial(self.uninstallFinishd, process, index, finishedCallback))
+            process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
+            process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
             if self._flatpak:
-                uninstallProcess.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[index].ref, '-y', '--user'])
+                process.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[index].ref, '-y', '--user'])
             else:
-                uninstallProcess.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
-            self._processes.append(uninstallProcess)
+                process.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
+            self._processes.append(process)
 
-    def uninstallStarted(self, index):
+    def uninstallStarted(self, index, startedCallback=None):
         self._games[index].processing = True
+        if startedCallback: startedCallback()
 
-    def uninstallFinishd(self, process, index):
+    def uninstallFinishd(self, process, index, finishedCallback=None):
         self._games[index].processing = False
 
         if process.exitCode():
@@ -120,20 +122,21 @@ class GameManager(QObject):
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
+        if finishedCallback: finishedCallback()
 
     def updateGame(self, game_id):
         index = self.findById(game_id)
         if index is not None:
             print('update')
-            updateProcess = QProcess(parent=self.parent())
-            updateProcess.started.connect(partial(self.startUpdate, index))
-            updateProcess.finished.connect(partial(self.updateFinished, updateProcess, index))
-            updateProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, updateProcess))
-            updateProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, updateProcess))
+            process = QProcess(parent=self.parent())
+            process.started.connect(partial(self.startUpdate, index))
+            process.finished.connect(partial(self.updateFinished, process, index))
+            process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
+            process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
             if self._flatpak:
-                updateProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[index].ref, '-y', '--user'])
+                process.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[index].ref, '-y', '--user'])
             else:
-                updateProcess.start('flatpak', ['update', self._games[index].ref, '-y', '--user'])
+                process.start('flatpak', ['update', self._games[index].ref, '-y', '--user'])
             self._processes.append(updateProcess)
 
     def updateStarted(self, index):
@@ -157,16 +160,16 @@ class GameManager(QObject):
     def playGame(self, game_id):
         index = self.findById(game_id)
         if index is not None:
-            playProcess = QProcess(parent=self.parent())
-            playProcess.started.connect(partial(self.startGame, index))
-            playProcess.finished.connect(partial(self.stopGame, playProcess, index))
-            playProcess.readyReadStandardOutput.connect(partial(self._games[index].appendLog, playProcess))
-            playProcess.readyReadStandardError.connect(partial(self._games[index].appendLog, playProcess))
+            process = QProcess(parent=self.parent())
+            process.started.connect(partial(self.startGame, index))
+            process.finished.connect(partial(self.stopGame, process, index))
+            process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
+            process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
             if self._flatpak:
-                playProcess.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[index].ref])
+                process.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[index].ref])
             else:
-                playProcess.start('flatpak', ['run', self._games[index].ref])
-            self._processes.append(playProcess)
+                process.start('flatpak', ['run', self._games[index].ref])
+            self._processes.append(process)
 
     def startGame(self, index):
         self._games[index].playing = True
