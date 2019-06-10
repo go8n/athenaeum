@@ -46,6 +46,7 @@ flatpak
 python3-pyqt5
 python3-pyqt5.qtquick
 python3-dateutil
+python3-numpy
 qml-module-qtquick2
 qml-module-qtquick-layouts
 qml-module-qtquick-controls2
@@ -59,6 +60,7 @@ Arch
 flatpak
 python-dateutil
 python-pyqt5
+python-numpy
 qt5-svg
 qt5-quickcontrols2
 qt5-graphicaleffects
@@ -70,6 +72,7 @@ Fedora 29 (Comes with a lot of the dependencies by default)
 python3-pip
 pip3 install pyqt5
 python3-dateutil
+python3-numpy
 ```
 
 ### Running Athenaeum
