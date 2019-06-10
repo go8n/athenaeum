@@ -119,17 +119,6 @@ Page {
                                 Row {
                                     spacing: 5
                                     Text {
-                                        text: downloadSize
-                                        color: Material.primary
-                                        font.italic: true
-                                        font.pixelSize: 14
-                                    }
-                                    Text {
-                                        text: '|'   
-                                        color: Material.primary
-                                        font.pixelSize: 14
-                                    }
-                                    Text {
                                         text: qsTr('Flathub')
                                         color: Material.primary
                                         font.italic: true
