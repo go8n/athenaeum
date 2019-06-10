@@ -24,7 +24,7 @@ class Library(QObject):
         self.reset()
 
     def load(self):
-        self.filterValue = self._metaRepository.get('filter')
+        self.filterValue = self._metaRepository.get('filter') or 'installed'
         self.updateFilters(new_load=True)
         self.currentGame = self.filter[0] if len(self._filter) else Game()
 
