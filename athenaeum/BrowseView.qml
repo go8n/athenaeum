@@ -130,6 +130,7 @@ Page {
             }
             
             Rectangle {
+                visible: browse.recommended.length
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width - 400
                 height: recommendedHeading.height
