@@ -61,28 +61,28 @@ ToolBar {
         }
     }
     
-    RowLayout {
-        visible: activeView === 'library'
-        anchors.right: menuButton.left
-        ToolButton {
-            id: tableButton
-            icon.source: 'icons/table.svg'
-            onClicked: {
-                visible = false
-            }
-            ToolTip.visible: hovered
-            ToolTip.text: qsTr("Show games in a table view.")
-        }
-        ToolButton {
-            id: listButton
-            icon.source: 'icons/list.svg'
-            onClicked: {
-                visible = false
-            }
-            ToolTip.visible: hovered
-            ToolTip.text: qsTr("Show games in a list view.")
-        }
-    }
+//     RowLayout {
+//         visible: activeView === 'library'
+//         anchors.right: menuButton.left
+//         ToolButton {
+//             id: tableButton
+//             icon.source: 'icons/table.svg'
+//             onClicked: {
+//                 visible = false
+//             }
+//             ToolTip.visible: hovered
+//             ToolTip.text: qsTr("Show games in a table view.")
+//         }
+//         ToolButton {
+//             id: listButton
+//             icon.source: 'icons/list.svg'
+//             onClicked: {
+//                 visible = false
+//             }
+//             ToolTip.visible: hovered
+//             ToolTip.text: qsTr("Show games in a list view.")
+//         }
+//     }
     RowLayout {
         visible: activeView === 'settings'
         anchors.right: menuButton.left
