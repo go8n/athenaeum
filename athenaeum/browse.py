@@ -64,7 +64,7 @@ class Browse(QObject):
                     if recommendedGame.id in map(lambda x: x.what.id, recommended):
                         continue
                     recommended.append(Recommendation(what=recommendedGame, why=game))
-
+        random.shuffle(recommended)
         return QQmlListProperty(Game, self, recommended)
          
     @pyqtProperty(QQmlListProperty, notify=newChanged)
