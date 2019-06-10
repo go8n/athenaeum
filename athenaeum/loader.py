@@ -139,6 +139,7 @@ class Loader(QObject):
             game_sizes[game_size[0]] = game_size
 
         for component in stream.get_components():
+            component.id = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
             if self.acceptedGame(component):
                 installed = False
                 has_update = False
@@ -146,11 +147,10 @@ class Loader(QObject):
                 created_date = None
 
                 if process:
-                    name = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
-                    installed = name in self._installed_list
-                    has_update = name.split('/')[0] in self._updates_list
-                    download_size = game_sizes[name][1]
-                    installed_size = game_sizes[name][2]
+                    installed = component.id in self._installed_list
+                    has_update = component.id.split('/')[0] in self._updates_list
+                    download_size = game_sizes[component.id][1]
+                    installed_size = game_sizes[component.id][2]
 
                 gr = self._gameRepository.get(component.id)
                 if gr:
