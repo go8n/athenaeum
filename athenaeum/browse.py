@@ -54,16 +54,26 @@ class Browse(QObject):
     def spotlight(self):
         return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
         
+    def getRecommendations(self, games):
+        recommendations = []
+        for game in games:
+                for recommendedGame in  self.findSimilarGames(game.id, 2):
+                    if recommendedGame.id in map(operator.attrgetter('what.id'), recommendations):
+                        continue
+                    recommendations.append(Recommendation(what=recommendedGame, why=game))
+                    
+        return recommendations
+        
+        
     @pyqtProperty(QQmlListProperty, notify=recommendedChanged)
     def recommended(self):
         installed = list(filter(lambda x: x.installed, self._gameManager.games()))
         recommended = []
-        if installed:
-            for game in random.sample(installed, 4):
-                for recommendedGame in  self.findSimilarGames(game.id, 2):
-                    if recommendedGame.id in map(lambda x: x.what.id, recommended):
-                        continue
-                    recommended.append(Recommendation(what=recommendedGame, why=game))
+        if len(installed) > 4:
+            recommended = self.getRecommendations(random.sample(installed, 4))
+        else:
+            recommended = self.getRecommendations(installed)
+            
         random.shuffle(recommended)
         return QQmlListProperty(Game, self, recommended)
          
