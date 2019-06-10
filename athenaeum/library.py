@@ -53,9 +53,13 @@ class Library(QObject):
 
     @pyqtSlot(str)
     def updateCurrentGame(self, game_id):
-        for game in self._gameManager.games():
-            if game.id == game_id:
-                self.currentGame = game
+        for key, games in self._filters.items():
+            for game in games:
+                if game.id == game_id:
+                    self.currentGame = game
+                    self.filterValue = key
+                    self.filterGames()
+                    return
 
     @pyqtSlot(str, result=int)
     def findById(self, game_id):
@@ -127,10 +131,10 @@ class Library(QObject):
             print('Index does not exist.')
 
     def installGame(self, game_id):
-        self._gameManager.installGame(game_id)
+        self._gameManager.installGame(game_id, startedCallback=self.updateFilters, finishedCallback=self.updateFilters)
 
     def uninstallGame(self, game_id):
-        self._gameManager.uninstallGame(game_id)
+        self._gameManager.uninstallGame(game_id, finishedCallback=self.updateFilters)
 
     def updateGame(self, game_id):
         self._gameManager.updateGame(game_id)
