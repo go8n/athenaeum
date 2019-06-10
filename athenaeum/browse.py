@@ -8,14 +8,33 @@ from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
 
+
+class Recommendation(QObject):
+    whatChanged = pyqtSignal()
+    whyChanged = pyqtSignal()
+    
+    def __init__(self, what=None, why=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._what = what
+        self._why = why
+        
+    @pyqtProperty(Game, notify=whatChanged)
+    def what(self):
+        return self._what
+    
+    @pyqtProperty(Game, notify=whyChanged)
+    def why(self):
+        return self._why
+
 class Browse(QObject):
     recommendedChanged = pyqtSignal()
     newChanged = pyqtSignal()
     spotlightChanged = pyqtSignal()
     
-    def __init__(self, gameManager=None, *args, **kwargs):
+    def __init__(self, gameManager=None, recommender=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
+        self._recommender = recommender
         self._k = 0
         
     def load(self):
@@ -37,9 +56,31 @@ class Browse(QObject):
         
     @pyqtProperty(QQmlListProperty, notify=recommendedChanged)
     def recommended(self):
-        return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
+        installed = list(filter(lambda x: x.installed, self._gameManager.games()))
+        recommended = []
+        if installed:
+            for game in random.sample(installed, 4):
+                for recommendedGame in  self.findSimilarGames(game.id, 2):
+                    if recommendedGame.id in map(lambda x: x.what.id, recommended):
+                        continue
+                    recommended.append(Recommendation(what=recommendedGame, why=game))
+
+        return QQmlListProperty(Game, self, recommended)
          
     @pyqtProperty(QQmlListProperty, notify=newChanged)
     def new(self):
         return QQmlListProperty(Game, self, random.sample(self._gameManager.games(), k=self._k))
-         
+
+    @pyqtSlot(str, result=list)
+    def findSimilarGames(self, gameId, amount=5):
+        if not gameId:
+            return []
+
+        games = []
+        results = self._recommender.search(gameId)[:amount+1]
+        for result in results:
+            if result[0] == gameId:
+                continue
+            games.append(self._gameManager.getGameById(result[0]))
+
+        return games

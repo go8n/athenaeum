@@ -16,7 +16,7 @@ else:
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
 sys.path.insert(0, BASEDIR)
 
-from browse import Browse
+from browse import Browse, Recommendation
 from game import Game
 from gamemanager import GameManager
 from library import Library
@@ -65,6 +65,7 @@ def main():
     qmlRegisterType(Settings, APP_UPPER_TITLE, 1, 0, 'Settings')
     qmlRegisterType(Browse, APP_UPPER_TITLE, 1, 0, 'Browse')
     qmlRegisterType(Recommender, APP_UPPER_TITLE, 1, 0, 'Recommender')
+    qmlRegisterType(Recommendation, APP_UPPER_TITLE, 1, 0, 'Recommendation')
     qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
@@ -77,18 +78,20 @@ def main():
     settings = Settings(parent=app, settingRepository=settingRepository)
     loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
     gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
-    library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)
-    browse = Browse(parent=app, gameManager=gameManager)
     recommender = Recommender(parent=app, gameManager=gameManager)
+    
+    library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)
+    browse = Browse(parent=app, gameManager=gameManager, recommender=recommender)
     search = Search(parent=app, gameManager=gameManager)
     
     loader.started.connect(gameManager.reset)
     loader.finished.connect(gameManager.load)
     loader.gameLoaded.connect(gameManager.appendGame)
     
+    gameManager.ready.connect(recommender.load)
+    
     gameManager.ready.connect(library.load)
     gameManager.ready.connect(browse.load)
-    gameManager.ready.connect(recommender.load)
     gameManager.ready.connect(search.load)
 
     networkAccessManagerFactory = NetworkAccessManagerFactory()

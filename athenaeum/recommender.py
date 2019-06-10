@@ -65,17 +65,3 @@ class Recommender(QObject):
 
             ratings.sort(key=lambda x: x[1] if not isnan(x[1]) else 0 , reverse=True)
             return ratings
-            
-    @pyqtSlot(str, result=list)
-    def findSimilarGames(self, gameId):
-        if not gameId:
-            return []
-
-        games = []
-        results = self.search(gameId)[:6]
-        for result in results:
-            if result[0] == gameId:
-                continue
-            games.append(self._gameManager.getGameById(result[0]))
-
-        return games

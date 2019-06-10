@@ -11,7 +11,7 @@ Page {
     
     property Game game: Game {}
     onGameChanged: {
-        similarGrid.model = recommender.findSimilarGames(game.id)   
+        similarGrid.model = browse.findSimilarGames(game.id)   
     }
     
     Flickable {
@@ -143,7 +143,7 @@ Page {
                     anchors.rightMargin: 40
                     anchors.leftMargin: 40
                     clip: true
-                    height: 300
+                    height: 350
                     color: "black"
                     
                     Image {

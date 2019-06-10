@@ -166,7 +166,7 @@ Page {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            enter(gameView, id)
+                            enter(gameView, what.id)
                         }
                     }
                     Column {
@@ -181,28 +181,17 @@ Page {
                                 width: 50
                                 height: 50
                                 fillMode: Image.PreserveAspectFit
-                                source: iconLarge
+                                source: what.iconLarge
                             }
                             Column {
 //                                 width: parent.width
                                 Text {
-                                    text: name
+                                    text: what.name
                                     color: Material.foreground
                                     font.pixelSize: 20
                                 }
                                 Row {
                                     spacing: 5
-                                    Text {
-                                        text: downloadSize
-                                        color: Material.primary
-                                        font.italic: true
-                                        font.pixelSize: 14
-                                    }
-                                    Text {
-                                        text: '|'   
-                                        color: Material.primary
-                                        font.pixelSize: 14
-                                    }
                                     Text {
                                         text: qsTr('Flathub')
                                         color: Material.primary
@@ -215,7 +204,7 @@ Page {
                                         font.pixelSize: 14
                                     }
                                     Text {
-                                        text: license
+                                        text: what.license
                                         color: Material.primary
                                         font.italic: true
                                         font.pixelSize: 14
@@ -225,7 +214,7 @@ Page {
                         }
                         Text {
                             padding: 5
-                            text: 'Because you played: '
+                            text: qsTr('Because you play:')
                             color: Material.foreground
                             font.pixelSize: 18
                         }
@@ -235,10 +224,10 @@ Page {
                             Image {
                                 width: 25
                                 fillMode: Image.PreserveAspectFit
-                                source: library.currentGame.iconSmall
+                                source: why.iconSmall
                             }
                             Text {
-                                text: library.currentGame.name
+                                text: why.name
                                 color: Material.foreground
                                 font.pixelSize: 18
                             }
