@@ -128,6 +128,7 @@ Page {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
+            
             Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width - 400
@@ -147,89 +148,88 @@ Page {
 //                 }
             }
             
-            GridView {
-                id: gv
+            Flow {
+                id: recommendedFlow
                 width: parent.width - 400
-                height: contentHeight
+                spacing: 10
                 anchors.horizontalCenter: parent.horizontalCenter
-                boundsBehavior: Flickable.StopAtBounds
-                model: browse.recommended
-                property int minWidth: 270
-                cellWidth: width > minWidth ? width / Math.floor(width / minWidth) : width
-                cellHeight: 150
-                delegate: Rectangle {
-                    color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
-                    width: gv.cellWidth
-                    height: gv.cellHeight
-                    border.width: 5
-                    border.color: Material.background
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            enter(gameView, what.id)
-                        }
-                    }
-                    Column {
-                        padding: 10
-                        width: parent.width
-                        Row {
-                            padding: 5
-                            spacing: 5
-                            Image {
-                               
-                                id: iconPr
-                                width: 50
-                                height: 50
-                                fillMode: Image.PreserveAspectFit
-                                source: what.iconLarge
-                            }
-                            Column {
-//                                 width: parent.width
-                                Text {
-                                    text: what.name
-                                    color: Material.foreground
-                                    font.pixelSize: 20
-                                }
-                                Row {
-                                    spacing: 5
-                                    Text {
-                                        text: qsTr('Flathub')
-                                        color: Material.primary
-                                        font.italic: true
-                                        font.pixelSize: 14
-                                    }
-                                    Text {
-                                        text: '|'   
-                                        color: Material.primary
-                                        font.pixelSize: 14
-                                    }
-                                    Text {
-                                        text: what.license
-                                        color: Material.primary
-                                        font.italic: true
-                                        font.pixelSize: 14
-                                    }
-                                }
+                property int minWidth: 250
+                property int count: Math.floor(width / minWidth)
+                property int spacingWidth: (count - 1) * spacing
+                property int cellWidth: width > minWidth ? (width / count) - spacingWidth : width
+
+                Repeater {
+                    id: recommendedRepeated
+                    model: browse.recommended
+                    delegate: Rectangle {
+                        color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+                        width: recommendedFlow.cellWidth
+                        height: 150
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: {
+                                enter(gameView, recommendedRepeated.model[index].what.id)
                             }
                         }
-                        Text {
-                            padding: 5
-                            text: qsTr('Because you play:')
-                            color: Material.foreground
-                            font.pixelSize: 18
-                        }
-                        Row {
-                            padding: 5
-                            spacing: 5
-                            Image {
-                                width: 25
-                                fillMode: Image.PreserveAspectFit
-                                source: why.iconSmall
+                        Column {
+                            padding: 10
+                            width: recommendedFlow.cellWidth
+                            Row {
+                                padding: 5
+                                spacing: 5
+                                Image {
+                                    width: 50
+                                    height: 50
+                                    fillMode: Image.PreserveAspectFit
+                                    source: recommendedRepeated.model[index].what.iconLarge
+                                }
+                                Column {
+                                    Text {
+                                        text: recommendedRepeated.model[index].what.name
+                                        color: Material.foreground
+                                        font.pixelSize: 20
+                                    }
+                                    Row {
+                                        spacing: 5
+                                        Text {
+                                            text: qsTr('Flathub')
+                                            color: Material.primary
+                                            font.italic: true
+                                            font.pixelSize: 14
+                                        }
+                                        Text {
+                                            text: '|'   
+                                            color: Material.primary
+                                            font.pixelSize: 14
+                                        }
+                                        Text {
+                                            text: recommendedRepeated.model[index].what.license
+                                            color: Material.primary
+                                            font.italic: true
+                                            font.pixelSize: 14
+                                        }
+                                    }
+                                }
                             }
                             Text {
-                                text: why.name
+                                padding: 5
+                                text: qsTr('Because you play:')
                                 color: Material.foreground
                                 font.pixelSize: 18
+                            }
+                            Row {
+                                padding: 5
+                                spacing: 5
+                                Image {
+                                    width: 25
+                                    fillMode: Image.PreserveAspectFit
+                                    source: recommendedRepeated.model[index].why.iconSmall
+                                }
+                                Text {
+                                    text: recommendedRepeated.model[index].why.name
+                                    color: Material.foreground
+                                    font.pixelSize: 18
+                                }
                             }
                         }
                     }
@@ -302,17 +302,6 @@ Page {
                                     Row {
                                         spacing: 5
                                         Text {
-                                            text: downloadSize
-                                            color: Material.primary
-                                            font.italic: true
-                                            font.pixelSize: 14
-                                        }
-                                        Text {
-                                            text: '|'   
-                                            color: Material.primary
-                                            font.pixelSize: 14
-                                        }
-                                        Text {
                                             text: qsTr('Flathub')
                                             color: Material.primary
                                             font.italic: true
@@ -363,30 +352,9 @@ Page {
                                 fullscreenPreview.open()
                             }
                         }
-                        Popup {
+                        FullscreenPreview {
                             id: fullscreenPreview
-                            // parent: Overlay.overlay
-                            x: Math.round((stackView.width - width) / 2)
-                            y: Math.round((stackView.height - height) / 2)
-                            parent: stackView
-                            width: stackView.width
-                            height: stackView.height
-                            dim: true
-                            modal: true
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    fullscreenPreview.close()
-                                }
-                            }
-                            background: Image {
-                                id: bgImage
-                                fillMode: Image.PreserveAspectFit
-                                anchors.centerIn: parent
-                                width: sourceSize.width > parent.width ? parent.width : sourceSize.width
-                                height: parent.height
-                                source: sourceUrl
-                            }
+                            source: sourceUrl
                         }
                     }
                 }

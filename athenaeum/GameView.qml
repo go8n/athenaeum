@@ -223,29 +223,9 @@ Page {
                             }
                         }
                     }
-                    Popup {
+                    FullscreenPreview {
                         id: fullscreenPreview
-                        x: Math.round((stackView.width - width) / 2)
-                        y: Math.round((stackView.height - height) / 2)
-                        parent: stackView
-                        width: stackView.width
-                        height: stackView.height
-                        dim: true
-                        modal: true
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                fullscreenPreview.close()
-                            }
-                        }
-                        background: Image {
-                            id: bgImage
-                            fillMode: Image.PreserveAspectFit
-                            anchors.centerIn: parent
-                            width: sourceSize.width > parent.width ? parent.width : sourceSize.width
-                            height: parent.height
-                            source: largeView.source
-                        }
+                        source: largeView.source
                     }
                 }
             }
