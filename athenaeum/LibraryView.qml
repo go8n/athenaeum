@@ -188,7 +188,16 @@ Page {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         color: Material.background
+        Text {
+            visible: !library.currentGame.id.length
+            text: qsTr('Nothing seems to be here.')
+            anchors.centerIn: parent
+            color: Material.primary
+            font.italic: true
+            font.pixelSize: 14
+        }
         Flickable {
+            visible: library.currentGame.id.length
             anchors.fill: parent
             contentHeight: col.height
             contentWidth: parent.width
