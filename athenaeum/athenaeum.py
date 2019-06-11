@@ -120,22 +120,19 @@ def main():
     root.checkAll.connect(loader.runListCommands)
     root.resetDatabase.connect(loader.reset)
 
-    root.searchGames.connect(library.searchGames)
-    root.filter.connect(library.filterGames)
-
     try:
         notify = Notify(APP_UPPER_TITLE)
         root.notify.connect(notify.show_notifitcation)
     except Error as e:
         print('Error initializing notifications.');
 
-    systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/32x32/' + app.applicationName() + '.png')),
-    root=root, show=settings.showTrayIcon, parent=app)
+    #systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/32x32/' + app.applicationName() + '.png')),
+    #root=root, show=settings.showTrayIcon, parent=app)
 
-    systemTrayIcon.playGame.connect(library.playGame)
-    library.filtersChanged.connect(systemTrayIcon.prepareMenu)
+    #systemTrayIcon.playGame.connect(library.playGame)
+    #library.filtersChanged.connect(systemTrayIcon.prepareMenu)
 
-    settings.showTrayIconChanged.connect(systemTrayIcon.setVisible)
+    #settings.showTrayIconChanged.connect(systemTrayIcon.setVisible)
     # settings.closeToTrayChanged.connect(app.setQuitOnLastWindowClosed)
 
     loader.load()
