@@ -83,7 +83,7 @@ Page {
                 id: searchResults
                 anchors.left: parent.left
                 anchors.right: filtersCol.left
-                height: contentHeight
+                height: contentHeight+40
                 boundsBehavior: Flickable.StopAtBounds
                 delegate: Component {
                     Rectangle {
