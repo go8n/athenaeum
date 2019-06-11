@@ -24,7 +24,6 @@ Page {
         placeholderText: qsTr('Search %L1 Games...').arg(library.filter.length)
         onTextChanged: {
             library.searchValue = text
-            window.searchGames()
         }
         Keys.onEscapePressed: {
             text = ''
@@ -35,10 +34,19 @@ Page {
         id: filterCombo
         width: listView.width
         anchors.top: searchField.bottom
+        currentIndex: getFilterIndex(library.filterValue)
+        
+        property string filterIndex: library.filterValue
+        onFilterIndexChanged: {
+            currentIndex = getFilterIndex(library.filterValue)
+        }
         onModelChanged: {
             currentIndex = getFilterIndex(library.filterValue)
         }
-        currentIndex: getFilterIndex(library.filterValue)
+        onActivated: {
+            library.filterValue = getFilterKey(index)
+            searchField.text = ''
+        }
         function getFilterIndex(key) {
             switch(key) {
                 case 'installed':
@@ -49,10 +57,21 @@ Page {
                     return 2;
                 case 'processing':
                     return 3;
-                default:
-                    return 0;
             }
         }
+        function getFilterKey(index) {
+            switch(index) {
+                case 0:
+                    return 'installed';
+                case 1:
+                    return 'recent';
+                case 2:
+                    return 'has_updates';
+                case 3:
+                    return 'processing';
+            }
+        }
+       
         model: [
             qsTr('Installed (%L1)').arg(library.installedCount),
             qsTr('Recent (%L1)').arg(library.recentCount),
@@ -60,28 +79,10 @@ Page {
             qsTr('Processing (%L1)').arg(library.processingCount)
         ]
         validator: IntValidator {
-            top: 5
+            top: 4
             bottom: 0
         }
-        onActivated: {
-            library.filterValue = getFilterKey(index)
-            window.filter()
-            searchField.text = ''
-            function getFilterKey(index) {
-                switch(index) {
-                    case 0:
-                        return 'installed';
-                    case 1:
-                        return 'recent';
-                    case 2:
-                        return 'has_updates';
-                    case 3:
-                        return 'processing';
-                    default:
-                        return 'installed';
-                }
-            }
-        }
+
     }
     ListView {
         id: listView
