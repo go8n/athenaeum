@@ -70,11 +70,11 @@ class GameManager(QObject):
                 process.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
             self._processes.append(process)
 
-    def installStarted(self, index, startedCallback=None):
+    def installStarted(self, index, callback=None):
         self._games[index].processing = True
-        if startedCallback: startedCallback()
+        if callback: callback()
 
-    def installFinished(self, process, index, finishedCallback=None):
+    def installFinished(self, process, index, callback=None):
         self._games[index].processing = False
 
         if process.exitCode():
@@ -88,7 +88,7 @@ class GameManager(QObject):
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
-        if finishedCallback: finishedCallback()
+        if callback: callback()
 
     def uninstallGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findById(game_id)
@@ -104,11 +104,11 @@ class GameManager(QObject):
                 process.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
             self._processes.append(process)
 
-    def uninstallStarted(self, index, startedCallback=None):
+    def uninstallStarted(self, index, callback=None):
         self._games[index].processing = True
-        if startedCallback: startedCallback()
+        if callback: callback()
 
-    def uninstallFinishd(self, process, index, finishedCallback=None):
+    def uninstallFinishd(self, process, index, callback=None):
         self._games[index].processing = False
 
         if process.exitCode():
@@ -122,9 +122,9 @@ class GameManager(QObject):
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
-        if finishedCallback: finishedCallback()
+        if callback: callback()
 
-    def updateGame(self, game_id):
+    def updateGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findById(game_id)
         if index is not None:
             print('update')
@@ -157,12 +157,12 @@ class GameManager(QObject):
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index, action)
 
-    def playGame(self, game_id):
+    def playGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findById(game_id)
         if index is not None:
             process = QProcess(parent=self.parent())
-            process.started.connect(partial(self.startGame, index))
-            process.finished.connect(partial(self.stopGame, process, index))
+            process.started.connect(partial(self.startGame, index, startedCallback))
+            process.finished.connect(partial(self.stopGame, process, index, finishedCallback))
             process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
             process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
             if self._flatpak:
@@ -171,16 +171,18 @@ class GameManager(QObject):
                 process.start('flatpak', ['run', self._games[index].ref])
             self._processes.append(process)
 
-    def startGame(self, index):
+    def startGame(self, index, callback):
         self._games[index].playing = True
         self._games[index].lastPlayedDate = datetime.now()
+        if callback: callback()
 
-    def stopGame(self, process, index):
+    def stopGame(self, process, index, callback):
         self._games[index].playing = False
         self._games[index].lastPlayedDate = datetime.now()
         self._games[index].appendLog(process, finished=True)
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index)
+        if callback: callback()
 
     def searchGames(self):
         if self.searchValue:
