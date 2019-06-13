@@ -21,6 +21,7 @@ class Game(QObject):
     screenshotsChanged = pyqtSignal()
     releasesChanged = pyqtSignal()
     tagsChanged = pyqtSignal()
+    antiFeaturesChanged = pyqtSignal()
     urlsChanged = pyqtSignal()
 
     refChanged = pyqtSignal()
@@ -50,6 +51,7 @@ class Game(QObject):
             screenshots=[],
             releases=[],
             tags=[],
+            antiFeatures=[],
             urls=[],
             ref='',
             installed=False,
@@ -72,6 +74,7 @@ class Game(QObject):
         self._screenshots = screenshots
         self._releases = releases
         self._tags = tags
+        self._antiFeatures = antiFeatures
         self._urls = urls
 
         self._ref = ref
@@ -196,6 +199,16 @@ class Game(QObject):
         if tags != self._tags:
             self._tags = tags
             self.tagsChanged.emit()
+
+    @pyqtProperty(list, notify=antiFeaturesChanged)
+    def antiFeatures(self):
+        return self._antiFeatures
+
+    @antiFeatures.setter
+    def antiFeatures(self, antiFeatures):
+        if antiFeatures != self._antiFeatures:
+            self._antiFeatures = antiFeatures
+            self.antiFeaturesChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=urlsChanged)
     def urls(self):

@@ -383,7 +383,31 @@ Page {
                     id: miscInfo
                     width: 250
                     spacing: 10
-
+                    Text {
+                        visible: game.antiFeatures.length
+                        color: Material.color(Material.Red)
+                        font.pixelSize: 20
+                        text: qsTr('Anti-Features')
+                        wrapMode: Text.WrapAnywhere
+                    }
+                    ListView {
+                        visible: game.antiFeatures.length
+                        model: game.antiFeatures
+                        height: contentHeight
+                        width: contentWidth
+                        delegate: Text {
+                            function getTitle(type) {
+                                switch(type) {
+                                    case 'assets':
+                                        return qsTr('This game requires NonFree assets.');
+                                }
+                            }
+                            color: Material.color(Material.Red)
+                            font.pixelSize: 16
+                            wrapMode: Text.WordWrap
+                            text: getTitle(game.antiFeatures[index])
+                        }
+                    }
                     Text {
                         visible: game.developerName
                         color: Material.foreground

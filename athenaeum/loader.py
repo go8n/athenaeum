@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QS
 
 import appstream
 from game import Game, Screenshot, Release, Url
-from lists import alwaysAccept, alwaysDeny, badLicenses, badCategories, loadingMessages
+from lists import alwaysAccept, alwaysDeny, badLicenses, badCategories, loadingMessages, nonFreeAssets
 
 
 class Loader(QObject):
@@ -145,6 +145,9 @@ class Loader(QObject):
                 has_update = False
                 last_played_date = None
                 created_date = None
+                antiFeatures = []
+                if component.id in nonFreeAssets:
+                    antiFeatures.append('assets')
 
                 if process:
                     installed = component.id in self._installed_list
@@ -178,6 +181,7 @@ class Loader(QObject):
                     description=component.description,
                     screenshots=self.getScreenshots(component.screenshots),
                     tags=self.collateTags(self.cleanCategories(component.categories), component.keywords),
+                    antiFeatures=antiFeatures,
                     releases=self.getReleases(component.releases),
                     urls=urls,
                     ref=component.bundle['value'],
