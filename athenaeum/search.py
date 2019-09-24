@@ -31,6 +31,7 @@ class Tag(QObject):
 
 class Search(QObject):
     tagsChanged = pyqtSignal()
+    sortOptionsChanged = pyqtSignal()
     platformsChanged = pyqtSignal()
     repositoriesChanged = pyqtSignal()
     searchQueryChanged = pyqtSignal()
@@ -56,6 +57,7 @@ class Search(QObject):
             ]
         self._platforms = ['GNU']
         self._repositories = ['Flathub']
+        self._sortOptions = ["Relevance", "A-Z", "Z-A", "Installed Size", "Download Size"]
         self._searchValue = ''
         self._searchTagsValue = ''
         self._sortValue = 0
@@ -83,7 +85,7 @@ class Search(QObject):
             self._searchValue = searchValue
             self.searchQueryChanged.emit()
                 
-    @pyqtProperty('QString', notify=searchQueryChanged)
+    @pyqtProperty(int, notify=searchQueryChanged)
     def sortValue(self):
         return self._sortValue
     
@@ -111,6 +113,10 @@ class Search(QObject):
     def searchTags(self):
         return QQmlListProperty(Tag, self, list(filter(lambda x: self.searchTagsValue.lower() in x.name.lower(), self._tags)))
 
+    @pyqtProperty(list, notify=sortOptionsChanged)
+    def sortOptions(self):
+        return self._sortOptions
+    
     @pyqtProperty(list, notify=platformsChanged)
     def platforms(self):
         return self._platforms
@@ -121,7 +127,19 @@ class Search(QObject):
     
     @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
     def results(self):
-        self._results = QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games())))
+        results = list(filter(self.filterFunc, self._gameManager.games()))
+
+        if self.sortValue == 1:
+            results.sort(key = lambda index: operator.attrgetter('name')(index).lower())
+        if self.sortValue == 2:
+            results.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
+        if self.sortValue == 3:
+            results.sort(key=lambda x: x.downloadSize)
+        if self.sortValue == 4:
+            results.sort(key=lambda x: x.installedSize)
+
+        self._results = QQmlListProperty(Game, self, results)
+
         return self._results
     
     # @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
@@ -136,11 +154,3 @@ class Search(QObject):
             return False
         
         return True
-    
-    # def sortGames(self, games):
-    #     if self.sortValue == 1:
-    #         return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower())
-    #     if self.sortValue == 2:
-    #         return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
-    #     return games
-    

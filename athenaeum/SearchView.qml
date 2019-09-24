@@ -138,6 +138,32 @@ Page {
                                         font.italic: true
                                         font.pixelSize: 14
                                     }
+                                    // Text {
+                                    //     visible: downloadSize
+                                    //     text: '|'   
+                                    //     color: Material.primary
+                                    //     font.pixelSize: 14
+                                    // }
+                                    // Text {
+                                    //     visible: downloadSize
+                                    //     text: qsTr('DL Size %1').arg(downloadSize)
+                                    //     color: Material.primary
+                                    //     font.italic: true
+                                    //     font.pixelSize: 14
+                                    // }
+                                    // Text {
+                                    //     visible: installedSize
+                                    //     text: '|'   
+                                    //     color: Material.primary
+                                    //     font.pixelSize: 14
+                                    // }
+                                    // Text {
+                                    //     visible: installedSize
+                                    //     text: qsTr('Install Size %1').arg(installedSize)
+                                    //     color: Material.primary
+                                    //     font.italic: true
+                                    //     font.pixelSize: 14
+                                    // }
                                 }
                             }
                         }
@@ -159,8 +185,8 @@ Page {
                 }
                 ComboBox {
                     width: parent.width
-                    model: ["Relevance", "A-Z", "Z-A"]
-                    onActivated: {
+                    model: search.sortOptions
+                    onCurrentIndexChanged: {
                         search.sortValue = currentIndex
                     }
                 }
