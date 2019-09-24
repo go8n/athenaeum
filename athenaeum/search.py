@@ -57,7 +57,7 @@ class Search(QObject):
             ]
         self._platforms = ['GNU']
         self._repositories = ['Flathub']
-        self._sortOptions = ["Relevance", "A-Z", "Z-A", "Installed Size", "Download Size"]
+        self._sortOptions = ["Relevance", "A-Z", "Z-A", "Download Size", "Installed Size"]
         self._searchValue = ''
         self._searchTagsValue = ''
         self._sortValue = 0
@@ -133,10 +133,10 @@ class Search(QObject):
             results.sort(key = lambda index: operator.attrgetter('name')(index).lower())
         if self.sortValue == 2:
             results.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
-        if self.sortValue == 3:
-            results.sort(key=lambda x: x.downloadSize)
-        if self.sortValue == 4:
-            results.sort(key=lambda x: x.installedSize)
+        # if self.sortValue == 3:
+            # results.sort(key=lambda x: tuple(x.downloadSize.split(' ').reverse() if x.downloadSize else []))
+        # if self.sortValue == 4:
+            # results.sort(key=lambda x: x.installedSize)
 
         self._results = QQmlListProperty(Game, self, results)
 
