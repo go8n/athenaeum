@@ -107,11 +107,59 @@ Page {
                         visible: !browse.currentGame.installed
                         enabled: !browse.currentGame.processing
                         onClicked: {
-                            window.installGame(browse.currentGame.id)
+                            installPopup.open()
                         }
                         icon.source: 'icons/download.svg'
                         text: qsTr('Install')
-                          
+                        Popup {
+                            id: installPopup
+                            parent: stackView
+                            x: Math.round((parent.width - width) / 2)
+                            y: Math.round((parent.height - height) / 2)
+                            modal: true
+                            dim: true
+                            focus: true
+                            contentItem: Column {
+                                spacing: 20
+                                Text {
+                                    visible: browse.currentGame.downloadSize
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                    text:  qsTr('Download Size:\t%1')
+                                        .arg(browse.currentGame.downloadSize)
+                                }
+                                Text {
+                                    visible: browse.currentGame.installedSize
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                    text:  qsTr('Installed Size:\t%1')
+                                        .arg(browse.currentGame.installedSize)
+                                }
+                                Text {
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    color: Material.foreground
+                                    font.pixelSize: 20
+                                    text: qsTr('Install Game?')
+                                }
+                                Row {
+                                    spacing: 20
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    Button {
+                                        onClicked: {
+                                            window.installGame(library.currentGame.id)
+                                            installPopup.close()
+                                        }
+                                        text: qsTr('Yes')
+                                    }
+                                    Button {
+                                        text: qsTr('Cancel')
+                                        onClicked: {
+                                            installPopup.close()
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     Button {
                         visible: browse.currentGame.installed

@@ -58,6 +58,8 @@ class Game(QObject):
             hasUpdate=False,
             lastPlayedDate=None,
             createdDate=None,
+            downloadSize=None,
+            installedSize=None,
             *args,
             **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,6 +85,9 @@ class Game(QObject):
         self._hasUpdate = hasUpdate
         self._lastPlayedDate = lastPlayedDate
         self._createdDate = createdDate
+
+        self._downloadSize = downloadSize
+        self._installedSize = installedSize
 
         # Dynamic values
         self._playing = False

@@ -320,13 +320,8 @@ Page {
                             icon.source: 'icons/trash.svg'
                             visible: library.currentGame.installed
                             enabled: !library.currentGame.processing
-                            MouseArea {
-                                id: uninstallMouseArea
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onClicked: {
-                                    uninstallPopup.open()
-                                }
+                            onClicked: {
+                                uninstallPopup.open()
                             }
                             Popup {
                                 id: uninstallPopup
