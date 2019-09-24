@@ -67,6 +67,7 @@ Page {
                         }
                         onClicked: {
                             active = false
+                            search.searchQueryChanged()
                         }
                     }
                 }
