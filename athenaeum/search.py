@@ -121,11 +121,12 @@ class Search(QObject):
     
     @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
     def results(self):
-        return QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games())))
+        self._results = QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games())))
+        return self._results
     
-    @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
-    def resultsShort(self):
-        return QQmlListProperty(Game, self, list(filter(self.filterFunc, self._gameManager.games()))[:5] if self.searchValue else [])
+    # @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
+    # def resultsShort(self):
+    #     return QQmlListProperty(Game, self, list(filter(lambda x: self.searchValue.lower() in x.name.lower(), self._gameManager.games()))[:5] if self.searchValue else [])
     
     def filterFunc(self, x):
         if self.searchValue and self.searchValue.lower() not in x.name.lower():
@@ -136,10 +137,10 @@ class Search(QObject):
         
         return True
     
-    def sortGames(self, games):
-        if self.sortValue == 1:
-            return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower())
-        if self.sortValue == 2:
-            return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
-        return games
+    # def sortGames(self, games):
+    #     if self.sortValue == 1:
+    #         return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower())
+    #     if self.sortValue == 2:
+    #         return sorted(games, key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
+    #     return games
     

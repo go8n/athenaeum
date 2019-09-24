@@ -96,80 +96,83 @@ ToolBar {
     ToolButton {
         visible: activeView === 'browse' || activeView === 'game' || activeView === 'search'
         icon.source: 'icons/search.svg'
-        anchors.right: searchField.left
-        onClicked: {
-            searchFieldShow1.start()
-            searchFieldShow2.start()
-            searchField.focus = true
-        }
-    }
-    TextField {
-        id: searchField
-        visible: true
-        width: 0
-        opacity: 0
-        NumberAnimation { id: searchFieldShow1; target: searchField; property: 'width'; to: 200; duration: 250 }
-        NumberAnimation { id: searchFieldShow2; target: searchField; property: 'opacity'; to: 1; duration: 250 }
-        NumberAnimation { id: searchFieldHide1; target: searchField; property: 'width'; to: 0; duration: 250 }
-        NumberAnimation { id: searchFieldHide2; target: searchField; property: 'opacity'; to: 0; duration: 250 }
-        function hideSearchBar() {
-            text = ''
-            searchFieldHide1.start()
-            searchFieldHide2.start()
-        }
-        onFocusChanged: {
-            if (!focus) {
-                hideSearchBar()
-            }
-        }
-        placeholderText: qsTr('Search')
         anchors.right: menuButton.left
-        color: Material.foreground
-        
-        onAccepted: {
-            resultsDropDown.close()
-            enter(searchView, text)
-            hideSearchBar()
-        }
-        
-        onTextChanged: {
-            search.searchValue = text
-            if(!resultsDropDown.opened) {
-                resultsDropDown.open()
+        onClicked: {
+            if (activeView !== 'search') {
+                enter(searchView, null)
             }
-        }
-        Keys.onEscapePressed: {
-            focus = false
-        }
-        
-        Menu {
-            focus: false
-            id: resultsDropDown
-            y: toolBar.height
-            height: resultsList.contentHeight
-            topPadding: 0
-            bottomPadding: 0
-
-            ListView {
-                id: resultsList
-                model: search.resultsShort
-                boundsBehavior: Flickable.StopAtBounds
-                keyNavigationEnabled: true
-                height: contentHeight
-                delegate: ToolButton {
-                    icon.source: iconSmall
-                    icon.color: '#00000000'
-                    text: name
-                    rightPadding: parent.width
-                    font.capitalization: Font.MixedCase
-                    onClicked: {
-                        resultsDropDown.close()
-                        enter(gameView, id)
-                    }
-                }
-            }
+            // searchFieldShow1.start()
+            // searchFieldShow2.start()
+            // searchField.focus = true
         }
     }
+    // TextField {
+    //     id: searchField
+    //     visible: true
+    //     width: 0
+    //     opacity: 0
+    //     NumberAnimation { id: searchFieldShow1; target: searchField; property: 'width'; to: 200; duration: 250 }
+    //     NumberAnimation { id: searchFieldShow2; target: searchField; property: 'opacity'; to: 1; duration: 250 }
+    //     NumberAnimation { id: searchFieldHide1; target: searchField; property: 'width'; to: 0; duration: 250 }
+    //     NumberAnimation { id: searchFieldHide2; target: searchField; property: 'opacity'; to: 0; duration: 250 }
+    //     function hideSearchBar() {
+    //         text = ''
+    //         searchFieldHide1.start()
+    //         searchFieldHide2.start()
+    //     }
+    //     onFocusChanged: {
+    //         if (!focus) {
+    //             hideSearchBar()
+    //         }
+    //     }
+    //     placeholderText: qsTr('Search')
+    //     anchors.right: menuButton.left
+    //     color: Material.foreground
+        
+    //     onAccepted: {
+    //         resultsDropDown.close()
+    //         enter(searchView, text)
+    //         hideSearchBar()
+    //     }
+        
+    //     onTextChanged: {
+    //         search.searchValue = text
+    //         if(!resultsDropDown.opened) {
+    //             resultsDropDown.open()
+    //         }
+    //     }
+    //     Keys.onEscapePressed: {
+    //         focus = false
+    //     }
+        
+    //     Menu {
+    //         focus: false
+    //         id: resultsDropDown
+    //         y: toolBar.height
+    //         height: resultsList.contentHeight
+    //         topPadding: 0
+    //         bottomPadding: 0
+
+    //         ListView {
+    //             id: resultsList
+    //             model: search.resultsShort
+    //             boundsBehavior: Flickable.StopAtBounds
+    //             keyNavigationEnabled: true
+    //             height: contentHeight
+    //             delegate: ToolButton {
+    //                 icon.source: iconSmall
+    //                 icon.color: '#00000000'
+    //                 text: name
+    //                 rightPadding: parent.width
+    //                 font.capitalization: Font.MixedCase
+    //                 onClicked: {
+    //                     resultsDropDown.close()
+    //                     enter(gameView, id)
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     ToolButton {
         id: menuButton
