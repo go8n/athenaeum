@@ -24,6 +24,8 @@ Page {
             anchors.horizontalCenter: parent.horizontalCenter
             color: tr
             TextField {
+                topPadding: 20
+                bottomPadding: 20
                 anchors.top: parent.top
                 id: searchField
                 width: parent.width

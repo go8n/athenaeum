@@ -11,7 +11,6 @@ Page {
     
     property string gameId
     onGameIdChanged: {
-        console.log('changed')
         browse.updateCurrentGame(gameId)
         similarGrid.model = browse.findSimilarGames(browse.currentGame.id)   
     }

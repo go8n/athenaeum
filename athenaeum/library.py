@@ -100,7 +100,8 @@ class Library(QObject):
 
     @pyqtProperty(QQmlListProperty, notify=paramsChanged)
     def filter(self):
-        return QQmlListProperty(Game, self, list(filter(lambda x: self._searchValue.lower() in x.name.lower(), self._filters[self._filterValue])))
+        self._results = QQmlListProperty(Game, self, list(filter(lambda x: self._searchValue.lower() in x.name.lower(), self._filters[self._filterValue])))
+        return self._results
 
     @pyqtProperty('QString', notify=paramsChanged)
     def filterValue(self):
