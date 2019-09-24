@@ -143,6 +143,8 @@ class Loader(QObject):
             if self.acceptedGame(component):
                 installed = False
                 has_update = False
+                download_size = None
+                installed_size = None
                 last_played_date = None
                 created_date = None
                 antiFeatures = []
