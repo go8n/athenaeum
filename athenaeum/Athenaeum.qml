@@ -42,7 +42,8 @@ ApplicationWindow {
         if (details) {
             switch (view) {
                 case gameView:
-                    gameViewId.game = browse.getGameById(details)
+                    // gameViewId.game = browse.getGameById(details)
+                    gameViewId.gameId = details
                     break;
             
                 case searchView:

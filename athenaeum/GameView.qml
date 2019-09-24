@@ -9,9 +9,11 @@ Page {
         activeView: 'game'
     }
     
-    property Game game: Game {}
-    onGameChanged: {
-        similarGrid.model = browse.findSimilarGames(game.id)   
+    property string gameId
+    onGameIdChanged: {
+        console.log('changed')
+        browse.updateCurrentGame(gameId)
+        similarGrid.model = browse.findSimilarGames(browse.currentGame.id)   
     }
     
     Flickable {
@@ -52,7 +54,7 @@ Page {
                         id: img
                         anchors.fill: parent
                         fillMode: Image.PreserveAspectFit
-                        source: game.iconLarge
+                        source: browse.currentGame.iconLarge
                     }
                 }
                 Text {
@@ -65,7 +67,7 @@ Page {
                     leftPadding: 20
 
                     color: Material.foreground
-                    text: game.name
+                    text: browse.currentGame.name
 
 
                     fontSizeMode: Text.VerticalFit
@@ -85,7 +87,7 @@ Page {
                     leftPadding: 20
 
                     color: Material.foreground
-                    text: game.summary
+                    text: browse.currentGame.summary
 
                     fontSizeMode: Text.VerticalFit
                     font.pixelSize: 16
@@ -103,30 +105,30 @@ Page {
                     leftPadding: 20
                     topPadding: 10
                     Button {
-                        visible: !game.installed
-                        enabled: !game.processing
+                        visible: !browse.currentGame.installed
+                        enabled: !browse.currentGame.processing
                         onClicked: {
-                            window.installGame(game.id)
+                            window.installGame(browse.currentGame.id)
                         }
                         icon.source: 'icons/download.svg'
                         text: qsTr('Install')
                           
                     }
                     Button {
-                        visible: game.installed
-                        enabled: !game.playing
+                        visible: browse.currentGame.installed
+                        enabled: !browse.currentGame.playing
                         highlighted: true
                         onClicked: {
-                            window.playGame(game.id)
+                            window.playGame(browse.currentGame.id)
                         }
                         icon.source: 'icons/play.svg'
                         text: qsTr('Play')
 
                     }
                     Button {
-                        visible: game.installed || game.processing
+                        visible: browse.currentGame.installed || browse.currentGame.processing
                         onClicked: {
-                            enter(libraryView, game.id)
+                            enter(libraryView, browse.currentGame.id)
                         }
                         text: qsTr('View In Library')
                         icon.source: 'icons/library.svg'
@@ -136,7 +138,7 @@ Page {
             /* Screenshots */
             Column {
                 width: parent.width
-                visible: game.screenshots.length
+                visible: browse.currentGame.screenshots.length
                 Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -152,7 +154,7 @@ Page {
                         anchors.bottom: parent.bottom
                         anchors.top: parent.top
                         fillMode: Image.PreserveAspectCrop
-                        source:  visible ? (game.screenshots[screenshotsList.currentIndex] ? game.screenshots[screenshotsList.currentIndex].thumbUrl : '') : ''
+                        source:  visible ? (browse.currentGame.screenshots[screenshotsList.currentIndex] ? browse.currentGame.screenshots[screenshotsList.currentIndex].thumbUrl : '') : ''
                         opacity: 0.6
                     }
                     
@@ -173,7 +175,7 @@ Page {
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
                             clip: true
-                            model: game.screenshots
+                            model: browse.currentGame.screenshots
                             spacing: 5
                             boundsBehavior: Flickable.StopAtBounds
                             ScrollBar.vertical: ScrollBar { }
@@ -213,7 +215,7 @@ Page {
                         anchors.bottom: parent.bottom
                         anchors.top: parent.top
                         fillMode: Image.PreserveAspectFit
-                        source: visible ? (game.screenshots[screenshotsList.currentIndex] ? game.screenshots[screenshotsList.currentIndex].sourceUrl : '') : ''
+                        source: visible ? (browse.currentGame.screenshots[screenshotsList.currentIndex] ? browse.currentGame.screenshots[screenshotsList.currentIndex].sourceUrl : '') : ''
                         MouseArea {
                             anchors.centerIn: parent
                             width: parent.paintedWidth
@@ -248,7 +250,7 @@ Page {
 
                     /* Description */
                     Text {
-                        visible: game.description
+                        visible: browse.currentGame.description
                         id: descHeading
                         width: parent.width
                         color: Material.foreground
@@ -257,20 +259,20 @@ Page {
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
-                        visible: !game.description
+                        visible: !browse.currentGame.description
                         text: qsTr('No description available.')
                         font.italic: true
                         color: Material.foreground
                     }
                     Text {
-                        visible: game.description
+                        visible: browse.currentGame.description
                         topPadding: 10
                         bottomPadding: 10
                         width: parent.width
                         color: Material.foreground
                         textFormat: Text.RichText
                         font.pixelSize: 16
-                        text: game.description
+                        text: browse.currentGame.description
                         wrapMode: Text.WordWrap
                     }
                     /* Similar */
@@ -289,36 +291,47 @@ Page {
                         spacing: 10
                         Repeater {
                             id: similarGrid
-                            delegate: Rectangle {
-                                width: 220
-                                height: 70
-                                color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        enter(gameView, similarGrid.model[index].id)
-                                    }
-                                }
-                                Row {
-                                    anchors.fill: parent
-                                    spacing: 10
-                                    padding: 10
-                                    Image {
-                                        height: 50
-                                        width: 50
-//                                         anchors.margins: 5
-                                        fillMode: Image.PreserveAspectFit
-                                        source: similarGrid.model[index].iconLarge
-                                    }
-                                    Column {
-                                        Text {
-                                            color: Material.foreground
-                                            text: similarGrid.model[index].name
-                                            font.pixelSize: 20
-                                        }
-                                    }
+                            delegate: ToolButton {
+                                icon.source: similarGrid.model[index].iconSmall
+                                icon.color: '#00000000'
+                                text: similarGrid.model[index].name
+                                font.capitalization: Font.MixedCase
+                                font.pixelSize: 20
+                                onClicked: {
+                                    enter(gameView, similarGrid.model[index].id)
                                 }
                             }
+                            
+                            
+//                             Rectangle {
+//                                 width: 220
+//                                 height: 70
+//                                 color: Material.color(Material.Grey, theme == Material.Dark ? Material.Shade900 : Material.Shade100)
+//                                 MouseArea {
+//                                     anchors.fill: parent
+//                                     onClicked: {
+//                                         enter(gameView, similarGrid.model[index].id)
+//                                     }
+//                                 }
+//                                 Row {
+//                                     anchors.fill: parent
+//                                     spacing: 10
+//                                     padding: 10
+//                                     Image {
+//                                         height: 50
+//                                         width: 50
+//                                         fillMode: Image.PreserveAspectFit
+//                                         source: similarGrid.model[index].iconLarge
+//                                     }
+//                                     Column {
+//                                         Text {
+//                                             color: Material.foreground
+//                                             text: similarGrid.model[index].name
+//                                             font.pixelSize: 20
+//                                         }
+//                                     }
+//                                 }
+//                             }
                         }
                     }
                     /* Releases */
@@ -331,14 +344,14 @@ Page {
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
-                        visible: !game.releases.length
+                        visible: !browse.currentGame.releases.length
                         text: qsTr('No release information available.')
                         font.italic: true
                         color: Material.foreground
                     }
                     ListView {
-                        visible: game.releases.length
-                        model: game.releases
+                        visible: browse.currentGame.releases.length
+                        model: browse.currentGame.releases
                         width: parent.width
                         height: contentHeight
                         spacing: 10
@@ -384,15 +397,15 @@ Page {
                     width: 250
                     spacing: 10
                     Text {
-                        visible: game.antiFeatures.length
+                        visible: browse.currentGame.antiFeatures.length
                         color: Material.color(Material.Red)
                         font.pixelSize: 20
                         text: qsTr('Anti-Features')
                         wrapMode: Text.WrapAnywhere
                     }
                     ListView {
-                        visible: game.antiFeatures.length
-                        model: game.antiFeatures
+                        visible: browse.currentGame.antiFeatures.length
+                        model: browse.currentGame.antiFeatures
                         height: contentHeight
                         width: contentWidth
                         delegate: Text {
@@ -405,49 +418,49 @@ Page {
                             color: Material.color(Material.Red)
                             font.pixelSize: 16
                             wrapMode: Text.WordWrap
-                            text: getTitle(game.antiFeatures[index])
+                            text: getTitle(browse.currentGame.antiFeatures[index])
                         }
                     }
                     Text {
-                        visible: game.developerName
+                        visible: browse.currentGame.developerName
                         color: Material.foreground
                         font.pixelSize: 20
                         text: qsTr('Developer')
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
-                        visible: game.developerName
+                        visible: browse.currentGame.developerName
                         color: Material.foreground
                         font.pixelSize: 16
-                        text: game.developerName
+                        text: browse.currentGame.developerName
                         wrapMode: Text.WordWrap
                     }
                     Text {
-                        visible: game.license
+                        visible: browse.currentGame.license
                         color: Material.foreground
                         font.pixelSize: 20
                         text: qsTr('License')
                         wrapMode: Text.WrapAnywhere
                     }
                     Text {
-                        visible: game.license
+                        visible: browse.currentGame.license
                         color: Material.foreground
                         font.pixelSize: 16
-                        text: game.license
+                        text: browse.currentGame.license
                         width: parent.width
                         wrapMode: Text.WrapAnywhere
                     }
                             
                     Text {
-                        visible: game.urls.length
+                        visible: browse.currentGame.urls.length
                         color: Material.foreground
                         font.pixelSize: 20
                         text: qsTr('Links')
                         wrapMode: Text.WrapAnywhere
                     }
                     ListView {
-                        visible: game.urls.length
-                        model: game.urls
+                        visible: browse.currentGame.urls.length
+                        model: browse.currentGame.urls
                         id: linksList
                         height: contentHeight
                         width: contentWidth

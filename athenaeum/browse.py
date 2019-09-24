@@ -30,12 +30,14 @@ class Browse(QObject):
     recommendedChanged = pyqtSignal()
     newChanged = pyqtSignal()
     spotlightChanged = pyqtSignal()
+    currentGameChanged = pyqtSignal()
     
     def __init__(self, gameManager=None, recommender=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
         self._recommender = recommender
         self._k = 0
+        self._currentGame = Game()
         
     def load(self):
         self._k = 6
@@ -93,3 +95,21 @@ class Browse(QObject):
             games.append(self._gameManager.getGameById(result[0]))
 
         return games
+
+    @pyqtProperty(Game, notify=currentGameChanged)
+    def currentGame(self):
+        return self._currentGame
+
+    @currentGame.setter
+    def currentGame(self, game):
+        if game != self._currentGame:
+            self._currentGame = game
+            self.currentGameChanged.emit()
+
+    @pyqtSlot(str)
+    def updateCurrentGame(self, gameId):
+        game = self._gameManager.getGameById(gameId)
+        if game is not None:
+            self.currentGame = game
+        else:
+            self.currentGame = Game()
