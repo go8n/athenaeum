@@ -1,25 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
     <id>com.gitlab.librebob.Athenaeum</id>
-    ​<launchable type="desktop-id">com.gitlab.librebob.Athenaeum.desktop</launchable>
-    <metadata_licence>CC0-1.0</metadata_licence>
-    <project_license>GPL-3.0+</project_license>
+    <launchable type="desktop-id">com.gitlab.librebob.Athenaeum.desktop</launchable>
     <name>Athenaeum</name>
+    <project_license>GPL-3.0+</project_license>
+    <metadata_license>CC0-1.0</metadata_license>
     <summary>A libre replacement for Steam</summary>
     <description>
-        <p>
-            Athenaeum is a game launcher and manager designed as a libre replacement for Steam.
-        </p>
-        <p>
-            It's built with PyQt5 and utilizes the flatpak application container system.
-        </p>
+        <p>Athenaeum is a game launcher and manager designed as a libre replacement for Steam.</p>
+        <p>It's built with PyQt5 and utilizes the flatpak application container system.</p>
     </description>
-    <screenshots>
-        <screenshot type="default">
-            <image type="source">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
-        </screenshot>
-    </screenshots>
     <url type="homepage">https://gitlab.com/librebob/athenaeum</url>
     <url type="bugtracker">https://gitlab.com/librebob/athenaeum/issues</url>
     <url type="translate">https://hosted.weblate.org/projects/athenaeum/</url>
+    <screenshots>
+        <screenshot type="default">
+            <image type="source" width="" height="">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
+        </screenshot>
+        <screenshot type="">
+            <image type="source" width="" height=""/>
+            <image type="thumbnail" width="" height=""/>
+        </screenshot>
+    </screenshots>
+    <releases>
+        <release version="v1.0.1" date="25-09-2019">
+            <description>Fix appdata.</description>
+        </release>
+        <release version="v1.0.0" date="24-09-2019">
+            <description>New UI</description>
+        </release>
+        <release version="v0.4.0" date="22-04-2019">
+            <description>
+                Fixed some issues with current game selection.
+            Remove a dependency.  Fix structural stuff behind the scenes.</description>
+        </release>
+        <release version="v0.3.0" date="11-04-2019">
+            <description>Make dirs if not exists. ·</description>
+        </release>
+        <release version="v0.2.0" date="10-04-2019">
+            <description>
+                Move database setters and getters into classes.
+                Fix unittests.
+            Update packaging data to comply with freedesktop standards.</description>
+        </release>
+        <release version="v0.1.0" date="08-04-2019">
+            <description>
+                Supports being run from within a Flatpak.
+                Material UI design with Light and Dark themes.
+                Testing framework added.
+            Use Qt5 for notifications.</description>
+        </release>
+    </releases>
+    <content_rating type="oars-1.1" />
 </component>
