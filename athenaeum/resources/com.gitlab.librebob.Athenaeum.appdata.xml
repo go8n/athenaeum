@@ -15,11 +15,7 @@
     <url type="translate">https://hosted.weblate.org/projects/athenaeum/</url>
     <screenshots>
         <screenshot type="default">
-            <image type="source" width="" height="">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
-        </screenshot>
-        <screenshot type="">
-            <image type="source" width="" height=""/>
-            <image type="thumbnail" width="" height=""/>
+            <image type="source">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
         </screenshot>
     </screenshots>
     <releases>
