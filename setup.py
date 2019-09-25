@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="athenaeum",
-    version='1.0.1',
+    version='1.0.0',
     author='librebob',
     license='GPL-3.0-or-later',
     url='https://gitlab.com/librebob/athenaeum',
