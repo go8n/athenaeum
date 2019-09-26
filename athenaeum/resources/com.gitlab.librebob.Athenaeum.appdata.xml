@@ -15,12 +15,24 @@
     <url type="translate">https://hosted.weblate.org/projects/athenaeum/</url>
     <screenshots>
         <screenshot type="default">
-            <image type="source">https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT/2019-03-15-160904_1007x1037_scrot.png</image>
+            <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/PLFxpGfLqMylZlTYcWFrFVdI/image.png</image>
+        </screenshot>
+        <screenshot type="default">
+            <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/xzoGLAXKxqNHmtHUXmpfBQWi/image.png</image>
+        </screenshot>
+        <screenshot type="default">
+            <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/mmRpuYAGHbmjjtYsAPvYQaaC/image.png</image>
+        </screenshot>
+        <screenshot type="default">
+            <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/vQDLRxBIexwEiwYEsRfoAJGC/image.png</image>
         </screenshot>
     </screenshots>
     <releases>
         <release version="v1.0.0" timestamp="1569283200">
-            <description>New UI</description>
+            <description>
+            New UI.
+            Recommendation engine.
+            </description>
         </release>
         <release version="v0.4.0" timestamp="1555891200">
             <description>

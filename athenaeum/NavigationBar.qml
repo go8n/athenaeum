@@ -97,6 +97,8 @@ ToolBar {
         visible: activeView === 'browse' || activeView === 'game' || activeView === 'search'
         icon.source: 'icons/search.svg'
         anchors.right: menuButton.left
+        ToolTip.visible: hovered
+        ToolTip.text: qsTr("Search games.")
         onClicked: {
             if (activeView !== 'search') {
                 enter(searchView, null)
