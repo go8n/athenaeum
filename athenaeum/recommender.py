@@ -50,7 +50,10 @@ class Recommender(QObject):
     def cosine(self, vector1, vector2):
         """ related documents j and q are in the concept space by comparing the vectors :
             cosine  = ( V1 * V2 ) / ||V1|| x ||V2|| """
-        return float(dot(vector1,vector2) / (norm(vector1) * norm(vector2)))
+        try:
+            return float(dot(vector1,vector2) / (norm(vector1) * norm(vector2)))
+        except ValueError:
+            return 0
 
     def search(self, gameId):
             ratings = []
