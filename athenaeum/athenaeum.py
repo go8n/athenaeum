@@ -20,7 +20,7 @@ from browse import Browse, Recommendation
 from game import Game
 from gamemanager import GameManager
 from library import Library
-from loader import Loader
+from loader import Loader, LoaderFactory, GNULoader
 from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
 from notify import Notify
@@ -34,9 +34,7 @@ def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     print('Press Ctrl+C to quit.')
 
-    inFlatpak = False
-    if os.path.isfile('/.flatpak-info'):
-        inFlatpak = True
+    inFlatpak = os.path.isfile('/.flatpak-info')
 
     os.environ['QT_STYLE_OVERRIDE'] = ''
     os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
@@ -75,9 +73,11 @@ def main():
     settingRepository = SettingRepository(db=database)
     gameRepository = GameRepository(db=database)
 
+    loaderFactory = LoaderFactory(parent=app, inFlatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
+
     settings = Settings(parent=app, settingRepository=settingRepository)
-    loader = Loader(parent=app, flatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
-    gameManager = GameManager(flatpak=inFlatpak, gameRepository=gameRepository)
+    loader = loaderFactory.create()
+    gameManager = GameManager(inFlatpak=inFlatpak, gameRepository=gameRepository)
     recommender = Recommender(parent=app, gameManager=gameManager)
     
     library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)

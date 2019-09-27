@@ -1,6 +1,8 @@
 import random, platform
+from abc import ABC, ABCMeta, abstractmethod
 from datetime import datetime, timedelta
 from functools import partial
+import time
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, QTimer, QStandardPaths
 
@@ -8,8 +10,182 @@ import appstream
 from game import Game, Screenshot, Release, Url
 from lists import alwaysAccept, alwaysDeny, badLicenses, badCategories, loadingMessages, nonFreeAssets
 
+class LoaderFactory(QObject):
+    def __init__(self, inFlatpak=False, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._inFlatpak = inFlatpak
+        self._db = db
+        self._metaRepository = metaRepository
+        self._gameRepository = gameRepository
 
-class Loader(QObject):
+    def create(self):
+        if platform.system() == 'Linux':
+            return GNULoader(self._inFlatpak, self._db, self._metaRepository, self._gameRepository)
+        if platform.system() == 'Darwin':
+            return DarwinLoader(self._db, self._metaRepository, self._gameRepository)
+
+
+class LoaderMeta(type(QObject), ABCMeta):
+    pass
+
+class Loader(QObject, metaclass=LoaderMeta):
+    @abstractmethod
+    def load(self):
+        pass
+
+    @abstractmethod
+    def reset(self):
+        pass
+
+    @abstractmethod
+    def runUpdateCommands(self, proc_number=0):
+        pass
+
+    @abstractmethod
+    def runListCommands(self, proc_number=0):
+        pass
+
+    @property
+    @abstractmethod
+    def loading(self):
+        pass
+
+    @property
+    @abstractmethod
+    def error(self):
+        pass
+
+    @property
+    @abstractmethod
+    def log(self):
+        pass
+
+    @property
+    @abstractmethod
+    def message(self):
+        pass
+
+class DarwinLoader(Loader):
+    finished = pyqtSignal()
+    started = pyqtSignal()
+    stateChanged = pyqtSignal()
+    messageChanged = pyqtSignal()
+    errorChanged = pyqtSignal()
+    logChanged = pyqtSignal()
+    gameLoaded = pyqtSignal(Game)
+
+
+    def __init__(self, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._db = db
+        self._metaRepository = metaRepository
+        self._gameRepository = gameRepository
+        self._loading = True
+        self._error = False
+        self._processes = []
+        self._timer = QTimer()
+        self._timer.timeout.connect(self.changeMessage)
+        self._message = random.choice(loadingMessages)
+        self._log = ''
+
+        self._installed_list = ''
+        self._updates_list = ''
+        self._sizes_list = ''
+
+    def changeMessage(self):
+        self.message = random.choice(loadingMessages)
+
+    def load(self):
+        # self.startLoading()
+        self.loadGames()
+
+    def loadGames(self):
+        for i in range(6):
+            game = Game(
+                id="test",
+                name="Test",
+                iconSmall=None,
+                iconLarge=None,
+                license="GPL-3.0+",
+                developerName="test",
+                summary="test",
+                description="test",
+                screenshots=[],
+                tags=[],
+                antiFeatures=[],
+                releases=[],
+                urls=[],
+                ref="test",
+                installed=False,
+                hasUpdate=False,
+                lastPlayedDate=None,
+                createdDate=None,
+                downloadSize=None,
+                installedSize=None
+            )
+            self.gameLoaded.emit(game)
+
+        self.finishLoading()
+
+    def reset(self):
+        pass
+
+    def runUpdateCommands(self, proc_number=0):
+        pass
+
+    def runListCommands(self, proc_number=0):
+        pass
+
+    @pyqtProperty(bool, notify=stateChanged)
+    def loading(self):
+        return self._loading
+
+    @loading.setter
+    def loading(self, loading):
+        if loading != self._loading:
+            self._loading = loading
+            self.stateChanged.emit()
+
+    @pyqtProperty(bool, notify=errorChanged)
+    def error(self):
+        return self._error
+
+    @error.setter
+    def error(self, error):
+        if error != self._error:
+            self._error = error
+            self.stateChanged.emit()
+
+    @pyqtProperty(str, notify=logChanged)
+    def log(self):
+        return self._log
+
+    @log.setter
+    def log(self, log):
+        if log != self._log:
+            self._log = log
+            self.logChanged.emit()
+
+    @pyqtProperty(str, notify=stateChanged)
+    def message(self):
+        return self._message
+
+    @message.setter
+    def message(self, message):
+        if message != self._message:
+            self._message = message
+            self.stateChanged.emit()
+
+    def startLoading(self):
+        self.loading = True
+        self._timer.start(3000)
+        self.started.emit()
+
+    def finishLoading(self):
+        self.loading = False
+        self.finished.emit()
+
+class GNULoader(Loader):
     finished = pyqtSignal()
     started = pyqtSignal()
     stateChanged = pyqtSignal()
@@ -25,9 +201,9 @@ class Loader(QObject):
     flatHub = {'name':'flathub', 'url':'https://flathub.org/repo/flathub.flatpakrepo', 'git':'https://github.com/flathub'}
 
 
-    def __init__(self, flatpak=False, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
+    def __init__(self, inFlatpak=False, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._flatpak = flatpak
+        self._inFlatpak = inFlatpak
         self._db = db
         self._metaRepository = metaRepository
         self._gameRepository = gameRepository
@@ -64,19 +240,19 @@ class Loader(QObject):
         if proc_number == 0:
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runUpdateCommands, 1))
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
             else:
                 commandProcess.start('flatpak', ['remote-add', '--if-not-exists', '--user', self.flatHub['name'], self.flatHub['url']])
         elif proc_number == 1:
             commandProcess.finished.connect(partial(self.runUpdateCommands, 2))
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', '--appstream', '--user'])
             else:
                 commandProcess.start('flatpak', ['update', '--appstream', '--user'])
         elif proc_number == 2:
             commandProcess.finished.connect(self.runListCommands)
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'update', '--user', '-y'])
             else:
                 commandProcess.start('flatpak', ['update', '--user', '-y'])
@@ -90,20 +266,20 @@ class Loader(QObject):
             commandProcess.started.connect(self.startLoading)
             commandProcess.finished.connect(partial(self.runListCommands, 1))
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'list', '--user', '--app', '--columns=application'])
             else:
                 commandProcess.start('flatpak', ['list', '--user', '--app', '--columns=application'])
         if proc_number == 1:
             commandProcess.finished.connect(partial(self.runListCommands, 2))
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--updates', '--user', '--app', '--columns=application'])
             else:
                 commandProcess.start('flatpak', ['remote-ls', '--updates', '--user', '--app', '--columns=application'])
         if proc_number == 2:
             commandProcess.finished.connect(partial(self.loadListData, commandProcess, proc_number))
-            if self._flatpak:
+            if self._inFlatpak:
                 commandProcess.start('flatpak-spawn', ['--host', 'flatpak', 'remote-ls', '--user', '--app', '--columns=application,download-size,installed-size'])
             else:
                 commandProcess.start('flatpak', ['remote-ls', '--user', '--app', '--columns=application,download-size,installed-size'])
@@ -123,7 +299,7 @@ class Loader(QObject):
             return True
         if component.id in alwaysDeny:
             return False
-        
+
         return component.project_license and \
             not [x for x in badLicenses if x in component.project_license] and \
             'Game' in component.categories and \
@@ -132,7 +308,7 @@ class Loader(QObject):
     def loadAppstream(self, process=None):
         stream = appstream.Store()
         stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
-        
+
         game_sizes = {}
         for line in self._sizes_list.splitlines():
             game_size = line.split('\t')
@@ -164,14 +340,14 @@ class Loader(QObject):
                         has_update = gr['has_update']
                         download_size = gr['download_size']
                         installed_size = gr['installed_size']
-                        
+
                     last_played_date = gr['last_played_date']
                     created_date = gr['created_date']
                 else:
                     created_date = datetime.now()
                 urls = self.getUrls(component.urls)
                 urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
-                
+
                 game = Game(
                     id=component.id,
                     name=component.name,
@@ -209,7 +385,7 @@ class Loader(QObject):
             if result:
                 transfer.append(result)
         return transfer
-          
+
     def collateTags(self, categories, keywords):
         if keywords:
             return categories + keywords['en']
