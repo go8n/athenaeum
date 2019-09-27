@@ -146,7 +146,7 @@ Page {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     Button {
                                         onClicked: {
-                                            window.installGame(library.currentGame.id)
+                                            window.installGame(browse.currentGame.id)
                                             installPopup.close()
                                         }
                                         text: qsTr('Yes')
