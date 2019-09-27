@@ -62,15 +62,7 @@ class Library(QObject):
                 if game.id == game_id:
                     self.currentGame = game
                     self.filterValue = key
-                    print(key)
                     return
-
-    @pyqtSlot(str, result=int)
-    def findById(self, game_id):
-        for index, game in enumerate(self._gameManager.games()):
-            if game.id == game_id:
-                return index
-        return None
 
     @pyqtProperty(Game, notify=currentGameChanged)
     def currentGame(self):

@@ -47,10 +47,7 @@ class Browse(QObject):
     
     @pyqtSlot(str, result=Game)
     def getGameById(self, gameId):
-        for game in self._gameManager.games():
-            if game.id == gameId:
-                return game
-        return None
+        return  self._gameManager.getGameById(gameId)
     
     @pyqtProperty(QQmlListProperty, notify=spotlightChanged)
     def spotlight(self):

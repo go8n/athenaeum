@@ -11,7 +11,6 @@ ApplicationWindow {
     signal uninstallGame(string id)
     signal updateGame(string id)
     signal playGame(string id)
-    signal searchGames()
     signal filter()
     signal sort(string sort)
     signal updateAll()
@@ -42,7 +41,6 @@ ApplicationWindow {
         if (details) {
             switch (view) {
                 case gameView:
-                    // gameViewId.game = browse.getGameById(details)
                     gameViewId.gameId = details
                     break;
             

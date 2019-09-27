@@ -35,7 +35,7 @@ class GameManager(QObject):
         self._games.append(game)
         
     @pyqtSlot(str, result=int)
-    def findById(self, game_id):
+    def findIndexById(self, game_id):
         for index, game in enumerate(self._games):
             if game.id == game_id:
                 return index
@@ -57,7 +57,7 @@ class GameManager(QObject):
         self._processes.remove(process)
 
     def installGame(self, game_id, startedCallback=None, finishedCallback=None):
-        index = self.findById(game_id)
+        index = self.findIndexById(game_id)
         if index is not None:
             process = QProcess(parent=self.parent())
             process.started.connect(partial(self.installStarted, index, startedCallback))
@@ -91,7 +91,7 @@ class GameManager(QObject):
         if callback: callback()
 
     def uninstallGame(self, game_id, startedCallback=None, finishedCallback=None):
-        index = self.findById(game_id)
+        index = self.findIndexById(game_id)
         if index is not None:
             process = QProcess(parent=self.parent())
             process.started.connect(partial(self.uninstallStarted, index, startedCallback))
@@ -125,7 +125,7 @@ class GameManager(QObject):
         if callback: callback()
 
     def updateGame(self, game_id, startedCallback=None, finishedCallback=None):
-        index = self.findById(game_id)
+        index = self.findIndexById(game_id)
         if index is not None:
             print('update')
             process = QProcess(parent=self.parent())
@@ -158,7 +158,7 @@ class GameManager(QObject):
         self.processCleanup(process, index, action)
 
     def playGame(self, game_id, startedCallback=None, finishedCallback=None):
-        index = self.findById(game_id)
+        index = self.findIndexById(game_id)
         if index is not None:
             process = QProcess(parent=self.parent())
             process.started.connect(partial(self.startGame, index, startedCallback))
@@ -183,20 +183,6 @@ class GameManager(QObject):
         self._gameRepository.set(self._games[index])
         self.processCleanup(process, index)
         if callback: callback()
-
-    def searchGames(self):
-        if self.searchValue:
-            tmp = []
-            query = self.searchValue.lower()
-            if self.filterValue == 'all':
-                for game in self._games:
-                    if query in game.name.lower():
-                        tmp.append(game)
-            else:
-                for game in self._filters[self.filterValue]:
-                    if query in game.name.lower():
-                        tmp.append(game)
-            self.filter = tmp
 
     def sortGames(self, sort='az'):
         if sort == 'za':
