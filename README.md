@@ -6,7 +6,11 @@ A libre replacement for Steam
 
 Matrix Channel: [#athenaeum:matrix.org](https://riot.im/app/#/room/#athenaeum:matrix.org)
 
-![Viewing 0 A.D. in Athenaeum.](https://matrix.org/_matrix/media/v1/download/matrix.org/ZkKaxgNZXNSwPbHtWFesRRjT)
+![The main page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/PLFxpGfLqMylZlTYcWFrFVdI/image.png)
+
+![The search page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/mmRpuYAGHbmjjtYsAPvYQaaC/image.png)
+
+![Viewing SuperTuxKart in Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/xzoGLAXKxqNHmtHUXmpfBQWi/image.png)
 
 ## What Works
 
