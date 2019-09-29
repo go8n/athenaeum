@@ -1,6 +1,6 @@
 from functools import partial
 from datetime import datetime, timedelta
-import operator
+import operator, time
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, pyqtSlot
 from PyQt5.QtQml import QQmlListProperty
@@ -34,8 +34,11 @@ class Search(QObject):
     sortOptionsChanged = pyqtSignal()
     platformsChanged = pyqtSignal()
     repositoriesChanged = pyqtSignal()
-    searchQueryChanged = pyqtSignal()
+    searchValueChanged = pyqtSignal()
+    sortValueChanged = pyqtSignal()
     searchTagsValueChanged = pyqtSignal()
+    resultsChanged = pyqtSignal()
+    activeTagsChanged = pyqtSignal()
     
     def __init__(self, gameManager=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,9 +64,12 @@ class Search(QObject):
         self._searchValue = ''
         self._searchTagsValue = ''
         self._sortValue = 0
-        
+        self._results = []
+        self._activeTags = []
+        # self.searchQueryChanged.connect(self.calculateResults)
+
     def load(self):
-        self.searchQueryChanged.emit()
+        self.results = self._gameManager.games()
     
     @pyqtProperty('QString', notify=searchTagsValueChanged)
     def searchTagsValue(self):
@@ -75,7 +81,7 @@ class Search(QObject):
             self._searchTagsValue = searchTagsValue
             self.searchTagsValueChanged.emit()
     
-    @pyqtProperty('QString', notify=searchQueryChanged)
+    @pyqtProperty('QString', notify=searchValueChanged)
     def searchValue(self):
         return self._searchValue
     
@@ -83,9 +89,9 @@ class Search(QObject):
     def searchValue(self, searchValue):
         if searchValue != self._searchValue:
             self._searchValue = searchValue
-            self.searchQueryChanged.emit()
+            self.searchValueChanged.emit()
                 
-    @pyqtProperty(int, notify=searchQueryChanged)
+    @pyqtProperty(int, notify=sortValueChanged)
     def sortValue(self):
         return self._sortValue
     
@@ -93,7 +99,7 @@ class Search(QObject):
     def sortValue(self, sortValue):
         if sortValue != self._sortValue:
             self._sortValue = sortValue
-            self.searchQueryChanged.emit()
+            self.sortValueChanged.emit()
         
     @pyqtProperty(QQmlListProperty, notify=tagsChanged)
     def tags(self):
@@ -105,9 +111,13 @@ class Search(QObject):
             self._tags = tags
             self.tagsChanged.emit()
          
-    @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
+    @pyqtProperty(QQmlListProperty, notify=activeTagsChanged)
     def activeTags(self):
-        return QQmlListProperty(Tag, self, list(filter(lambda x: x.active, self._tags)))
+        activeTags = list(filter(lambda x: x.active, self._tags))
+        if activeTags != self._activeTags:
+            self._activeTags = activeTags
+            self.results = self._gameManager.games()
+        return QQmlListProperty(Tag, self, self._activeTags)
          
     @pyqtProperty(QQmlListProperty, notify=searchTagsValueChanged)
     def searchTags(self):
@@ -125,32 +135,46 @@ class Search(QObject):
     def repositories(self):
         return self._repositories
     
-    @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
-    def results(self):
-        results = list(filter(self.filterFunc, self._gameManager.games()))
+    # def calculateResults(self):
+        
+    #     print('cal res')
 
-        if self.sortValue == 1:
-            results.sort(key = lambda index: operator.attrgetter('name')(index).lower())
-        if self.sortValue == 2:
-            results.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
+        # if self.sortValue == 1:
+        #     results.sort(key = lambda index: operator.attrgetter('name')(index).lower())
+        # if self.sortValue == 2:
+        #     results.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
         # if self.sortValue == 3:
             # results.sort(key=lambda x: tuple(x.downloadSize.split(' ').reverse() if x.downloadSize else []))
         # if self.sortValue == 4:
             # results.sort(key=lambda x: x.installedSize)
 
-        self._results = QQmlListProperty(Game, self, results)
+        # self.results = results
 
-        return self._results
+    @pyqtProperty(QQmlListProperty, notify=resultsChanged)
+    def results(self):
+        return QQmlListProperty(Game, self, self._results)
+
+    @results.setter
+    def results(self, results):
+        resultsTmp = []
+        for result in results:
+            if set(map(lambda x: x.name, self._activeTags)).issubset(set(result.tags)):
+                resultsTmp.append(result) 
+        results = resultsTmp
+        if results != self._results:
+            self._results = results
+            print('results.setter')
+            self.resultsChanged.emit()
     
     # @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
     # def resultsShort(self):
     #     return QQmlListProperty(Game, self, list(filter(lambda x: self.searchValue.lower() in x.name.lower(), self._gameManager.games()))[:5] if self.searchValue else [])
     
-    def filterFunc(self, x):
-        if self.searchValue and self.searchValue.lower() not in x.name.lower():
-            return False
+    # def filterFunc(self, x):
+        # if self._searchValue and self._searchValue.lower() not in x.name.lower():
+        #     return False
         
-        if not set(map(lambda x: x.name, self.activeTags)).issubset(set(x.tags)):
-            return False
+        # if not set(map(lambda x: x.name, self._activeTags)).issubset(set(x.tags)):
+        #     return False
         
-        return True
+        # return True

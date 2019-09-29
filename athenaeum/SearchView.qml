@@ -67,7 +67,7 @@ Page {
                         }
                         onClicked: {
                             active = false
-                            search.searchQueryChanged()
+                            search.activeTagsChanged()
                         }
                     }
                 }
@@ -227,7 +227,7 @@ Page {
                                 checked: active
                                 onCheckedChanged: {
                                     active = checked
-                                    search.searchQueryChanged()
+                                    search.activeTagsChanged()
                                 }
                             }
                             ScrollBar.vertical: ScrollBar { 
