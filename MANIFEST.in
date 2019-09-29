@@ -5,6 +5,7 @@ include athenaeum/icons/close.svg
 include athenaeum/icons/cogs.svg
 include athenaeum/icons/donate.svg
 include athenaeum/icons/download.svg
+include athenaeum/icons/exclamation.svg
 include athenaeum/icons/globe.svg
 include athenaeum/icons/help.svg
 include athenaeum/icons/home.svg
