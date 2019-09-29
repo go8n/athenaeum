@@ -121,8 +121,8 @@ def main():
     root.resetDatabase.connect(loader.reset)
 
     try:
-        notify = Notify(APP_UPPER_TITLE)
-        root.notify.connect(notify.show_notifitcation)
+        notify = Notify(parent=app, name=APP_UPPER_TITLE)
+        gameManager.displayNotification.connect(notify.showNotifitcation)
     except Error as e:
         print('Error initializing notifications.');
 

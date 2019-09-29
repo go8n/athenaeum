@@ -11,11 +11,8 @@ ApplicationWindow {
     signal uninstallGame(string id)
     signal updateGame(string id)
     signal playGame(string id)
-    signal filter()
-    signal sort(string sort)
     signal updateAll()
     signal checkAll()
-    signal notify(string name, string message, string icon)
     signal resetDatabase()
 
     width: 1000
@@ -139,28 +136,6 @@ ApplicationWindow {
                         color: Material.background
                     }
                 }
-            }
-        }
-    }
-    
-    Connections {
-        target: gameManager
-        function getMessage(action) {
-            switch(action) {
-                case 'install':
-                    return qsTr('Installed successfully.');
-                case 'uninstall':
-                    return qsTr('Uninstalled successfully.');
-                case 'update':
-                    return qsTr('Updated successfully.');
-                case 'error':
-                    return qsTr('An error occurred.');
-            }
-        }
-        onDisplayNotification: {
-            var foundGame = gameManager.findByIndex(index)
-            if (settings.notificationsEnabled) {
-                window.notify(foundGame.name, getMessage(action), foundGame.iconLarge)
             }
         }
     }

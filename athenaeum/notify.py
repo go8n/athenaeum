@@ -1,15 +1,16 @@
-from PyQt5.QtCore import QVariant, QMetaType
+from PyQt5.QtCore import QVariant, QMetaType, QObject
 from PyQt5.QtDBus import QDBusConnection, QDBusArgument, QDBusInterface, QDBus
 
-class Notify:
+class Notify(QObject):
     def __init__(self, name='', *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._appName = name
         
         self._bus = QDBusConnection.sessionBus()
         if not self._bus.isConnected():
             print("Not connected to dbus!")
         
-    def show_notifitcation(self, header, message, icon):
+    def showNotifitcation(self, header, message, icon):
         item = "org.freedesktop.Notifications"
         path = "/org/freedesktop/Notifications"
         interface = "org.freedesktop.Notifications"

@@ -11,7 +11,7 @@ from game import Game
 
 class GameManager(QObject):
     ready = pyqtSignal()
-    displayNotification = pyqtSignal(int, str, arguments=['index', 'action'])
+    displayNotification = pyqtSignal(str, str, str, arguments=['header', 'message', 'icon'])
     
     def __init__(self, inFlatpak=False, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,7 +53,17 @@ class GameManager(QObject):
 
     def processCleanup(self, process, index, action=None):
         if action:
-            self.displayNotification.emit(index, action)
+            message = ''
+            if action == 'install':
+                message = 'Installed successfully.'
+            if action == 'uninstall':
+                message = 'Uninstalled successfully.'
+            if action == 'update':
+                message = 'Updated successfully.'
+            if action == 'error':
+                message = 'An error occurred.'
+
+            self.displayNotification.emit(self._games[index].name, message, self._games[index].iconLarge)
         self._processes.remove(process)
 
     def installGame(self, game_id, startedCallback=None, finishedCallback=None):
