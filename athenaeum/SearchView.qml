@@ -104,6 +104,8 @@ Page {
                         }
                         
                         Row {
+                            clip: true
+                            width: parent.width
                             padding: 10
                             spacing: 10
                             Image {
