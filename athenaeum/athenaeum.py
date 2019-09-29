@@ -115,6 +115,11 @@ def main():
     root.uninstallGame.connect(library.uninstallGame)
     root.updateGame.connect(library.updateGame)
     root.playGame.connect(library.playGame)
+    root.cancelGame.connect(library.cancelGame)
+
+    root.markInstalled.connect(gameManager.markInstalled)
+    root.markUninstalled.connect(gameManager.markUninstalled)
+    root.clearErrors.connect(gameManager.clearErrors)
 
     root.updateAll.connect(loader.runUpdateCommands)
     root.checkAll.connect(loader.runListCommands)

@@ -360,6 +360,79 @@ Page {
                             }
                         }
                         Button {
+                            visible: library.currentGame.processing
+                            onClicked: {
+                                window.cancelGame(library.currentGame.id)
+                            }
+                            icon.source: 'icons/close.svg'
+                            text: qsTr('Cancel')
+                        }
+                        Button {
+                            visible: library.currentGame.error
+                            onClicked: {
+                                resolveErrorsPopup.open()
+                            }
+                            Popup {
+                                id: resolveErrorsPopup
+                                parent: stackView
+                                x: Math.round((parent.width - width) / 2)
+                                y: Math.round((parent.height - height) / 2)
+                                modal: true
+                                dim: true
+                                focus: true
+                                contentItem: Column {
+                                    spacing: 20
+                                    Text {
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        color: Material.foreground
+                                        font.pixelSize: 20
+                                        text: qsTr('Resolve Error')
+                                    }
+                                    Column {
+                                        spacing: 10
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        Button {
+                                            anchors.left: parent.left
+                                            anchors.right: parent.right
+                                            onClicked: {
+                                                window.clearErrors(library.currentGame.id)
+                                                resolveErrorsPopup.close()
+                                            }
+                                            text: qsTr('Clear error')
+                                        }
+                                        Button {
+                                            anchors.left: parent.left
+                                            anchors.right: parent.right
+                                            text: qsTr('Mark as installed')
+                                            onClicked: {
+                                                window.markInstalled(library.currentGame.id)
+                                                resolveErrorsPopup.close()
+                                            }
+                                        }
+                                        Button {
+                                            text: qsTr('Mark as uninstalled')
+                                            onClicked: {
+                                                window.markUninstalled(library.currentGame.id)
+                                                resolveErrorsPopup.close()
+                                            }
+                                        }
+                                        Button {
+                                            anchors.left: parent.left
+                                            anchors.right: parent.right
+                                            text: qsTr('Cancel')
+                                            onClicked: {
+                                                resolveErrorsPopup.close()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            Component.onCompleted: {
+                                background.color = 'red'
+                            }
+                            icon.source: 'icons/exclamation.svg'
+                        }
+                        Button {
                             onClicked: {
                                 enter(gameView, library.currentGame.id)
                             }

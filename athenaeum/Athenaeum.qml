@@ -11,6 +11,12 @@ ApplicationWindow {
     signal uninstallGame(string id)
     signal updateGame(string id)
     signal playGame(string id)
+    signal cancelGame(string id)
+
+    signal markInstalled(string id)
+    signal markUninstalled(string id)
+    signal clearErrors(string id)
+
     signal updateAll()
     signal checkAll()
     signal resetDatabase()

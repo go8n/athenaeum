@@ -157,3 +157,6 @@ class Library(QObject):
 
     def playGame(self, game_id):
         self._gameManager.playGame(game_id, startedCallback=self.updateFilters, finishedCallback=self.updateFilters)
+
+    def cancelGame(self, game_id):
+        self._gameManager.processCancel(game_id)

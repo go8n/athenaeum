@@ -26,7 +26,7 @@ class GameManager(QObject):
     def reset(self):
         self._games = []
         self._threads = []
-        self._processes = []
+        self._processes = {}
 
     def games(self):
         return self._games
@@ -51,8 +51,17 @@ class GameManager(QObject):
     def findByIndex(self, index):
         return self._games[index]
 
+    def processCancel(self, game_id):
+        index = self.findIndexById(game_id)
+        if len(self._processes[self._games[index].id]):
+            process = self._processes[self._games[index].id][0]
+            process.finished.disconnect()
+            process.terminate()
+            self._games[index].processing = False
+            self.processCleanup(process, index, 'cancel')
+    
     def processCleanup(self, process, index, action=None):
-        if action:
+        if action and action != 'cancel':
             message = ''
             if action == 'install':
                 message = 'Installed successfully.'
@@ -62,9 +71,16 @@ class GameManager(QObject):
                 message = 'Updated successfully.'
             if action == 'error':
                 message = 'An error occurred.'
-
             self.displayNotification.emit(self._games[index].name, message, self._games[index].iconLarge)
-        self._processes.remove(process)
+
+        self._processes[self._games[index].id].remove(process)
+        if len(self._processes[self._games[index].id]) == 0:
+            del self._processes[self._games[index].id]
+
+    def recordProcess(self, game_id, process):
+        if not game_id in self._processes:
+            self._processes[game_id] = []
+        self._processes[game_id].append(process)
 
     def installGame(self, game_id, startedCallback=None, finishedCallback=None):
         index = self.findIndexById(game_id)
@@ -78,7 +94,7 @@ class GameManager(QObject):
                 process.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[index].ref, '-y', '--user'])
             else:
                 process.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
-            self._processes.append(process)
+            self.recordProcess(game_id, process)
 
     def installStarted(self, index, callback=None):
         self._games[index].processing = True
@@ -112,7 +128,7 @@ class GameManager(QObject):
                 process.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[index].ref, '-y', '--user'])
             else:
                 process.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
-            self._processes.append(process)
+            self.recordProcess(game_id, process)
 
     def uninstallStarted(self, index, callback=None):
         self._games[index].processing = True
@@ -147,7 +163,7 @@ class GameManager(QObject):
                 process.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[index].ref, '-y', '--user'])
             else:
                 process.start('flatpak', ['update', self._games[index].ref, '-y', '--user'])
-            self._processes.append(updateProcess)
+            self.recordProcess(game_id, process)
 
     def updateStarted(self, index):
         self._games[index].processing = True
@@ -179,7 +195,7 @@ class GameManager(QObject):
                 process.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[index].ref])
             else:
                 process.start('flatpak', ['run', self._games[index].ref])
-            self._processes.append(process)
+            self.recordProcess(game_id, process)
 
     def startGame(self, index, callback):
         self._games[index].playing = True
@@ -199,3 +215,20 @@ class GameManager(QObject):
             self._games.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
         else:
             self._games.sort(key = lambda index: operator.attrgetter('name')(index).lower())
+
+    def markInstalled(self, game_id):
+        game = self.getGameById(game_id)
+        game.installed = True
+        self._gameRepository.set(game)
+        self.clearErrors(game_id)
+
+    def markUninstalled(self, game_id):
+        game = self.getGameById(game_id)
+        game.installed = False
+        self._gameRepository.set(game)
+        self.clearErrors(game_id)
+
+    def clearErrors(self, game_id):
+        game = self.getGameById(game_id)
+        game.error = False
+        # self._gameRepository.set(game)
