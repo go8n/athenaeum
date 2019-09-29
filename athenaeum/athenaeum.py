@@ -18,9 +18,9 @@ sys.path.insert(0, BASEDIR)
 
 from browse import Browse, Recommendation
 from game import Game
-from gamemanager import GameManager
+from gamemanager import GameManager, GameManagerFactory
 from library import Library
-from loader import Loader, LoaderFactory, GNULoader
+from loader import Loader, LoaderFactory
 from models import Database, MetaRepository, SettingRepository, GameRepository
 from network import NetworkAccessManagerFactory
 from notify import Notify
@@ -74,10 +74,11 @@ def main():
     gameRepository = GameRepository(db=database)
 
     loaderFactory = LoaderFactory(parent=app, inFlatpak=inFlatpak, db=database, metaRepository=metaRepository, gameRepository=gameRepository)
+    gameManagerFactory = GameManagerFactory(parent=app, inFlatpak=inFlatpak, gameRepository=gameRepository)
 
     settings = Settings(parent=app, settingRepository=settingRepository)
     loader = loaderFactory.create()
-    gameManager = GameManager(inFlatpak=inFlatpak, gameRepository=gameRepository)
+    gameManager = gameManagerFactory.create()
     recommender = Recommender(parent=app, gameManager=gameManager)
     
     library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)

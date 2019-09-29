@@ -1,12 +1,25 @@
 from functools import partial
 from datetime import datetime, timedelta
-import operator
+import operator, platform
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, QProcess, pyqtSlot
 from PyQt5.QtQml import QQmlListProperty
 
 
 from game import Game
+
+
+class GameManagerFactory(QObject):
+    def __init__(self, inFlatpak=False, db=None, metaRepository=None, gameRepository=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._inFlatpak = inFlatpak
+        self._gameRepository = gameRepository
+
+    def create(self):
+        if platform.system() == 'Linux':
+            return GNUGameManager(self._inFlatpak, self._gameRepository)
+        # if platform.system() == 'Darwin':
+        #     return DarwinLoader(self._db, self._metaRepository, self._gameRepository)
 
 
 class GameManager(QObject):
@@ -90,10 +103,7 @@ class GameManager(QObject):
             process.finished.connect(partial(self.installFinished, process, index, finishedCallback))
             process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
             process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
-            if self._inFlatpak:
-                process.start('flatpak-spawn', ['--host', 'flatpak', 'install', 'flathub', self._games[index].ref, '-y', '--user'])
-            else:
-                process.start('flatpak', ['install', 'flathub', self._games[index].ref, '-y', '--user'])
+            process.start(self._commands['install'].replace(':id:', self._games[index].ref))
             self.recordProcess(game_id, process)
 
     def installStarted(self, index, callback=None):
@@ -124,10 +134,7 @@ class GameManager(QObject):
             process.finished.connect(partial(self.uninstallFinishd, process, index, finishedCallback))
             process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
             process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
-            if self._inFlatpak:
-                process.start('flatpak-spawn', ['--host', 'flatpak', 'uninstall', self._games[index].ref, '-y', '--user'])
-            else:
-                process.start('flatpak', ['uninstall', self._games[index].ref, '-y', '--user'])
+            process.start(self._commands['uninstall'].replace(':id:', self._games[index].ref))
             self.recordProcess(game_id, process)
 
     def uninstallStarted(self, index, callback=None):
@@ -159,10 +166,7 @@ class GameManager(QObject):
             process.finished.connect(partial(self.updateFinished, process, index))
             process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
             process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
-            if self._inFlatpak:
-                process.start('flatpak-spawn', ['--host', 'flatpak', 'update', self._games[index].ref, '-y', '--user'])
-            else:
-                process.start('flatpak', ['update', self._games[index].ref, '-y', '--user'])
+            process.start(self._commands['update'].replace(':id:', self._games[index].ref))
             self.recordProcess(game_id, process)
 
     def updateStarted(self, index):
@@ -191,10 +195,7 @@ class GameManager(QObject):
             process.finished.connect(partial(self.stopGame, process, index, finishedCallback))
             process.readyReadStandardOutput.connect(partial(self._games[index].appendLog, process))
             process.readyReadStandardError.connect(partial(self._games[index].appendLog, process))
-            if self._inFlatpak:
-                process.start('flatpak-spawn', ['--host', 'flatpak', 'run', self._games[index].ref])
-            else:
-                process.start('flatpak', ['run', self._games[index].ref])
+            process.start(self._commands['play'].replace(':id:', self._games[index].ref))
             self.recordProcess(game_id, process)
 
     def startGame(self, index, callback):
@@ -203,6 +204,9 @@ class GameManager(QObject):
         if callback: callback()
 
     def stopGame(self, process, index, callback):
+        if process.exitCode():
+            self._games[index].error = True
+
         self._games[index].playing = False
         self._games[index].lastPlayedDate = datetime.now()
         self._games[index].appendLog(process, finished=True)
@@ -232,3 +236,24 @@ class GameManager(QObject):
         game = self.getGameById(game_id)
         game.error = False
         # self._gameRepository.set(game)
+
+
+class GNUGameManager(GameManager):
+    def __init__(self, inFlatpak=False, gameRepository=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if inFlatpak:
+            self._commands = {
+                'play': 'flatpak-spawn --host flatpak run :id:',
+                'install': 'flatpak-spawn --host flatpak install flathub :id: -y --user',
+                'uninstall': 'flatpak-spawn --host flatpak uninstall :id: -y --user',
+                'update': 'flatpak-spawn --host flatpak update :id: -y --user'
+            }
+        else:
+            self._commands = {
+                'play': 'flatpak run :id:',
+                'install': 'flatpak install flathub :id: -y --user',
+                'uninstall': 'flatpak uninstall :id: -y --user',
+                'update': 'flatpak update :id: -y --user'
+            }
+
+        self._gameRepository = gameRepository
