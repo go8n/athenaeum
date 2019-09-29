@@ -173,6 +173,7 @@ Page {
                             }
                         }
                         Column {
+                            clip: true
                             padding: 10
                             width: recommendedFlow.cellWidth
                             Row {
@@ -199,6 +200,7 @@ Page {
                                             font.pixelSize: 14
                                         }
                                         Text {
+                                            visible: recommendedRepeated.model[index].what.license
                                             text: '|'   
                                             color: Material.primary
                                             font.pixelSize: 14
@@ -285,6 +287,8 @@ Page {
                             }
                             
                             Row {
+                                clip: true
+                                width: parent.width
                                 padding: 10
                                 spacing: 5
                                 Image {
