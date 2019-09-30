@@ -19,7 +19,7 @@ class GameManagerFactory(QObject):
         if platform.system() == 'Linux':
             return GNUGameManager(self._inFlatpak, self._gameRepository)
         if platform.system() == 'Darwin':
-            return DarwinLoader(self._gameRepository)
+            return DarwinGameManager(self._gameRepository)
 
 
 class GameManager(QObject):
