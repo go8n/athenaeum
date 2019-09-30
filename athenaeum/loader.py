@@ -65,6 +65,163 @@ class Loader(QObject, metaclass=LoaderMeta):
     def message(self):
         pass
 
+    @abstractmethod
+    def getRef(self, component):
+        pass
+
+    def loadAppstream(self, process=None):
+        stream = appstream.Store()
+        stream.from_file(self._appsteamPath)
+
+        game_sizes = {}
+        for line in self._sizes_list.splitlines():
+            game_size = line.split('\t')
+            game_sizes[game_size[0]] = game_size
+
+        for component in stream.get_components():
+            component.id = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
+            if self.acceptedGame(component):
+                installed = False
+                has_update = False
+                download_size = None
+                installed_size = None
+                last_played_date = None
+                created_date = None
+                antiFeatures = []
+                if component.id in nonFreeAssets:
+                    antiFeatures.append('assets')
+
+                if process:
+                    installed = component.id in self._installed_list
+                    has_update = component.id.split('/')[0] in self._updates_list
+                    download_size = game_sizes[component.id][1]
+                    installed_size = game_sizes[component.id][2]
+
+                gr = self._gameRepository.get(component.id)
+                if gr:
+                    if not process:
+                        installed = gr['installed']
+                        has_update = gr['has_update']
+                        download_size = gr['download_size']
+                        installed_size = gr['installed_size']
+
+                    last_played_date = gr['last_played_date']
+                    created_date = gr['created_date']
+                else:
+                    created_date = datetime.now()
+                urls = self.getUrls(component.urls)
+                urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
+
+                game = Game(
+                    id=component.id,
+                    name=component.name,
+                    iconSmall=self.getIconSmall(component.icons),
+                    iconLarge=self.getIconLarge(component.icons),
+                    license=component.project_license,
+                    developerName=component.developer_name,
+                    summary=component.summary,
+                    description=component.description,
+                    screenshots=self.getScreenshots(component.screenshots),
+                    tags=self.collateTags(self.cleanCategories(component.categories), component.keywords),
+                    antiFeatures=antiFeatures,
+                    releases=self.getReleases(component.releases),
+                    urls=urls,
+                    ref=self.getRef(component),
+                    installed=installed,
+                    hasUpdate=has_update,
+                    lastPlayedDate=last_played_date,
+                    createdDate=created_date,
+                    downloadSize=download_size,
+                    installedSize=installed_size
+                )
+
+                if process:
+                    self._gameRepository.set(game=game)
+
+                self.gameLoaded.emit(game)
+
+        self.finishLoading()
+
+    def cleanCategories(self, categories):
+        transfer = []
+        for category in categories:
+            result = category.replace('Game', '')
+            if result:
+                transfer.append(result)
+        return transfer
+
+    def collateTags(self, categories, keywords):
+        if keywords:
+            return categories + keywords['en']
+        else:
+            return categories
+
+    def getIconSmall(self, icons):
+        path = self._iconsPath
+        if icons:
+            if icons['cached'][0]['height'] == '64':
+                return path + '/64x64/' + icons['cached'][0]['value']
+            elif icons['cached'][1]['height'] == '64':
+                return path + '/64x64/' + icons['cached'][0]['value']
+            else:
+                return path + '/128x128/' + icons['cached'][0]['height']['value']
+        else:
+            return ''
+
+    def getIconLarge(self, icons):
+        path = self._iconsPath
+        if icons:
+            cached_icon = icons['cached'][0]
+            if cached_icon['height'] == '128':
+                return path + '/128x128/' + cached_icon['value']
+            elif cached_icon['height'] == '64':
+                return path + '/64x64/' + cached_icon['value']
+        else:
+            return ''
+
+    def getScreenshots(self, screenshots):
+        transfer = []
+        for screenshot in screenshots:
+            single = {'source': None, 'thumbnail': None}
+            lowest = 0
+            for image in screenshot.images:
+                if image.kind == 'source':
+                    single['source'] = image.url
+                elif image.kind == 'thumbnail':
+                    if lowest:
+                        if image.width < lowest:
+                            lowest = image.width
+                            single['thumbnail'] = image.url
+                    else:
+                        lowest = image.width
+                        single['thumbnail'] = image.url
+
+            transfer.append(Screenshot(thumbUrl=single['thumbnail'], sourceUrl=single['source']))
+        return transfer
+
+    def getReleases(self, releases):
+        transfer = []
+        for release in releases:
+            transfer.append(Release(version=release.version, timestamp=release.timestamp, description=release.description))
+        return transfer
+
+    def getUrls(self, urls):
+        transfer = []
+        for type, url in urls.items():
+            transfer.append(Url(type=type, url=url))
+        return transfer
+    
+    def acceptedGame(self, component=None):
+        if component.id in alwaysAccept:
+            return True
+        if component.id in alwaysDeny:
+            return False
+
+        return component.project_license and \
+            not [x for x in badLicenses if x in component.project_license] and \
+            'Game' in component.categories and \
+            not [x for x in badCategories if x in component.categories]
+
 class DarwinLoader(Loader):
     finished = pyqtSignal()
     started = pyqtSignal()
@@ -88,6 +245,10 @@ class DarwinLoader(Loader):
         self._message = random.choice(loadingMessages)
         self._log = ''
 
+        self._appsteamPath = 'https://flathub.org/repo/appstream/x86_64/appstream.xml.gz'
+        self._iconsPath = 'https://flathub.org/repo/appstream/x86_64/icons'
+        self._iconsPath
+
         self._installed_list = ''
         self._updates_list = ''
         self._sizes_list = ''
@@ -96,36 +257,10 @@ class DarwinLoader(Loader):
         self.message = random.choice(loadingMessages)
 
     def load(self):
-        # self.startLoading()
-        self.loadGames()
+        self.loadAppstream()
 
-    def loadGames(self):
-        for i in range(6):
-            game = Game(
-                id="test",
-                name="Test",
-                iconSmall=None,
-                iconLarge=None,
-                license="GPL-3.0+",
-                developerName="test",
-                summary="test",
-                description="test",
-                screenshots=[],
-                tags=[],
-                antiFeatures=[],
-                releases=[],
-                urls=[],
-                ref="test",
-                installed=False,
-                hasUpdate=False,
-                lastPlayedDate=None,
-                createdDate=None,
-                downloadSize=None,
-                installedSize=None
-            )
-            self.gameLoaded.emit(game)
-
-        self.finishLoading()
+    def getRef(self, component):
+        return 'test'
 
     def reset(self):
         pass
@@ -214,7 +349,9 @@ class GNULoader(Loader):
         self._timer.timeout.connect(self.changeMessage)
         self._message = random.choice(loadingMessages)
         self._appsteamPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/appstream.xml.gz'
+        self._appsteamPath = self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch)
         self._iconsPath = QStandardPaths.writableLocation(QStandardPaths.GenericDataLocation) + '/flatpak/appstream/{remote}/{arch}/active/icons'
+        self._iconsPath = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
         self._log = ''
 
         self._installed_list = ''
@@ -294,158 +431,8 @@ class GNULoader(Loader):
             self._sizes_list = str(process.readAllStandardOutput(), 'utf-8')
             self.loadAppstream(process=True)
 
-    def acceptedGame(self, component=None):
-        if component.id in alwaysAccept:
-            return True
-        if component.id in alwaysDeny:
-            return False
-
-        return component.project_license and \
-            not [x for x in badLicenses if x in component.project_license] and \
-            'Game' in component.categories and \
-            not [x for x in badCategories if x in component.categories]
-
-    def loadAppstream(self, process=None):
-        stream = appstream.Store()
-        stream.from_file(self._appsteamPath.format(remote=self.flatHub['name'], arch=self.arch))
-
-        game_sizes = {}
-        for line in self._sizes_list.splitlines():
-            game_size = line.split('\t')
-            game_sizes[game_size[0]] = game_size
-
-        for component in stream.get_components():
-            component.id = (component.id[:-8] if component.id.endswith('.desktop') else component.id)
-            if self.acceptedGame(component):
-                installed = False
-                has_update = False
-                download_size = None
-                installed_size = None
-                last_played_date = None
-                created_date = None
-                antiFeatures = []
-                if component.id in nonFreeAssets:
-                    antiFeatures.append('assets')
-
-                if process:
-                    installed = component.id in self._installed_list
-                    has_update = component.id.split('/')[0] in self._updates_list
-                    download_size = game_sizes[component.id][1]
-                    installed_size = game_sizes[component.id][2]
-
-                gr = self._gameRepository.get(component.id)
-                if gr:
-                    if not process:
-                        installed = gr['installed']
-                        has_update = gr['has_update']
-                        download_size = gr['download_size']
-                        installed_size = gr['installed_size']
-
-                    last_played_date = gr['last_played_date']
-                    created_date = gr['created_date']
-                else:
-                    created_date = datetime.now()
-                urls = self.getUrls(component.urls)
-                urls.append(Url(type='manifest', url=self.flatHub['git'] + '/' + (component.id[:-8] if component.id.endswith('.desktop') else component.id)))
-
-                game = Game(
-                    id=component.id,
-                    name=component.name,
-                    iconSmall=self.getIconSmall(component.icons),
-                    iconLarge=self.getIconLarge(component.icons),
-                    license=component.project_license,
-                    developerName=component.developer_name,
-                    summary=component.summary,
-                    description=component.description,
-                    screenshots=self.getScreenshots(component.screenshots),
-                    tags=self.collateTags(self.cleanCategories(component.categories), component.keywords),
-                    antiFeatures=antiFeatures,
-                    releases=self.getReleases(component.releases),
-                    urls=urls,
-                    ref=component.bundle['value'],
-                    installed=installed,
-                    hasUpdate=has_update,
-                    lastPlayedDate=last_played_date,
-                    createdDate=created_date,
-                    downloadSize=download_size,
-                    installedSize=installed_size
-                )
-
-                if process:
-                    self._gameRepository.set(game=game)
-
-                self.gameLoaded.emit(game)
-
-        self.finishLoading()
-
-    def cleanCategories(self, categories):
-        transfer = []
-        for category in categories:
-            result = category.replace('Game', '')
-            if result:
-                transfer.append(result)
-        return transfer
-
-    def collateTags(self, categories, keywords):
-        if keywords:
-            return categories + keywords['en']
-        else:
-            return categories
-
-    def getIconSmall(self, icons):
-        path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
-        if icons:
-            if icons['cached'][0]['height'] == '64':
-                return path + '/64x64/' + icons['cached'][0]['value']
-            elif icons['cached'][1]['height'] == '64':
-                return path + '/64x64/' + icons['cached'][0]['value']
-            else:
-                return path + '/128x128/' + icons['cached'][0]['height']['value']
-        else:
-            return ''
-
-    def getIconLarge(self, icons):
-        path = self._iconsPath.format(remote=self.flatHub['name'], arch=self.arch)
-        if icons:
-            cached_icon = icons['cached'][0]
-            if cached_icon['height'] == '128':
-                return path + '/128x128/' + cached_icon['value']
-            elif cached_icon['height'] == '64':
-                return path + '/64x64/' + cached_icon['value']
-        else:
-            return ''
-
-    def getScreenshots(self, screenshots):
-        transfer = []
-        for screenshot in screenshots:
-            single = {'source': None, 'thumbnail': None}
-            lowest = 0
-            for image in screenshot.images:
-                if image.kind == 'source':
-                    single['source'] = image.url
-                elif image.kind == 'thumbnail':
-                    if lowest:
-                        if image.width < lowest:
-                            lowest = image.width
-                            single['thumbnail'] = image.url
-                    else:
-                        lowest = image.width
-                        single['thumbnail'] = image.url
-
-            transfer.append(Screenshot(thumbUrl=single['thumbnail'], sourceUrl=single['source']))
-        return transfer
-
-    def getReleases(self, releases):
-        transfer = []
-        for release in releases:
-            transfer.append(Release(version=release.version, timestamp=release.timestamp, description=release.description))
-        return transfer
-
-    def getUrls(self, urls):
-        transfer = []
-        for type, url in urls.items():
-            transfer.append(Url(type=type, url=url))
-        return transfer
+    def getRef(self, component):
+        return component.bundle['value']
 
     @pyqtProperty(bool, notify=stateChanged)
     def loading(self):
