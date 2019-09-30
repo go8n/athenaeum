@@ -622,7 +622,6 @@ Page {
                                     color: tr
                                 }
 
-                                icon.color: type === 'donation' ? '#00000000' : icon.color
                                 font.capitalization: Font.MixedCase
                                 function getTitle(type) {
                                     switch(type) {
@@ -635,6 +634,7 @@ Page {
                                         case 'faq':
                                             return qsTr('FAQ');
                                         case 'donation':
+                                            icon.color = '#00000000';
                                             return qsTr('Donate');
                                         case 'translate':
                                             return qsTr('Translation');
