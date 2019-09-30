@@ -241,7 +241,7 @@ class DarwinGameManager(GameManager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._commands = {
-            'play': ':id:',
+            'play': 'open -a :id:',
             'install': 'brew cask install :id:',
             'uninstall': 'brew cask uninstall :id:',
             'update': 'brew cask upgrade'
