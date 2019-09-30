@@ -164,7 +164,7 @@ class Loader(QObject, metaclass=LoaderMeta):
             elif icons['cached'][1]['height'] == '64':
                 return path + '/64x64/' + icons['cached'][0]['value']
             else:
-                return path + '/128x128/' + icons['cached'][0]['height']['value']
+                return path + '/128x128/' + icons['cached'][0]['value']
         else:
             return ''
 

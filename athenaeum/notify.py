@@ -27,7 +27,7 @@ class Notify(QObject):
         notify = QDBusInterface(item, path, interface, self._bus)
         if notify.isValid():
             x = notify.call(QDBus.AutoDetect, "Notify", self._appName,
-                            id_replace, icon, header, message,
+                            id_replace, 'file://' + icon, header, message,
                             actions_list, hint, time)
             if x.errorName():
                 print("Failed to send notification!")
