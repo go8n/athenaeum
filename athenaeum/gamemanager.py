@@ -18,17 +18,16 @@ class GameManagerFactory(QObject):
     def create(self):
         if platform.system() == 'Linux':
             return GNUGameManager(self._inFlatpak, self._gameRepository)
-        # if platform.system() == 'Darwin':
-        #     return DarwinLoader(self._db, self._metaRepository, self._gameRepository)
+        if platform.system() == 'Darwin':
+            return DarwinLoader(self._gameRepository)
 
 
 class GameManager(QObject):
     ready = pyqtSignal()
     displayNotification = pyqtSignal(str, str, str, arguments=['header', 'message', 'icon'])
     
-    def __init__(self, inFlatpak=False, gameRepository=None, *args, **kwargs):
+    def __init__(self, gameRepository=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._inFlatpak = inFlatpak
         self._gameRepository = gameRepository
         self.reset()
         
@@ -238,8 +237,19 @@ class GameManager(QObject):
         # self._gameRepository.set(game)
 
 
+class DarwinGameManager(GameManager):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._commands = {
+            'play': ':id:',
+            'install': 'brew cask install :id:',
+            'uninstall': 'brew cask uninstall :id:',
+            'update': 'brew cask upgrade'
+        }
+
+
 class GNUGameManager(GameManager):
-    def __init__(self, inFlatpak=False, gameRepository=None, *args, **kwargs):
+    def __init__(self, inFlatpak=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if inFlatpak:
             self._commands = {
@@ -255,5 +265,3 @@ class GNUGameManager(GameManager):
                 'uninstall': 'flatpak uninstall :id: -y --user',
                 'update': 'flatpak update :id: -y --user'
             }
-
-        self._gameRepository = gameRepository

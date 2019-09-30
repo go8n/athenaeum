@@ -160,3 +160,14 @@ class Library(QObject):
 
     def cancelGame(self, game_id):
         self._gameManager.processCancel(game_id)
+
+    def markInstalled(self, game_id):
+        self._gameManager.markInstalled(game_id)
+        self.updateFilters()
+
+    def markUninstalled(self, game_id):
+        self._gameManager.markUninstalled(game_id)
+        self.updateFilters()
+
+    def clearErrors(self, game_id):
+        self._gameManager.clearErrors(game_id)

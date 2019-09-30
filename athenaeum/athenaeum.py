@@ -118,9 +118,9 @@ def main():
     root.playGame.connect(library.playGame)
     root.cancelGame.connect(library.cancelGame)
 
-    root.markInstalled.connect(gameManager.markInstalled)
-    root.markUninstalled.connect(gameManager.markUninstalled)
-    root.clearErrors.connect(gameManager.clearErrors)
+    root.markInstalled.connect(library.markInstalled)
+    root.markUninstalled.connect(library.markUninstalled)
+    root.clearErrors.connect(library.clearErrors)
 
     root.updateAll.connect(loader.runUpdateCommands)
     root.checkAll.connect(loader.runListCommands)
