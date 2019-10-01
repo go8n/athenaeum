@@ -17,17 +17,22 @@
         <screenshot type="default">
             <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/PLFxpGfLqMylZlTYcWFrFVdI/image.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/xzoGLAXKxqNHmtHUXmpfBQWi/image.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/mmRpuYAGHbmjjtYsAPvYQaaC/image.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image type="source">https://matrix.org/_matrix/media/r0/download/matrix.org/vQDLRxBIexwEiwYEsRfoAJGC/image.png</image>
         </screenshot>
     </screenshots>
     <releases>
+        <release version="v1.0.1" timestamp="1569923300">
+            <description>
+            Minor Appdata Fix.
+            </description>
+        </release>
         <release version="v1.0.0" timestamp="1569283200">
             <description>
             New UI.
@@ -60,4 +65,9 @@
         </release>
     </releases>
     <content_rating type="oars-1.1" />
+    <kudos>
+        <kudo>ModernToolkit</kudo>
+        <kudo>Notifications</kudo>
+        <kudo>HiDpiIcon</kudo>
+    </kudos>
 </component>
