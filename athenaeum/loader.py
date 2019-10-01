@@ -94,8 +94,9 @@ class Loader(QObject, metaclass=LoaderMeta):
                 if process:
                     installed = component.id in self._installed_list
                     has_update = component.id.split('/')[0] in self._updates_list
-                    download_size = game_sizes[component.id][1]
-                    installed_size = game_sizes[component.id][2]
+                    if component.id in game_sizes:
+                        download_size = game_sizes[component.id][1]
+                        installed_size = game_sizes[component.id][2]
 
                 gr = self._gameRepository.get(component.id)
                 if gr:

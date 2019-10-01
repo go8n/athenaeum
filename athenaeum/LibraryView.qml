@@ -427,9 +427,8 @@ Page {
                                     }
                                 }
                             }
-                            Component.onCompleted: {
-                                background.color = 'red'
-                            }
+                            highlighted: true
+                            Material.accent: Material.Red
                             icon.source: 'icons/exclamation.svg'
                         }
                         Button {
