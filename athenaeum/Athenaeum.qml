@@ -21,8 +21,8 @@ ApplicationWindow {
     signal checkAll()
     signal resetDatabase()
 
-    width: 1000
-    height: 700
+    width: 1280
+    height: 720
     visible: true
 
     property int theme: settings.theme == 'Dark' ? Material.Dark : settings.theme == 'Light' ? Material.Light: Material.System
