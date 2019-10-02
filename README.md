@@ -1,3 +1,9 @@
+<a href="https://flathub.org/apps/details/com.gitlab.librebob.Athenaeum">
+<img src="https://flathub.org/assets/badges/flathub-badge-i-en.png" width="190px" />
+</a>
+
+
+
 # Athenaeum
 
 A libre replacement for Steam
@@ -6,11 +12,11 @@ A libre replacement for Steam
 
 Matrix Channel: [#athenaeum:matrix.org](https://riot.im/app/#/room/#athenaeum:matrix.org)
 
-![The main page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/PLFxpGfLqMylZlTYcWFrFVdI/image.png)
+![The main page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/sXAnysGqRqfihrJzCezhCSxv/2019-10-02T12-41-16.png)
 
-![The search page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/mmRpuYAGHbmjjtYsAPvYQaaC/image.png)
+![The search page of Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/exONAuXPaJUzVuItdeJJYnkU/2019-10-02T12-41-46.png)
 
-![Viewing SuperTuxKart in Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/xzoGLAXKxqNHmtHUXmpfBQWi/image.png)
+![Viewing SuperTuxKart in Athenaeum.](https://matrix.org/_matrix/media/r0/download/matrix.org/kgWUsyLLoLBVFnMmKWgxzeKz/2019-10-02T12-42-20.png)
 
 ## What Works
 
@@ -23,7 +29,7 @@ Matrix Channel: [#athenaeum:matrix.org](https://riot.im/app/#/room/#athenaeum:ma
 
 ### Any
 
-Get it from flathub!
+Get it from Flathub!
 
 https://flathub.org/apps/details/com.gitlab.librebob.Athenaeum
 
