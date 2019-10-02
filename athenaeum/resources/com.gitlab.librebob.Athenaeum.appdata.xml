@@ -28,6 +28,11 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release version="v1.0.3" timestamp="1570015900">
+            <description>
+            Fix closing.
+            </description>
+        </release>
         <release version="v1.0.2" timestamp="1569984900">
             <description>
             Another minor Appdata Fix.
