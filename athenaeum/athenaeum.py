@@ -45,7 +45,7 @@ def main():
     app.setApplicationDisplayName(APP_UPPER_TITLE)
     app.setApplicationName(APP_NAME)
     app.setWindowIcon(QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/64x64/' + app.applicationName() + '.png')))
-    app.setQuitOnLastWindowClosed(False)
+    app.setQuitOnLastWindowClosed(True)
 
     tr = QTranslator()
     loaded = tr.load(QLocale.system(), app.applicationName(), "_", BASEDIR + "/translations");
