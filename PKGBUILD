@@ -1,13 +1,13 @@
 # Maintainer: librebob <librebob at protonmail dot com>
 pkgname=athenaeum-git
 _pkgdomain=com.gitlab.librebob.Athenaeum
-pkgver=v0.3.0.r0.668867a
+pkgver=1.0.3.r1.g348a794
 pkgrel=1
 pkgdesc="A libre replacement for Steam"
 arch=('any')
 url="https://gitlab.com/librebob/athenaeum"
 license=('GPL3')
-depends=('flatpak' 'python-pyqt5' 'python-dateutil' 'qt5-svg' 'qt5-quickcontrols2' 'qt5-graphicaleffects')
+depends=('flatpak' 'python-pyqt5' 'python-dateutil' 'qt5-svg' 'qt5-quickcontrols2' 'qt5-graphicaleffects' 'numpy')
 makedepends=('git' 'python-setuptools')
 provides=("${pkgname%-git}")
 conflicts=("${pkgname%-git}")
@@ -15,8 +15,8 @@ source=("git+https://gitlab.com/librebob/athenaeum.git")
 sha256sums=('SKIP')
 
 pkgver() {
-	cd "$srcdir/${pkgname%-git}"
-	printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+    cd "$srcdir/${pkgname%-git}"
+    git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 build() {
