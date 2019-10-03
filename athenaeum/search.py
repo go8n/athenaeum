@@ -37,9 +37,10 @@ class Search(QObject):
     searchQueryChanged = pyqtSignal()
     searchTagsValueChanged = pyqtSignal()
     
-    def __init__(self, gameManager=None, *args, **kwargs):
+    def __init__(self, gameManager=None, recommender=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._gameManager = gameManager
+        self._recommender = recommender
         self._tags = [
                 Tag(name='Action'),
                 Tag(name='Adventure'),
@@ -57,7 +58,7 @@ class Search(QObject):
             ]
         self._platforms = ['GNU']
         self._repositories = ['Flathub']
-        self._sortOptions = ["Relevance", "A-Z", "Z-A", "Download Size", "Installed Size"]
+        self._sortOptions = ["Relevance", "A-Z", "Z-A"]
         self._searchValue = ''
         self._searchTagsValue = ''
         self._sortValue = 0
@@ -127,30 +128,30 @@ class Search(QObject):
     
     @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
     def results(self):
-        results = list(filter(self.filterFunc, self._gameManager.games()))
+        exactResults = []
+        fuzzyResults = []
+        for game in self._gameManager.games():
+            if self._searchValue:
+                if game.name.lower().startswith(self._searchValue.lower()):
+                    exactResults.append(game)
+                if self._recommender.levenshtein(game.name.lower(), self._searchValue.lower()) >= 0.75:
+                    continue
+
+            if not set(map(lambda x: game.name, self.activeTags)).issubset(set(game.tags)):
+                continue
+
+            fuzzyResults.append(game)
+
+        if self.sortValue == 0 and self._searchValue:
+            fuzzyResults.sort(key= lambda x: self._recommender.levenshtein(x.name.lower(), self._searchValue.lower()))
+
+        results = exactResults + fuzzyResults
 
         if self.sortValue == 1:
             results.sort(key = lambda index: operator.attrgetter('name')(index).lower())
         if self.sortValue == 2:
             results.sort(key = lambda index: operator.attrgetter('name')(index).lower(), reverse=True)
-        # if self.sortValue == 3:
-            # results.sort(key=lambda x: tuple(x.downloadSize.split(' ').reverse() if x.downloadSize else []))
-        # if self.sortValue == 4:
-            # results.sort(key=lambda x: x.installedSize)
 
         self._results = QQmlListProperty(Game, self, results)
 
         return self._results
-    
-    # @pyqtProperty(QQmlListProperty, notify=searchQueryChanged)
-    # def resultsShort(self):
-    #     return QQmlListProperty(Game, self, list(filter(lambda x: self.searchValue.lower() in x.name.lower(), self._gameManager.games()))[:5] if self.searchValue else [])
-    
-    def filterFunc(self, x):
-        if self.searchValue and self.searchValue.lower() not in x.name.lower():
-            return False
-        
-        if not set(map(lambda x: x.name, self.activeTags)).issubset(set(x.tags)):
-            return False
-        
-        return True

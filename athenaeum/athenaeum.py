@@ -83,7 +83,7 @@ def main():
     
     library = Library(parent=app, gameManager=gameManager, metaRepository=metaRepository)
     browse = Browse(parent=app, gameManager=gameManager, recommender=recommender)
-    search = Search(parent=app, gameManager=gameManager)
+    search = Search(parent=app, gameManager=gameManager, recommender=recommender)
     
     loader.started.connect(gameManager.reset)
     loader.finished.connect(gameManager.load)
