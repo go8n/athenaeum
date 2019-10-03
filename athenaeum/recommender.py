@@ -7,7 +7,7 @@ from PyQt5.QtQml import QQmlListProperty
 
 from game import Game
 from stemming.porter import stem
-from numpy import dot, isnan
+from numpy import dot, isnan, array, arange, minimum, add
 from numpy.linalg import norm
 
 
@@ -40,7 +40,7 @@ class Recommender(QObject):
 
     def makeVector(self, wordList):
             if len(wordList) is 0:
-                return None;
+                return None
             
             vector = [0] * len(self._vectorKeywordIndex)
             for word in wordList:
@@ -68,3 +68,42 @@ class Recommender(QObject):
 
             ratings.sort(key=lambda x: x[1] if not isnan(x[1]) else 0 , reverse=True)
             return ratings
+
+    # https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Python
+    def levenshtein(self, source, target):
+        if len(source) < len(target):
+            return self.levenshtein(target, source)
+
+        # So now we have len(source) >= len(target).
+        if len(target) == 0:
+            return len(source)
+
+        # We call tuple() to force strings to be used as sequences
+        # ('c', 'a', 't', 's') - numpy uses them as values by default.
+        source = array(tuple(source))
+        target = array(tuple(target))
+
+        # We use a dynamic programming algorithm, but with the
+        # added optimization that we only need the last two rows
+        # of the matrix.
+        previous_row = arange(target.size + 1)
+        for s in source:
+            # Insertion (target grows longer than source):
+            current_row = previous_row + 1
+
+            # Substitution or matching:
+            # Target and source items are aligned, and either
+            # are different (cost of 1), or are the same (cost of 0).
+            current_row[1:] = minimum(
+                    current_row[1:],
+                    add(previous_row[:-1], target != s))
+
+            # Deletion (target grows shorter than source):
+            current_row[1:] = minimum(
+                    current_row[1:],
+                    current_row[0:-1] + 1)
+
+            previous_row = current_row
+
+        return (previous_row[-1] / len(source))
+
