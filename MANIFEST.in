@@ -29,6 +29,7 @@ include athenaeum/icons/CREDITS
 
 include athenaeum/Athenaeum.qml
 include athenaeum/BrowseView.qml
+include athenaeum/FullscreenPreview.qml
 include athenaeum/GameView.qml
 include athenaeum/LibraryView.qml
 include athenaeum/NavigationBar.qml
