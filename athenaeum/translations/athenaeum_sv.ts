@@ -2,216 +2,468 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="sv_SE">
 <context>
-    <name>LibraryView</name>
+    <name>BrowseView</name>
     <message>
-        <location filename="../LibraryView.qml" line="30"/>
-        <source>Search %L1 Games...</source>
+        <location filename="../BrowseView.qml" line="197"/>
+        <location filename="../BrowseView.qml" line="310"/>
+        <source>Flathub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="45"/>
-        <source>Library</source>
+        <location filename="../BrowseView.qml" line="219"/>
+        <source>Because you play:</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>GameView</name>
     <message>
-        <location filename="../LibraryView.qml" line="51"/>
-        <source>⋮</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="61"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="65"/>
-        <source>Check For Updates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="69"/>
-        <source>Update All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="73"/>
-        <source>Exit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="91"/>
-        <source>You have operations pending.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="108"/>
-        <source>Close Anyway</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="174"/>
-        <source>All Games (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="175"/>
-        <source>Installed (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="176"/>
-        <source>Recent (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="177"/>
-        <source>New (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="178"/>
-        <source>Has Updates (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="179"/>
-        <source>Processing (%L1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="291"/>
-        <source>New</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="402"/>
+        <location filename="../GameView.qml" line="113"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="420"/>
-        <source>Play</source>
+        <location filename="../GameView.qml" line="128"/>
+        <source>Download Size:	%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="438"/>
-        <source>Update</source>
+        <location filename="../GameView.qml" line="135"/>
+        <source>Installed Size:	%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="451"/>
-        <source>Uninstall</source>
+        <location filename="../GameView.qml" line="142"/>
+        <source>Install Game?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="484"/>
-        <source>Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../LibraryView.qml" line="502"/>
+        <location filename="../GameView.qml" line="152"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="122"/>
-        <location filename="../LibraryView.qml" line="516"/>
+        <location filename="../GameView.qml" line="155"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="715"/>
+        <location filename="../GameView.qml" line="172"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="180"/>
+        <source>View In Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="305"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="742"/>
+        <location filename="../GameView.qml" line="310"/>
+        <source>No description available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="332"/>
+        <source>Similar Games</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="390"/>
         <source>Releases</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="765"/>
+        <location filename="../GameView.qml" line="395"/>
+        <source>No release information available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="418"/>
         <source>Version %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="811"/>
+        <location filename="../GameView.qml" line="435"/>
+        <source>No release description available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="450"/>
+        <source>Anti-Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="462"/>
+        <source>This game requires NonFree assets.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../GameView.qml" line="475"/>
         <source>Developer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="844"/>
+        <location filename="../GameView.qml" line="489"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="876"/>
+        <location filename="../GameView.qml" line="505"/>
         <source>Links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="918"/>
+        <location filename="../GameView.qml" line="535"/>
         <source>Homepage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="920"/>
+        <location filename="../GameView.qml" line="537"/>
         <source>Bug Tracker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="922"/>
+        <location filename="../GameView.qml" line="539"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="924"/>
+        <location filename="../GameView.qml" line="541"/>
         <source>FAQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="926"/>
+        <location filename="../GameView.qml" line="544"/>
         <source>Donate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="928"/>
+        <location filename="../GameView.qml" line="546"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="930"/>
+        <location filename="../GameView.qml" line="548"/>
         <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="932"/>
+        <location filename="../GameView.qml" line="550"/>
         <source>Manifest</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>LibraryGridView</name>
     <message>
-        <location filename="../LibraryView.qml" line="956"/>
-        <source>Categories</source>
+        <location filename="../LibraryGridView.qml" line="24"/>
+        <source>Search %L1 Games...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="999"/>
-        <source>Installed successfully.</source>
+        <location filename="../LibraryGridView.qml" line="78"/>
+        <source>Installed (%L1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="1001"/>
-        <source>Uninstalled successfully.</source>
+        <location filename="../LibraryGridView.qml" line="79"/>
+        <source>Recent (%L1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="1003"/>
-        <source>Updated successfully.</source>
+        <location filename="../LibraryGridView.qml" line="80"/>
+        <source>Has Updates (%L1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LibraryView.qml" line="1005"/>
-        <source>An error occurred.</source>
+        <location filename="../LibraryGridView.qml" line="81"/>
+        <source>Processing (%L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryGridView.qml" line="162"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryGridView.qml" line="169"/>
+        <source>View In Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LibraryListView</name>
+    <message>
+        <location filename="../LibraryListView.qml" line="23"/>
+        <source>Search %L1 Games...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="75"/>
+        <source>Installed (%L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="76"/>
+        <source>Recent (%L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="77"/>
+        <source>Has Updates (%L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="78"/>
+        <source>Processing (%L1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="173"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="192"/>
+        <source>Nothing seems to be here.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="293"/>
+        <source>Install</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="304"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="313"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="316"/>
+        <source>Uninstall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="337"/>
+        <source>Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="347"/>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="350"/>
+        <location filename="../LibraryListView.qml" line="365"/>
+        <location filename="../LibraryListView.qml" line="419"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="386"/>
+        <source>Resolve Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="398"/>
+        <source>Clear error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="403"/>
+        <source>Mark as installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="410"/>
+        <source>Mark as uninstalled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="436"/>
+        <source>View In Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="493"/>
+        <source>Releases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="498"/>
+        <source>No release information available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="521"/>
+        <source>Version %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="538"/>
+        <source>No release description available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="565"/>
+        <source>Developer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="580"/>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="595"/>
+        <source>Links</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="625"/>
+        <source>Homepage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="627"/>
+        <source>Bug Tracker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="629"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="631"/>
+        <source>FAQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="634"/>
+        <source>Donate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="636"/>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="638"/>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../LibraryListView.qml" line="640"/>
+        <source>Manifest</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NavigationBar</name>
+    <message>
+        <location filename="../NavigationBar.qml" line="32"/>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="43"/>
+        <source>Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="54"/>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="75"/>
+        <source>Show games in a list view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="85"/>
+        <source>Show games in a grid view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="94"/>
+        <source>Reset settings to defaults.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="103"/>
+        <source>Search games.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="119"/>
+        <source>Check For Updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="123"/>
+        <source>Update All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="127"/>
+        <source>Exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="142"/>
+        <source>You have operations pending.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="148"/>
+        <source>Close Anyway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../NavigationBar.qml" line="154"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchView</name>
+    <message>
+        <location filename="../SearchView.qml" line="34"/>
+        <source>Search games...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SearchView.qml" line="78"/>
+        <source>No resoults found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SearchView.qml" line="127"/>
+        <source>Flathub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SearchView.qml" line="200"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../SearchView.qml" line="205"/>
+        <source>Search tags...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -219,51 +471,26 @@
     <name>SettingsView</name>
     <message>
         <location filename="../SettingsView.qml" line="21"/>
-        <source>‹</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../SettingsView.qml" line="41"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../SettingsView.qml" line="50"/>
-        <source>⋮</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../SettingsView.qml" line="66"/>
-        <source>Reset All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../SettingsView.qml" line="69"/>
-        <source>Exit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../SettingsView.qml" line="90"/>
         <source>Show Tray Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../SettingsView.qml" line="104"/>
+        <location filename="../SettingsView.qml" line="28"/>
         <source>Always Show Logs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../SettingsView.qml" line="118"/>
+        <location filename="../SettingsView.qml" line="35"/>
         <source>Notifications Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../SettingsView.qml" line="126"/>
+        <location filename="../SettingsView.qml" line="46"/>
         <source>Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../SettingsView.qml" line="149"/>
+        <location filename="../SettingsView.qml" line="69"/>
         <source>Reset Database</source>
         <translation type="unfinished"></translation>
     </message>

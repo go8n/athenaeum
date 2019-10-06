@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ca_ES">
+<TS version="2.1" language="tr_TR">
 <context>
     <name>BrowseView</name>
     <message>
@@ -20,7 +20,7 @@
     <message>
         <location filename="../GameView.qml" line="113"/>
         <source>Install</source>
-        <translation type="unfinished">Instal·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="128"/>
@@ -40,17 +40,17 @@
     <message>
         <location filename="../GameView.qml" line="152"/>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="155"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancel·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="172"/>
         <source>Play</source>
-        <translation type="unfinished">Jugar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="180"/>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../GameView.qml" line="305"/>
         <source>Description</source>
-        <translation type="unfinished">Descripcció</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="310"/>
@@ -75,7 +75,7 @@
     <message>
         <location filename="../GameView.qml" line="390"/>
         <source>Releases</source>
-        <translation type="unfinished">Publicacions</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="395"/>
@@ -85,7 +85,7 @@
     <message>
         <location filename="../GameView.qml" line="418"/>
         <source>Version %1</source>
-        <translation type="unfinished">Versió %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="435"/>
@@ -105,57 +105,57 @@
     <message>
         <location filename="../GameView.qml" line="475"/>
         <source>Developer</source>
-        <translation type="unfinished">Desenvolupador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="489"/>
         <source>License</source>
-        <translation type="unfinished">Llicència</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="505"/>
         <source>Links</source>
-        <translation type="unfinished">Enllaços</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="535"/>
         <source>Homepage</source>
-        <translation type="unfinished">Pàgina principal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="537"/>
         <source>Bug Tracker</source>
-        <translation type="unfinished">Seguidor d&apos;errades</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="539"/>
         <source>Help</source>
-        <translation type="unfinished">Ajuda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="541"/>
         <source>FAQ</source>
-        <translation type="unfinished">FAQ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="544"/>
         <source>Donate</source>
-        <translation type="unfinished">Fer un donatiu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="546"/>
         <source>Translation</source>
-        <translation type="unfinished">Traducció</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="548"/>
         <source>Unknown</source>
-        <translation type="unfinished">Desconegut</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../GameView.qml" line="550"/>
         <source>Manifest</source>
-        <translation type="unfinished">Manifest</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -163,32 +163,32 @@
     <message>
         <location filename="../LibraryGridView.qml" line="24"/>
         <source>Search %L1 Games...</source>
-        <translation type="unfinished">Cerca %L1 jocs...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="78"/>
         <source>Installed (%L1)</source>
-        <translation type="unfinished">Instal·lats</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="79"/>
         <source>Recent (%L1)</source>
-        <translation type="unfinished">Recents</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="80"/>
         <source>Has Updates (%L1)</source>
-        <translation type="unfinished">Conté actualitzacions</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="81"/>
         <source>Processing (%L1)</source>
-        <translation type="unfinished">Processant</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="162"/>
         <source>Play</source>
-        <translation type="unfinished">Jugar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryGridView.qml" line="169"/>
@@ -201,32 +201,32 @@
     <message>
         <location filename="../LibraryListView.qml" line="23"/>
         <source>Search %L1 Games...</source>
-        <translation type="unfinished">Cerca %L1 jocs...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="75"/>
         <source>Installed (%L1)</source>
-        <translation type="unfinished">Instal·lats</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="76"/>
         <source>Recent (%L1)</source>
-        <translation type="unfinished">Recents</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="77"/>
         <source>Has Updates (%L1)</source>
-        <translation type="unfinished">Conté actualitzacions</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="78"/>
         <source>Processing (%L1)</source>
-        <translation type="unfinished">Processant</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="173"/>
         <source>New</source>
-        <translation type="unfinished">Nou</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="192"/>
@@ -236,39 +236,39 @@
     <message>
         <location filename="../LibraryListView.qml" line="293"/>
         <source>Install</source>
-        <translation type="unfinished">Instal·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="304"/>
         <source>Play</source>
-        <translation type="unfinished">Jugar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="313"/>
         <source>Update</source>
-        <translation type="unfinished">Actualitzar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="316"/>
         <source>Uninstall</source>
-        <translation type="unfinished">Desinstal·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="337"/>
         <source>Are you sure?</source>
-        <translation type="unfinished">Estàs segur?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="347"/>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="350"/>
         <location filename="../LibraryListView.qml" line="365"/>
         <location filename="../LibraryListView.qml" line="419"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancel·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="386"/>
@@ -298,7 +298,7 @@
     <message>
         <location filename="../LibraryListView.qml" line="493"/>
         <source>Releases</source>
-        <translation type="unfinished">Publicacions</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="498"/>
@@ -308,7 +308,7 @@
     <message>
         <location filename="../LibraryListView.qml" line="521"/>
         <source>Version %1</source>
-        <translation type="unfinished">Versió %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="538"/>
@@ -318,229 +318,57 @@
     <message>
         <location filename="../LibraryListView.qml" line="565"/>
         <source>Developer</source>
-        <translation type="unfinished">Desenvolupador</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="580"/>
         <source>License</source>
-        <translation type="unfinished">Llicència</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="595"/>
         <source>Links</source>
-        <translation type="unfinished">Enllaços</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="625"/>
         <source>Homepage</source>
-        <translation type="unfinished">Pàgina principal</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="627"/>
         <source>Bug Tracker</source>
-        <translation type="unfinished">Seguidor d&apos;errades</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="629"/>
         <source>Help</source>
-        <translation type="unfinished">Ajuda</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="631"/>
         <source>FAQ</source>
-        <translation type="unfinished">FAQ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="634"/>
         <source>Donate</source>
-        <translation type="unfinished">Fer un donatiu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="636"/>
         <source>Translation</source>
-        <translation type="unfinished">Traducció</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="638"/>
         <source>Unknown</source>
-        <translation type="unfinished">Desconegut</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../LibraryListView.qml" line="640"/>
         <source>Manifest</source>
-        <translation type="unfinished">Manifest</translation>
-    </message>
-</context>
-<context>
-    <name>LibraryView</name>
-    <message>
-        <source>Search %L1 Games...</source>
-        <translation type="vanished">Cerca %L1 jocs...</translation>
-    </message>
-    <message>
-        <source>Library</source>
-        <translation type="vanished">Biblioteca</translation>
-    </message>
-    <message>
-        <source>⋮</source>
-        <translation type="vanished">⋮</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="vanished">Paràmetres</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translatorcomment>Shortened the translation a bit so that it fits</translatorcomment>
-        <translation type="vanished">Comprova actualitzacions</translation>
-    </message>
-    <message>
-        <source>Update All</source>
-        <translation type="vanished">Actualitza-ho tot</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="vanished">Sortir</translation>
-    </message>
-    <message>
-        <source>You have operations pending.</source>
-        <translation type="vanished">Tens operacions pendents.</translation>
-    </message>
-    <message>
-        <source>Close Anyway</source>
-        <translation type="vanished">Tanca igualment</translation>
-    </message>
-    <message>
-        <source>All Games (%L1)</source>
-        <translation type="vanished">Tots els jocs</translation>
-    </message>
-    <message>
-        <source>Installed (%L1)</source>
-        <translation type="vanished">Instal·lats</translation>
-    </message>
-    <message>
-        <source>Recent (%L1)</source>
-        <translation type="vanished">Recents</translation>
-    </message>
-    <message>
-        <source>New (%L1)</source>
-        <translation type="vanished">Nous</translation>
-    </message>
-    <message>
-        <source>Has Updates (%L1)</source>
-        <translation type="vanished">Conté actualitzacions</translation>
-    </message>
-    <message>
-        <source>Processing (%L1)</source>
-        <translation type="vanished">Processant</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="vanished">Nou</translation>
-    </message>
-    <message>
-        <source>Install</source>
-        <translation type="vanished">Instal·lar</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation type="vanished">Jugar</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="vanished">Actualitzar</translation>
-    </message>
-    <message>
-        <source>Uninstall</source>
-        <translation type="vanished">Desinstal·lar</translation>
-    </message>
-    <message>
-        <source>Are you sure?</source>
-        <translation type="vanished">Estàs segur?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="vanished">Sí</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Cancel·lar</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="vanished">Descripcció</translation>
-    </message>
-    <message>
-        <source>Releases</source>
-        <translation type="vanished">Publicacions</translation>
-    </message>
-    <message>
-        <source>Version %1</source>
-        <translation type="vanished">Versió %1</translation>
-    </message>
-    <message>
-        <source>Developer</source>
-        <translation type="vanished">Desenvolupador</translation>
-    </message>
-    <message>
-        <source>License</source>
-        <translation type="vanished">Llicència</translation>
-    </message>
-    <message>
-        <source>Links</source>
-        <translation type="vanished">Enllaços</translation>
-    </message>
-    <message>
-        <source>Homepage</source>
-        <translation type="vanished">Pàgina principal</translation>
-    </message>
-    <message>
-        <source>Bug Tracker</source>
-        <translation type="vanished">Seguidor d&apos;errades</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="vanished">Ajuda</translation>
-    </message>
-    <message>
-        <source>FAQ</source>
-        <translation type="vanished">FAQ</translation>
-    </message>
-    <message>
-        <source>Donate</source>
-        <translation type="vanished">Fer un donatiu</translation>
-    </message>
-    <message>
-        <source>Translation</source>
-        <translation type="vanished">Traducció</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="vanished">Desconegut</translation>
-    </message>
-    <message>
-        <source>Manifest</source>
-        <translation type="vanished">Manifest</translation>
-    </message>
-    <message>
-        <source>Categories</source>
-        <translation type="vanished">Categories</translation>
-    </message>
-    <message>
-        <source>Installed successfully.</source>
-        <translation type="vanished">S&apos;ha instal·lat correctament.</translation>
-    </message>
-    <message>
-        <source>Uninstalled successfully.</source>
-        <translation type="vanished">S&apos;ha desinstal·lat correctament.</translation>
-    </message>
-    <message>
-        <source>Updated successfully.</source>
-        <translation type="vanished">S&apos;ha actualitzat correctament.</translation>
-    </message>
-    <message>
-        <source>An error occurred.</source>
-        <translation type="vanished">S&apos;ha produït un error.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -553,12 +381,12 @@
     <message>
         <location filename="../NavigationBar.qml" line="43"/>
         <source>Library</source>
-        <translation type="unfinished">Biblioteca</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="54"/>
         <source>Settings</source>
-        <translation type="unfinished">Paràmetres</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="75"/>
@@ -583,32 +411,32 @@
     <message>
         <location filename="../NavigationBar.qml" line="119"/>
         <source>Check For Updates</source>
-        <translation type="unfinished">Comprova actualitzacions</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="123"/>
         <source>Update All</source>
-        <translation type="unfinished">Actualitza-ho tot</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="127"/>
         <source>Exit</source>
-        <translation type="unfinished">Sortir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="142"/>
         <source>You have operations pending.</source>
-        <translation type="unfinished">Tens operacions pendents.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="148"/>
         <source>Close Anyway</source>
-        <translation type="unfinished">Tanca igualment</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../NavigationBar.qml" line="154"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancel·lar</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -642,44 +470,24 @@
 <context>
     <name>SettingsView</name>
     <message>
-        <source>‹</source>
-        <translation type="vanished">‹</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="vanished">Paràmetres</translation>
-    </message>
-    <message>
-        <source>⋮</source>
-        <translation type="vanished">⋮</translation>
-    </message>
-    <message>
-        <source>Reset All</source>
-        <translation type="vanished">Restableix-ho tot</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="vanished">Sortir</translation>
-    </message>
-    <message>
         <location filename="../SettingsView.qml" line="21"/>
         <source>Show Tray Icon</source>
-        <translation>Mostra una icona a la safata del sistema</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../SettingsView.qml" line="28"/>
         <source>Always Show Logs</source>
-        <translation>Sempre mostrar els registres</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../SettingsView.qml" line="35"/>
         <source>Notifications Enabled</source>
-        <translation>Notificacions habilitades</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../SettingsView.qml" line="46"/>
         <source>Theme</source>
-        <translation>Tema</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../SettingsView.qml" line="69"/>
