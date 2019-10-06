@@ -59,7 +59,7 @@ def main():
     app.setQuitOnLastWindowClosed(True)
 
     tr = QTranslator()
-    loaded = tr.load(QLocale.system(), app.applicationName(), "_", BASEDIR + "/translations");
+    loaded = tr.load(QLocale.system(), APP_TITLE, "_", BASEDIR + "/translations");
     if loaded:
         print('Loaded ' + QLocale.system().name() + ' translation.')
     else:
