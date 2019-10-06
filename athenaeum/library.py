@@ -11,6 +11,7 @@ from game import Game
 class Library(QObject):
     gamesChanged = pyqtSignal()
     filterChanged = pyqtSignal()
+    viewChanged = pyqtSignal()
     filtersChanged = pyqtSignal(list)
     paramsChanged = pyqtSignal()
     paramsChanged = pyqtSignal()
@@ -26,6 +27,7 @@ class Library(QObject):
     def load(self):
         self.updateFilters(new_load=True)
         self.filterValue = self._metaRepository.get('filter') or 'installed'
+        self.view = self._metaRepository.get('library_view') or 'list'
         self.currentGame = self.filter[0] if len(self.filter) else Game()
 
     def reset(self):
@@ -36,6 +38,7 @@ class Library(QObject):
             'processing': []
         }
         self._filterValue = 'installed'
+        self._view = 'list'
         self._searchValue = ''
         self._currentGame = Game()
 
@@ -105,6 +108,17 @@ class Library(QObject):
         self._filterValue = filterValue
         self._metaRepository.set(key='filter', value=self.filterValue)
         self.paramsChanged.emit()
+
+    @pyqtProperty('QString', notify=viewChanged)
+    def view(self):
+        return self._view
+
+    @view.setter
+    def view(self, view):
+        if view != self._view:
+            self._view = view
+            self._metaRepository.set(key='library_view', value=self._view)
+            self.viewChanged.emit()
 
     @pyqtProperty('QString', notify=paramsChanged)
     def searchValue(self):

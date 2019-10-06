@@ -59,30 +59,32 @@ ToolBar {
                 }
             }
         }
+    }    
+    RowLayout {
+        visible: activeView === 'library'
+        anchors.right: menuButton.left
+        ToolButton {
+            id: listButton
+            enabled: library.view !== 'list'
+            icon.source: 'icons/list.svg'
+            onClicked: {
+                library.view = 'list'
+                // enabled = false
+            }
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Show games in a list view.")
+        }
+        ToolButton {
+            id: gridButton
+            enabled: library.view !== 'grid'
+            icon.source: 'icons/grid.svg'
+            onClicked: {
+                library.view = 'grid'
+            }
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Show games in a grid view.")
+        }
     }
-    
-//     RowLayout {
-//         visible: activeView === 'library'
-//         anchors.right: menuButton.left
-//         ToolButton {
-//             id: tableButton
-//             icon.source: 'icons/table.svg'
-//             onClicked: {
-//                 visible = false
-//             }
-//             ToolTip.visible: hovered
-//             ToolTip.text: qsTr("Show games in a table view.")
-//         }
-//         ToolButton {
-//             id: listButton
-//             icon.source: 'icons/list.svg'
-//             onClicked: {
-//                 visible = false
-//             }
-//             ToolTip.visible: hovered
-//             ToolTip.text: qsTr("Show games in a list view.")
-//         }
-//     }
     RowLayout {
         visible: activeView === 'settings'
         anchors.right: menuButton.left

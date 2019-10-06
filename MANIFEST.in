@@ -7,6 +7,7 @@ include athenaeum/icons/donate.svg
 include athenaeum/icons/download.svg
 include athenaeum/icons/exclamation.svg
 include athenaeum/icons/globe.svg
+include athenaeum/icons/grid.svg
 include athenaeum/icons/help.svg
 include athenaeum/icons/home.svg
 include athenaeum/icons/left.svg
@@ -22,7 +23,6 @@ include athenaeum/icons/reset.svg
 include athenaeum/icons/right.svg
 include athenaeum/icons/search.svg
 include athenaeum/icons/settings.svg
-include athenaeum/icons/table.svg
 include athenaeum/icons/trash.svg
 include athenaeum/icons/LICENSE
 include athenaeum/icons/CREDITS
