@@ -31,6 +31,8 @@ include athenaeum/Athenaeum.qml
 include athenaeum/BrowseView.qml
 include athenaeum/GameView.qml
 include athenaeum/LibraryView.qml
+include athenaeum/LibraryListView.qml
+include athenaeum/LibraryGridView.qml
 include athenaeum/NavigationBar.qml
 include athenaeum/SearchView.qml
 include athenaeum/SettingsView.qml
