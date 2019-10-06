@@ -65,13 +65,23 @@ ApplicationWindow {
     }
    
     function backward() {
-        stackIndex = stackIndex - 1
-        changeView(stack[stackIndex][0], stack[stackIndex][1])
+        if (stackIndex > 0) {
+            stackIndex = stackIndex - 1
+            changeView(stack[stackIndex][0], stack[stackIndex][1])
+        }
     }
 
     function forward() {
-        stackIndex = stackIndex + 1
-        changeView(stack[stackIndex][0], stack[stackIndex][1])
+        if (stack.length - 1 > stackIndex) {
+            stackIndex = stackIndex + 1
+            changeView(stack[stackIndex][0], stack[stackIndex][1])
+        }
+    }
+
+    Connections {
+        target: mouseHandler 
+        onBackward: backward()
+        onForward: forward()
     }
 
     StackLayout {
