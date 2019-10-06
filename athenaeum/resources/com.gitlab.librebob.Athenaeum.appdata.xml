@@ -28,6 +28,13 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release version="v1.1.0" timestamp="1570349000">
+            <description>
+            Added fuzzy search.
+            Persist location and size of window.
+            Added grid view to library.
+            </description>
+        </release>
         <release version="v1.0.3" timestamp="1570015900">
             <description>
             Fix closing.
