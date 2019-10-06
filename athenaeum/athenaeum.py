@@ -1,4 +1,5 @@
 import signal, os, sys
+from functools import partial
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTranslator, QLocale, Qt, QVariant, QMetaType, QStandardPaths
@@ -8,6 +9,8 @@ from PyQt5.QtWidgets import QApplication
 APP_NAME = 'com.gitlab.librebob.Athenaeum'
 APP_TITLE = 'athenaeum'
 APP_UPPER_TITLE = 'Athenaeum'
+APP_DEFAULT_WIDTH = 1280
+APP_DEFAULT_HEIGHT = 720
 
 # Helpful snippet from kawaii-player https://github.com/kanishka-linux/kawaii-player/
 if getattr(sys, 'frozen', False):
@@ -29,6 +32,12 @@ from search import Search
 from settings import Settings
 from systemtrayicon import SystemTrayIcon
 
+def cleanUp(applicationWindow=None, metaRepository=None):
+    metaRepository.set('window_width', applicationWindow.property('width'))
+    metaRepository.set('window_height', applicationWindow.property('height'))
+
+    metaRepository.set('window_x', applicationWindow.property('x'))
+    metaRepository.set('window_y', applicationWindow.property('y'))
 
 def main():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -111,6 +120,16 @@ def main():
 
     root = engine.rootObjects()[0]
 
+    app.aboutToQuit.connect(partial(cleanUp, root, metaRepository))
+    
+    root.setProperty('width', metaRepository.get('window_width') or APP_DEFAULT_WIDTH)
+    root.setProperty('height', metaRepository.get('window_height') or APP_DEFAULT_HEIGHT)
+    
+    rect = app.desktop().screenGeometry()
+
+    root.setProperty('x', metaRepository.get('window_x') or rect.width() / 2 - APP_DEFAULT_WIDTH / 2)
+    root.setProperty('y', metaRepository.get('window_y') or rect.height() / 2 - APP_DEFAULT_HEIGHT / 2)
+
     root.indexUpdated.connect(library.indexUpdated)
     root.installGame.connect(library.installGame)
     root.uninstallGame.connect(library.uninstallGame)
@@ -129,7 +148,7 @@ def main():
     try:
         notify = Notify(parent=app, name=APP_UPPER_TITLE)
         gameManager.displayNotification.connect(notify.showNotifitcation)
-    except Error as e:
+    except Exception:
         print('Error initializing notifications.');
 
     #systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/32x32/' + app.applicationName() + '.png')),
