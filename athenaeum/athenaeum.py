@@ -31,6 +31,8 @@ from recommender import Recommender
 from search import Search
 from settings import Settings
 from systemtrayicon import SystemTrayIcon
+from mousehandler import MouseHandler
+
 
 def cleanUp(applicationWindow=None, metaRepository=None):
     metaRepository.set('window_width', applicationWindow.property('width'))
@@ -63,7 +65,7 @@ def main():
     else:
         print('Using default translation.')
 
-    app.installTranslator(tr);
+    app.installTranslator(tr)
 
     qmlRegisterType(GameManager, APP_UPPER_TITLE, 1, 0, 'GameManager')
     qmlRegisterType(Game, APP_UPPER_TITLE, 1, 0, 'Game')
@@ -74,6 +76,7 @@ def main():
     qmlRegisterType(Recommender, APP_UPPER_TITLE, 1, 0, 'Recommender')
     qmlRegisterType(Recommendation, APP_UPPER_TITLE, 1, 0, 'Recommendation')
     qmlRegisterType(Search, APP_UPPER_TITLE, 1, 0, 'Search')
+    qmlRegisterType(MouseHandler, APP_UPPER_TITLE, 1, 0, 'MouseHandler')
 
     database = Database(dataPath=QStandardPaths.writableLocation(QStandardPaths.AppDataLocation))
     database.init()
@@ -106,6 +109,9 @@ def main():
 
     networkAccessManagerFactory = NetworkAccessManagerFactory()
 
+    mouseHandler = MouseHandler()
+    app.installEventFilter(mouseHandler)
+
     engine = QQmlApplicationEngine(parent=app)
     engine.setNetworkAccessManagerFactory(networkAccessManagerFactory)
     engine.rootContext().setContextProperty('settings', settings)
@@ -115,6 +121,7 @@ def main():
     engine.rootContext().setContextProperty('search', search)
     engine.rootContext().setContextProperty('gameManager', gameManager)
     engine.rootContext().setContextProperty('recommender', recommender)
+    engine.rootContext().setContextProperty('mouseHandler', mouseHandler)
 
     engine.load(BASEDIR + '/Athenaeum.qml')
 
@@ -149,7 +156,7 @@ def main():
         notify = Notify(parent=app, name=APP_UPPER_TITLE)
         gameManager.displayNotification.connect(notify.showNotifitcation)
     except Exception:
-        print('Error initializing notifications.');
+        print('Error initializing notifications.')
 
     #systemTrayIcon = SystemTrayIcon(icon=QIcon.fromTheme(app.applicationName(), QIcon(BASEDIR + '/resources/icons/hicolor/32x32/' + app.applicationName() + '.png')),
     #root=root, show=settings.showTrayIcon, parent=app)
