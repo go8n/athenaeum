@@ -5,8 +5,11 @@ import QtQuick.Layouts 1.3
 import Athenaeum 1.0
 
 Popup {
-    property alias source: fullscreenImage.source
-    
+    property string source: ''
+
+    onAboutToShow: {
+        fullscreenImage.source = source
+    }
     x: Math.round((stackView.width - width) / 2)
     y: Math.round((stackView.height - height) / 2)
     parent: stackView
@@ -26,6 +29,5 @@ Popup {
         anchors.centerIn: parent
         width: sourceSize.width > parent.width ? parent.width : sourceSize.width
         height: parent.height
-        source: largeView.source
     }
 }
