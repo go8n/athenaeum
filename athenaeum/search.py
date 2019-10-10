@@ -145,7 +145,7 @@ class Search(QObject):
         if self.sortValue == 0 and self._searchValue:
             fuzzyResults.sort(key= lambda x: self._recommender.levenshtein(x.name.lower(), self._searchValue.lower()))
 
-        results = exactResults + fuzzyResults
+        results = list(set(exactResults + fuzzyResults))
 
         if self.sortValue == 1:
             results.sort(key = lambda index: operator.attrgetter('name')(index).lower())

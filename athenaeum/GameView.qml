@@ -454,7 +454,7 @@ Page {
                         visible: browse.currentGame.antiFeatures.length
                         model: browse.currentGame.antiFeatures
                         height: contentHeight
-                        width: contentWidth
+                        width: parent.width - 50
                         delegate: Text {
                             function getTitle(type) {
                                 switch(type) {
@@ -462,6 +462,7 @@ Page {
                                         return qsTr('This game requires NonFree assets.');
                                 }
                             }
+                            width: parent.width
                             color: Material.color(Material.Red)
                             font.pixelSize: 16
                             wrapMode: Text.WordWrap
@@ -544,10 +545,13 @@ Page {
                                         return qsTr('Donate');
                                     case 'translate':
                                         return qsTr('Translation');
-                                    case 'unknown':
-                                        return qsTr('Unknown');
                                     case 'manifest':
                                         return qsTr('Manifest');
+                                    case 'contact':
+                                        return qsTr('Contact')
+                                    case 'unknown':
+                                    default:
+                                        return qsTr('Unknown');
                                 }
                             }
                             text: getTitle(type)

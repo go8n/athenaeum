@@ -13,10 +13,9 @@ badCategories = [
 nonFreeAssets = [
     'jp.yvt.OpenSpades',
     'net.openra.OpenRA',
-]
-
-engineClones = [
     'org.openmw.OpenMW',
+    'org.zdoom.GZDoom',
+    'io.github.ezQuake'
 ]
 
 loadingMessages = [
@@ -46,4 +45,5 @@ alwaysDeny = [
     'com.gitlab.coringao.cavestory-nx',
     'org.sauerbraten.Sauerbraten',
     'net.runelite.RuneLite',
+    'com.zandronum.Zandronum'
 ]

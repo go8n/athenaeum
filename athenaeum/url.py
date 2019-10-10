@@ -13,22 +13,24 @@ class Url(QObject):
         self._url = url
 
     def findUrlIcon(self, type):
-        if ('homepage' == type):
+        if 'homepage' == type:
             return 'home.svg'
-        elif ('bugtracker' == type):
+        elif 'bugtracker' == type:
             return 'bug.svg'
-        elif ('help' == type):
+        elif 'help' == type:
             return 'help.svg'
-        elif ('faq' == type):
+        elif 'faq' == type:
             return 'question.svg'
-        elif ('donation' == type):
+        elif 'donation' == type:
             return 'donate.svg'
-        elif ('translate' == type):
+        elif 'translate' == type:
             return 'globe.svg'
-        elif ('unknown' == type):
+        elif 'unknown' == type:
             return 'cogs.svg'
-        elif ('manifest' == type):
+        elif 'manifest' == type:
             return 'manifest.svg'
+        elif 'contact' == type:
+            return 'contact.svg'
 
     @pyqtProperty('QString', notify=typeChanged)
     def type(self):
