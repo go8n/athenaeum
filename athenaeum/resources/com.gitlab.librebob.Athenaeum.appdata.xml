@@ -28,6 +28,13 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release version="v1.2.0" timestamp="1570708700">
+            <description>
+            Handle forwards and backwards mouse buttons.
+            Fix translations.
+            Switch to setuptools_scm.
+            </description>
+        </release>
         <release version="v1.1.0" timestamp="1570349000">
             <description>
             Added fuzzy search.
